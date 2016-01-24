@@ -34,4 +34,11 @@ public class SpeechesGenerator {
         return SpeechletResponse.newAskResponse(outputSpeech, reprompt);
     }
 
+
+    public static SpeechletResponse newTellResponse(String stringOutput) {
+        PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
+        outputSpeech.setText(stringOutput);
+
+        return SpeechletResponse.newTellResponse(outputSpeech);
+    }
 }

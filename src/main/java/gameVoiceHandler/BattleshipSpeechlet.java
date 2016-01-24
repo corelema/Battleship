@@ -31,8 +31,26 @@ public class BattleshipSpeechlet implements Speechlet {
 
         if ("startQuickGameIntent".equals(intentName)) {
             return OrdersTranslator.handleQuickGameAsked();
+        } else if ("startAdvancedGameIntent".equals(intentName)) {
+            return null;
+        } else if ("parameterSizeOfGridIntent".equals(intentName)) {
+            return null;
+        } else if ("parameterNumberOfShipsIntent".equals(intentName)) {
+            return null;
+        } else if ("startAdvancedGameWithParametersIntent".equals(intentName)) {
+            return null;
+        } else if ("answerHitOrMissIntent".equals(intentName)) {
+            return null;
+        } else if ("fireAtXAndYIntent".equals(intentName)) {
+            return null;
+        } else if ("oneFirePosition".equals(intentName)) {
+            return null;
         } else if ("AMAZON.HelpIntent".equals(intentName)) {
             return OrdersTranslator.handleHelpAsked();
+        } else if ("AMAZON.StopIntent".equals(intentName)) {
+            return OrdersTranslator.handleStop();
+        } else if ("AMAZON.CancelIntent".equals(intentName)) {
+            return OrdersTranslator.handleCancel();
         } else {
             throw new SpeechletException("Invalid Intent");
         }

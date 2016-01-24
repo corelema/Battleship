@@ -37,4 +37,15 @@ public class OrdersTranslator {
             return null;
         }
     }
+
+    public static SpeechletResponse handleCancel() {
+        String speechOutput = Speeches.LEAVING_MESSAGE;
+
+        return SpeechesGenerator.newTellResponse(speechOutput);
+    }
+
+    public static SpeechletResponse handleStop() {
+
+        return null;
+    }
 }
