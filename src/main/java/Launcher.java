@@ -11,13 +11,12 @@
 import com.amazon.speech.Sdk;
 import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.servlet.SpeechletServlet;
-import helloworld.HelloWorldSpeechlet;
+import gameVoiceHandler.BattleshipSpeechlet;
 import org.apache.log4j.BasicConfigurator;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-import session.SessionSpeechlet;
 
 /**
  * Shared launcher for executing all sample skills within a single servlet container.
@@ -76,8 +75,7 @@ public final class Launcher {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);
-        context.addServlet(new ServletHolder(createServlet(new HelloWorldSpeechlet())), "/hello");
-        context.addServlet(new ServletHolder(createServlet(new SessionSpeechlet())), "/session");
+        context.addServlet(new ServletHolder(createServlet(new BattleshipSpeechlet())), "/battleship");
         server.start();
         server.join();
     }
