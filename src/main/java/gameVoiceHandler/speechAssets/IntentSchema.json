@@ -2,7 +2,6 @@
   "intents": [
     {
       "intent": "startQuickGameIntent"
-      ]
     },
     {
       "intent": "startAdvancedGameIntent"
@@ -45,6 +44,7 @@
           "name": "hitOrMiss",
           "type": "ATTACK_RESULT"
         }
+        ]
     },
     {
       "intent": "fireAtXAndYIntent",
@@ -65,7 +65,8 @@
         {
           "name": "lineOrColumn",
           "type": "AMAZON.NUMBER"
-        },
+        }
+        ]
     },
     {
       "intent": "AMAZON.HelpIntent"

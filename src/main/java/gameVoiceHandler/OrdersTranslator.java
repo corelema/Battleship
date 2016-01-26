@@ -48,9 +48,24 @@ public class OrdersTranslator {
     }
 
     public static SpeechletResponse handleParameterGiven(Intent intent) {
+        Integer parameterValue = null;
+        boolean parameterIsGrid = (intent.getSlot(GRID_SIZE_SLOT) != null);
+        Slot givenParameterSlot = parameterIsGrid ? intent.getSlot(GRID_SIZE_SLOT) : intent.getSlot(NUMBER_OF_SHIPS_SLOT);
+
+        try {
+            if (givenParameterSlot != null) {
+                parameterValue = Integer.parseInt(givenParameterSlot.getValue());
+            }
+        } catch (NumberFormatException e) {
+            String speechText = "Sorry, I did not hear the grid size. Please say again?";
+            return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+        }
+
+        String speechText = "You asked for a " + (parameterIsGrid ? "grid of size " : "number of ships of ") + parameterValue.toString();
+        return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+
         //TODO: call the game: pass the parameters to the instance of the game. If the game has everything, launch the game (we can suppose that the user might say only one parameter at a time)
 
-        return null;
     }
 
     public static SpeechletResponse handleFireCoordinatesGiven(Intent intent) {
