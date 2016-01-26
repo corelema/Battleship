@@ -21,6 +21,9 @@ public class OrdersTranslator {
 
     public static SpeechletResponse handleQuickGameAsked() {
         if (!StateManager.getInstance().isGamesStarted()) {
+
+            //TODO: call the game:  to create a 3 by 3 game
+
             String speechOutput = String.format(Speeches.QUICK_GAME_LAUNCH, 3, 3);
 
             String repromptText = Speeches.YOUR_TURN;
@@ -39,18 +42,26 @@ public class OrdersTranslator {
         Slot gridSizeSlot = intent.getSlot(GRID_SIZE_SLOT);
         Slot numberOfShipsSlot = intent.getSlot(NUMBER_OF_SHIPS_SLOT);
 
+        //TODO: call the game: create a game with the given parameters. In here, we know that we have all the parameters. We might want to be able to create a game, give the parameters one by one, then call something like "isReadyToBeLaunched" then launching it
+
         return null;
     }
 
     public static SpeechletResponse handleParameterGiven(Intent intent) {
+        //TODO: call the game: pass the parameters to the instance of the game. If the game has everything, launch the game (we can suppose that the user might say only one parameter at a time)
+
         return null;
     }
 
     public static SpeechletResponse handleFireCoordinatesGiven(Intent intent) {
+        //TODO: call to the game: I am firing at x, y (need to create a Coordinates class)
+
         return null;
     }
 
     public static SpeechletResponse handleFireResultGivent(Intent intent) {
+        //TODO: call the game: give true or false, to say that Alexa hit or missed.
+
         Slot hitOrMissSlotSlot = intent.getSlot(HIT_OR_MISS_SLOT);
         if (hitOrMissSlotSlot != null && hitOrMissSlotSlot.getValue() != null) {
             String speechOutput = "You said that you " + hitOrMissSlotSlot.getValue();
