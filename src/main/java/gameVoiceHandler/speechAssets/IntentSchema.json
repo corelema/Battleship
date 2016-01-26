@@ -1,13 +1,78 @@
 {
   "intents": [
     {
-      "intent": "MyColorIsIntent",
+      "intent": "startQuickGameIntent"
+    },
+    {
+      "intent": "startAdvancedGameIntent"
+    },
+    {
+      "intent": "parameterSizeOfGridIntent",
       "slots": [
         {
-          "name": "Color",
-          "type": "LIST_OF_COLORS"
+          "name": "gridSize",
+          "type": "AMAZON.NUMBER"
         }
       ]
+    },
+    {
+      "intent": "parameterNumberOfShipsIntent",
+      "slots": [
+        {
+          "name": "numberOfShips",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "startAdvancedGameWithParametersIntent",
+      "slots": [
+        {
+          "name": "gridSize",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "numberOfShips",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "answerHitOrMissIntent",
+      "slots": [
+        {
+          "name": "hitOrMiss",
+          "type": "ATTACK_RESULT"
+        }
+        ]
+    },
+    {
+      "intent": "fireAtXAndYIntent",
+      "slots": [
+        {
+          "name": "line",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "column",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "oneFirePosition",
+      "slots": [
+        {
+          "name": "lineOrColumn",
+          "type": "AMAZON.NUMBER"
+        }
+        ]
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
     },
     {
       "intent": "WhatsMyColorIntent"

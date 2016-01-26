@@ -13,7 +13,6 @@ public class BattleshipSpeechlet implements Speechlet {
 
     @Override
     public void onSessionStarted(SessionStartedRequest sessionStartedRequest, Session session) throws SpeechletException {
-
     }
 
     @Override
@@ -32,19 +31,19 @@ public class BattleshipSpeechlet implements Speechlet {
         if ("startQuickGameIntent".equals(intentName)) {
             return OrdersTranslator.handleQuickGameAsked();
         } else if ("startAdvancedGameIntent".equals(intentName)) {
-            return null;
-        } else if ("parameterSizeOfGridIntent".equals(intentName)) {
-            return null;
-        } else if ("parameterNumberOfShipsIntent".equals(intentName)) {
-            return null;
+            return OrdersTranslator.handleAdvancedGameAsked();
         } else if ("startAdvancedGameWithParametersIntent".equals(intentName)) {
-            return null;
+            return OrdersTranslator.handleAdvancedGameAsked(intent);
+        } else if ("parameterSizeOfGridIntent".equals(intentName)) {
+            return OrdersTranslator.handleParameterGiven(intent);
+        } else if ("parameterNumberOfShipsIntent".equals(intentName)) {
+            return OrdersTranslator.handleParameterGiven(intent);
         } else if ("answerHitOrMissIntent".equals(intentName)) {
-            return null;
+            return OrdersTranslator.handleFireResultGivent(intent);
         } else if ("fireAtXAndYIntent".equals(intentName)) {
-            return null;
+            return OrdersTranslator.handleFireCoordinatesGiven(intent);
         } else if ("oneFirePosition".equals(intentName)) {
-            return null;
+            return OrdersTranslator.handleFireCoordinatesGiven(intent);
         } else if ("AMAZON.HelpIntent".equals(intentName)) {
             return OrdersTranslator.handleHelpAsked();
         } else if ("AMAZON.StopIntent".equals(intentName)) {

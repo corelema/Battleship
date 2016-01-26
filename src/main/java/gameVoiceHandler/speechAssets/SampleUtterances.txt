@@ -1,11 +1,22 @@
-MyColorIsIntent  my color is {Color}
-MyColorIsIntent  my favorite color is {Color}
-WhatsMyColorIntent whats my color
-WhatsMyColorIntent what is my color
-WhatsMyColorIntent say my color
-WhatsMyColorIntent tell me my color
-WhatsMyColorIntent whats my favorite color
-WhatsMyColorIntent what is my favorite color
-WhatsMyColorIntent say my favorite color
-WhatsMyColorIntent tell me my favorite color
-WhatsMyColorIntent tell me what my favorite color is
+startQuickGameIntent start a quick game
+startQuickGameIntent quick game
+startQuickGameIntent game
+startAdvancedGameIntent start and advanced game
+
+parameterSizeOfGridIntent grid size {gridSize}
+parameterSizeOfGridIntent grid of size {gridSize}
+parameterSizeOfGridIntent create grid size {gridSize}
+parameterSizeOfGridIntent create grid of size {gridSize}
+parameterSizeOfGridIntent create a grid size {gridSize}
+parameterSizeOfGridIntent create a grid of size {gridSize}
+parameterSizeOfGridIntent create a {gridSize} grid
+
+parameterNumberOfShipsIntent {numberOfShips} ships
+
+startAdvancedGameWithParametersIntent grid size of {gridSize} and {numberOfShips} ships
+
+answerHitOrMissIntent you {hitOrMiss}
+
+fireAtXAndYIntent fire at {line} {column}
+
+oneFirePosition fire at {lineOrColumn}
