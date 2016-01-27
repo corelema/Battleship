@@ -1,7 +1,23 @@
 startQuickGameIntent start a quick game
+startQuickGameIntent start quick game
 startQuickGameIntent quick game
+startQuickGameIntent game quick
 startQuickGameIntent game
-startAdvancedGameIntent start and advanced game
+startQuickGameIntent launch a quick game
+startQuickGameIntent launch quick game
+
+startAdvancedGameIntent start an advanced game
+startAdvancedGameIntent start advanced game
+startAdvancedGameIntent advanced game
+startAdvancedGameIntent game advanced
+startAdvancedGameIntent launch an advanced game
+startAdvancedGameIntent launch advanced game
+
+startAdvancedGameWithParametersIntent grid size of {gridSize} and {numberOfShips} ships
+startAdvancedGameWithParametersIntent grid {gridSize} and {numberOfShips} ships
+startAdvancedGameWithParametersIntent grid {gridSize} ships {numberOfShips}
+startAdvancedGameWithParametersIntent give me a grid of {gridSize} and {numberOfShips} ships
+startAdvancedGameWithParametersIntent give me grid of {gridSize} and {numberOfShips} ships
 
 parameterSizeOfGridIntent grid size {gridSize}
 parameterSizeOfGridIntent grid of size {gridSize}
@@ -10,13 +26,30 @@ parameterSizeOfGridIntent create grid of size {gridSize}
 parameterSizeOfGridIntent create a grid size {gridSize}
 parameterSizeOfGridIntent create a grid of size {gridSize}
 parameterSizeOfGridIntent create a {gridSize} grid
+parameterSizeOfGridIntent use a grid of {gridSize}
+parameterSizeOfGridIntent use grids {gridSize}
 
 parameterNumberOfShipsIntent {numberOfShips} ships
-
-startAdvancedGameWithParametersIntent grid size of {gridSize} and {numberOfShips} ships
+parameterNumberOfShipsIntent ships {numberOfShips}
+parameterNumberOfShipsIntent ships number {numberOfShips}
+parameterNumberOfShipsIntent create {numberOfShips} ships
+parameterNumberOfShipsIntent create a number of ships of {numberOfShips}
+parameterNumberOfShipsIntent create number of ships of {numberOfShips}
+parameterNumberOfShipsIntent create a number of ships {numberOfShips}
+parameterNumberOfShipsIntent create number of ships {numberOfShips}
+parameterNumberOfShipsIntent create ships {numberOfShips}
+parameterNumberOfShipsIntent create ships {numberOfShips}
+parameterNumberOfShipsIntent use {numberOfShips} ships
 
 answerHitOrMissIntent you {hitOrMiss}
+answerHitOrMissIntent {hitOrMiss}
+answerHitOrMissIntent Ok, you {hitOrMiss}
+answerHitOrMissIntent I think you {hitOrMiss}
 
 fireAtXAndYIntent fire at {line} {column}
+fireAtXAndYIntent {line} {column}
+
+fireAtLetterAndNumberIntent fire at {lineLetter} {columnNumber}
+fireAtLetterAndNumberIntent {lineLetter} {columnNumber}
 
 oneFirePosition fire at {lineOrColumn}
