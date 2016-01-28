@@ -9,16 +9,19 @@ import java.util.List;
 public class StateManager {
     private static StateManager instance = null;
 
-    private boolean isKindOfGameChosen;
-    private boolean isGameStarted;
     private int gridSize;
     private int numberOfShips;
 
+    private VoiceState voiceState;
+    private TurnState turnState;
+
+
     private StateManager() {
-        isKindOfGameChosen = false;
-        isGameStarted = false;
         gridSize = -1;
         numberOfShips = -1;
+        voiceState = VoiceState.INITIALIZATION;
+        turnState = TurnState.PLAYER;
+
     }
 
     public static StateManager getInstance() {
@@ -32,12 +35,22 @@ public class StateManager {
         return (gridSize > 0 && numberOfShips > 0);
     }
 
-    public void startGame() {
-        isGameStarted = true;
+    public void startQuickGame() {
+        this.gridSize = 3;
+        this.numberOfShips = 1;
+        voiceState = VoiceState.QUICK_GAME_STARTED;
+    }
+
+    public void advancedGameAsked() {
+        voiceState = VoiceState.ADVANCED_GAME_ASKED;
+    }
+
+    public void startAdvancedGame() {
+        voiceState = VoiceState.ADVANCED_GAME_STARTED;
     }
 
     public boolean isGamesStarted(){
-        return isGameStarted;
+        return (voiceState == VoiceState.QUICK_GAME_STARTED || voiceState == VoiceState.ADVANCED_GAME_STARTED);
     }
 
     public String missingParametersSentence() {
@@ -84,5 +97,21 @@ public class StateManager {
 
     public void setNumberOfShips(int numberOfShips) {
         this.numberOfShips = numberOfShips;
+    }
+
+    public VoiceState getVoiceState() {
+        return voiceState;
+    }
+
+    public void setVoiceState(VoiceState voiceState) {
+        this.voiceState = voiceState;
+    }
+
+    public TurnState getTurnState() {
+        return turnState;
+    }
+
+    public void setTurnState(TurnState turnState) {
+        this.turnState = turnState;
     }
 }
