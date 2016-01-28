@@ -26,14 +26,18 @@ public class OrdersTranslator {
 
     private static String lastQuestion = "Oops. It seems that there is a bug";
 
+    private static int x = -1, y = -1;
+
     public static SpeechletResponse handleQuickGameAsked() {
-        if (!StateManager.getInstance().isGamesStarted()) {
+        if (StateManager.getInstance().getVoiceState() == VoiceState.INITIALIZATION) { //Safety, shouldn't be necessary
+            StateManager.getInstance().startQuickGame();
 
             //TODO: call the game:  to create a 3 by 3 game with one ship of size 2
 
-            String speechOutput = String.format(Speeches.QUICK_GAME_LAUNCH, 3, 3);
+            String speechOutput = startGameSpeech() + Speeches.PROMPT_LINE_COLUMN;
 
             String repromptText = Speeches.PROMPT_LINE_COLUMN;
+            lastQuestion = repromptText;
 
             return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
         } else {
@@ -44,10 +48,11 @@ public class OrdersTranslator {
 
     public static SpeechletResponse handleAdvancedGameAsked() {
         if (!StateManager.getInstance().isGamesStarted()) {
-
+            StateManager.getInstance().advancedGameAsked();
             String speechOutput = Speeches.ADVANCED_GAME_LAUNCH + Speeches.ADVANCED_GAME_PARAMETERS_PROMPT;
 
             String repromptText = Speeches.ADVANCED_GAME_PARAMETERS_PROMPT;
+            lastQuestion = repromptText;
 
             return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
         } else {
@@ -66,7 +71,7 @@ public class OrdersTranslator {
                 StateManager.getInstance().setNumberOfShips(Integer.parseInt(numberOfShipsSlot.getValue()));
             }
         } catch (NumberFormatException e) {
-            String speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+            String speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER + Speeches.REPEAT;
             return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
         }
 
@@ -100,7 +105,7 @@ public class OrdersTranslator {
 
         if (StateManager.getInstance().isGameReadyToBeStarted()) {
             //TODO: call the game: pass the parameters to the instance of the game. If the game has everything, launch the game (we can suppose that the user might say only one parameter at a time)
-            StateManager.getInstance().startGame();
+            StateManager.getInstance().startAdvancedGame();
             speechText += String.format(Speeches.GAME_START, StateManager.getInstance().getGridSize(), StateManager.getInstance().getNumberOfShips()) + Speeches.YOUR_TURN;
         } else {
             if (StateManager.getInstance().isGridSizeCorrect()) {
@@ -115,7 +120,7 @@ public class OrdersTranslator {
 
     /**
      * handles two fire coordinates given at a time
-     * the parameter can be either the slots:
+     * the parameters can be either the slots:
      * line -> AMAZON.NUMBER
      * column -> AMAZON.NUMBER
      * OR
@@ -123,61 +128,149 @@ public class OrdersTranslator {
      * columnNumber -> AMAZON.NUMBER
      * */
     public static SpeechletResponse handleTwoFireCoordinatesGiven(Intent intent) {
-        Slot lineSlot = intent.getSlot(LINE_SLOT);
-        Slot columnSlot = intent.getSlot(COLUMN_SLOT);
-        Slot lineLetterSlot = intent.getSlot(LINE_LETTER_SLOT);
-        Slot columnNumberSlot = intent.getSlot(COLUMN_NUMBER_SLOT);
+        if (StateManager.getInstance().getTurnState() == TurnState.PLAYER) {
+            Slot lineSlot = intent.getSlot(LINE_SLOT);
+            Slot columnSlot = intent.getSlot(COLUMN_SLOT);
+            Slot lineLetterSlot = intent.getSlot(LINE_LETTER_SLOT);
+            Slot columnNumberSlot = intent.getSlot(COLUMN_NUMBER_SLOT);
 
-        int x = -1, y = -1;
-        String speechText = "";
+            String speechText = "";
 
-        try {
-            if (lineSlot != null && columnSlot != null) {
-                x = Integer.parseInt(lineSlot.getValue());
-                y = Integer.parseInt(columnSlot.getValue());
-                speechText = String.format(Speeches.YOU_FIRE, x, y);
-            } else if (lineLetterSlot != null && columnNumberSlot != null) {
-                String givenChar = lineLetterSlot.getValue();
-                x = givenChar.toCharArray()[0] - 'a' + 1;
-                if (x < 0) {
-                    x = givenChar.toCharArray()[0] - 'A' + 1;
+            try {
+                if (lineSlot != null && columnSlot != null) {
+                    x = Integer.parseInt(lineSlot.getValue());
+                    y = Integer.parseInt(columnSlot.getValue());
+                } else if (lineLetterSlot != null && columnNumberSlot != null) {
+                    String givenChar = lineLetterSlot.getValue();
+                    x = givenChar.toCharArray()[0] - 'a' + 1;
+                    if (x < 0) {
+                        x = givenChar.toCharArray()[0] - 'A' + 1;
+                    }
+                    y = Integer.parseInt(columnNumberSlot.getValue());
+                } else {
+                    return SpeechesGenerator.newTellResponse(Speeches.ERROR);
                 }
-                y = Integer.parseInt(columnNumberSlot.getValue());
-                speechText = String.format(Speeches.YOU_FIRE, x, y);
-            } else {
-                return SpeechesGenerator.newTellResponse(Speeches.ERROR);
+            } catch (NumberFormatException e) {
+                speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+                return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+            } catch (Exception e) {
+                speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+                return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
             }
-        } catch (NumberFormatException e) {
-            speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+
+            speechText += fire(x, y);
+
             return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
-        } catch (Exception e) {
-            speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+        } else {
+            String speechOutput = Speeches.NOT_YOUR_TURN + lastQuestion;
+            return SpeechesGenerator.newAskResponse(speechOutput, false, lastQuestion, false);
+        }
+    }
+
+    /**
+     * handles one fire coordinates given at a time
+     * the parameter can be either the slot:
+     * lineOrColumn -> AMAZON.NUMBER
+     * OR
+     * lineLetter -> LETTERS
+     * */
+    public static SpeechletResponse handleOneFireCoordinatesGiven(Intent intent) {
+        if (StateManager.getInstance().getTurnState() == TurnState.PLAYER) {
+            Slot lineLetterSlot = intent.getSlot(LINE_LETTER_SLOT);
+            Slot lineOrColumnSlot = intent.getSlot(LINE_OR_COLUMN_SLOT);
+
+            int z = -1;
+
+            String speechText = "";
+
+            try {
+                if (lineOrColumnSlot != null) {
+                    z = Integer.parseInt(lineLetterSlot.getValue());
+                    speechText = String.format(Speeches.YOU_GAVE_ONE_COORDINATE, z);
+                } else if (lineLetterSlot != null) {
+                    String givenChar = lineLetterSlot.getValue();
+                    z = givenChar.toCharArray()[0] - 'a' + 1;
+                    if (z < 0) {
+                        z = givenChar.toCharArray()[0] - 'A' + 1;
+                    }
+                    speechText = String.format(Speeches.YOU_GAVE_ONE_COORDINATE, z);
+                } else {
+                    return SpeechesGenerator.newTellResponse(Speeches.ERROR);
+                }
+            } catch (NumberFormatException e) {
+                speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+                return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+            } catch (Exception e) {
+                speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+                return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+            }
+
+            if (x == -1) {
+                x = z;
+            } else {
+                if (y == -1) {
+                    y = z;
+                } else {
+                    speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+                    return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+                }
+
+                speechText += fire(x, y);
+            }
             return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+        } else {
+            String speechOutput = Speeches.NOT_YOUR_TURN + lastQuestion;
+            return SpeechesGenerator.newAskResponse(speechOutput, false, lastQuestion, false);
+        }
+    }
+
+    private static String fire(int x, int y) {
+        String speechText = String.format(Speeches.YOU_FIRE, x, y);
+
+        //TODO: call to the game: I am firing at x, y (need to create a Coordinates class)
+
+        if (true) {
+
+
+            StateManager.getInstance().setTurnState(TurnState.ALEXA);
         }
 
-        //TODO: call to the game: I am firing at x, y (need to create a Coordinates class)
+        x = -1;
+        y = -1;
 
-        return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+        return speechText;
     }
 
-    public static SpeechletResponse handleOneFireCoordinatesGiven(Intent intent) {
-        //TODO: call to the game: I am firing at x, y (need to create a Coordinates class)
+    /**
+     * handles two fire coordinates given at a time
+     * */
+    public static SpeechletResponse handleFireResultGiven(Intent intent) {
+        if (StateManager.getInstance().getTurnState() == TurnState.PLAYER) {
+            Slot hitOrMissSlotSlot = intent.getSlot(HIT_OR_MISS_SLOT);
 
-        return null;
-    }
+            String speechOutput = "";
+            if (hitOrMissSlotSlot != null && hitOrMissSlotSlot.getValue() != null) {
+                boolean isHit = hitOrMissSlotSlot.getValue().equals("hit");
 
-    public static SpeechletResponse handleFireResultGivent(Intent intent) {
-        //TODO: call the game: give true or false, to say that Alexa hit or missed.
+                //TODO: call the game: give true or false, to say that Alexa hit or missed.
 
-        Slot hitOrMissSlotSlot = intent.getSlot(HIT_OR_MISS_SLOT);
-        if (hitOrMissSlotSlot != null && hitOrMissSlotSlot.getValue() != null) {
-            String speechOutput = "You said that you " + hitOrMissSlotSlot.getValue();
+                if (isHit) {
+                    speechOutput = "Haha, I hit you! ";
+                } else {
+                    speechOutput = "Damn, I will do better next time! ";
+                }
 
-            String repromptText = "Sorry, my abilities are limited for now.";
+                String repromptText = "Sorry, my abilities are limited for now.";
 
-            return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
+                StateManager.getInstance().setTurnState(TurnState.PLAYER);
+
+                return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
+            } else {
+                return handleHelpAsked();
+            }
         } else {
-            return handleHelpAsked();
+            String speechOutput = Speeches.WAS_YOUR_TURN + lastQuestion;
+            return SpeechesGenerator.newAskResponse(speechOutput, false, lastQuestion, false);
         }
     }
 
@@ -208,9 +301,16 @@ public class OrdersTranslator {
     }
 
     public static SpeechletResponse handleUnrecognizedIntent() {
-        String speechOutput = Speeches.IM_SORRY + Speeches.NOT_RECOGNIZED;
+        String speechOutput = Speeches.IM_SORRY + Speeches.NOT_RECOGNIZED + Speeches.REPEAT;
         String repromptText = Speeches.NOT_RECOGNIZED;
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
+    }
+
+    private static String startGameSpeech() {
+        StateManager stateManager = StateManager.getInstance();
+        String speechOutput = String.format(Speeches.GAME_LAUNCH, stateManager.getGridSize(), stateManager.getGridSize(), stateManager.getNumberOfShips());
+
+        return speechOutput;
     }
 }

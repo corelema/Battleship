@@ -7,13 +7,23 @@ public class Speeches {
     //WELCOMING
     public static final String WELCOME = "Welcome to Battleship! ";
 
+    //FILTER REQUESTS
+    public static final String NO_INITIALIZATION = "You cannot choose the kind of game after you already started one. "
+            + "If you want to play another game, you have to first end this session by saying stop";
+    public static final String NO_ADVANCED_GAME_SETUP = "You cannot setup the game after you already started one. "
+            + "If you want to play another game, you have to first end this session by saying stop";
+    public static final String NO_FIRE_YET = "Not so quickly cow-boy! "
+            + "Before firing you have to choose a game mode and complete the setup";
+
     //DIDN'T UNDERSTAND
     public static final String IM_SORRY = "I'm sorry, ";
     public static final String NOT_RECOGNIZED = "I didn't understand what you said, could you repeat please? ";//TODO: this is generic, we should reprompt the last thing asked.
     public static final String INCORRECT_NUMBER = "I couldn't understand the given number, could you repeat please? ";
+    public static final String INCORRECT_HIT_MISS = "I couldn't understand whether I hit or missed";
+    public static final String REPEAT = ", could you repeat please? ";
 
     //QUICK GAME
-    public static final String QUICK_GAME_LAUNCH = "A %d by %d game has been created for you. ";
+    public static final String GAME_LAUNCH = "A %d by %d game with %d ships has been created for you. ";
     public static final String GAME_ALREADY_STARTED = "The game has already began, "
             + "if you wish to start a new game, you may end this one first by saying stop. ";
 
@@ -33,7 +43,11 @@ public class Speeches {
     public static final String PROMPT_LINE_ONLY= "I got the column, could you provide a line now? ";
     public static final String PROMPT_COLUMN_ONLY = "I got the line, could you provide a column now? ";
 
-    public static final String YOU_FIRE = "You are firing at line %d and column %d";
+    public static final String YOU_GAVE_ONE_COORDINATE = "You gave the coordinate %d. ";
+    public static final String YOU_FIRE = "You are firing at line %d and column %d. ";
+
+    public static final String NOT_YOUR_TURN = "This is not your turn, you sneaky! ";
+    public static final String WAS_YOUR_TURN = "This is your turn, unless you want me to bomb you twice in a row! ";
 
     public static final String ALREADY_HIT = "It seems that you already hit this position, could you give me another one? ";
     public static final String HIT = "That's a hit! but don't get cocky cow-boy... ";
