@@ -4,16 +4,22 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.oracle.tools.packager.Log;
+import gameData.AttackResponse;
+import gameData.GameManager;
+import gameData.GameParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.plaf.nimbus.State;
+import java.awt.*;
 
 /**
  * Created by corentinl on 1/23/16.
  */
 public class OrdersTranslator {
     private static final Logger log = LoggerFactory.getLogger(OrdersTranslator.class);
+
+    private static GameManager gameManager;
 
     private static final String GRID_SIZE_SLOT = "gridSize";
     private static final String NUMBER_OF_SHIPS_SLOT = "numberOfShips";
@@ -31,6 +37,7 @@ public class OrdersTranslator {
     public static SpeechletResponse handleQuickGameAsked() {
         if (StateManager.getInstance().getVoiceState() == VoiceState.INITIALIZATION) { //Safety, shouldn't be necessary
             StateManager.getInstance().startQuickGame();
+            initializeGameManager();
 
             //TODO: call the game:  to create a 3 by 3 game with one ship of size 2
 
@@ -225,20 +232,36 @@ public class OrdersTranslator {
     }
 
     private static String fire(int x, int y) {
-        String speechText = String.format(Speeches.YOU_FIRE, x, y);
+        String speechOutput = String.format(Speeches.YOU_FIRE, x, y);
+        String repromptText = "";
 
         //TODO: call to the game: I am firing at x, y (need to create a Coordinates class)
 
-        if (true) {
+        AttackResponse attackResponse = gameManager.fireAtPoint(new Point(x, y));
 
+        if (attackResponse.isCanAttack()) {
+            if (attackResponse.isAttackSuccessful()) {
+                speechOutput += Speeches.HIT;
+            } else {
+                speechOutput += Speeches.MISS;
+            }
 
-            StateManager.getInstance().setTurnState(TurnState.ALEXA);
+            Point alexaFire = gameManager.getNextAlexaHit();
+
+            repromptText = String.format(Speeches.MY_TURN, alexaFire.getX(), alexaFire.getY());
+
+            lastQuestion = repromptText;
+            speechOutput += repromptText;
+
+            //StateManager.getInstance().setTurnState(TurnState.ALEXA);
+        } else {
+            speechOutput += Speeches.NOT_YOUR_TURN + lastQuestion;
         }
 
         x = -1;
         y = -1;
 
-        return speechText;
+        return speechOutput;
     }
 
     /**
@@ -305,6 +328,14 @@ public class OrdersTranslator {
         String repromptText = Speeches.NOT_RECOGNIZED;
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
+    }
+
+    private static void initializeGameManager() {
+        StateManager stateManager = StateManager.getInstance();
+        int gridSize = stateManager.getGridSize();
+        int numberOfShips = stateManager.getNumberOfShips();
+        GameParameters gameParameters = new GameParameters(gridSize, gridSize, 1, numberOfShips);
+        gameManager = new GameManager(gameParameters);
     }
 
     private static String startGameSpeech() {

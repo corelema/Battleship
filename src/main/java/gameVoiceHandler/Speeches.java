@@ -38,6 +38,7 @@ public class Speeches {
     //GAME TURNS
     public static final String GAME_START = "I am ready, let's start the game with a grid size of %d and %d ships. ";
     public static final String YOUR_TURN = "It's your turn! Please provide me a line and a column. ";
+    public static final String MY_TURN = "It's my turn now! I am firing at line %d, and column %d. ";
 
     public static final String PROMPT_LINE_COLUMN = "It's your turn, please provide a line and a column where you want to hit. ";
     public static final String PROMPT_LINE_ONLY= "I got the column, could you provide a line now? ";
@@ -50,7 +51,8 @@ public class Speeches {
     public static final String WAS_YOUR_TURN = "This is your turn, unless you want me to bomb you twice in a row! ";
 
     public static final String ALREADY_HIT = "It seems that you already hit this position, could you give me another one? ";
-    public static final String HIT = "That's a hit! but don't get cocky cow-boy... ";
+    public static final String HIT = "That's a hit! ";
+    //public static final String HIT = "That's a hit! but don't get cocky cow-boy... ";
     public static final String MISS = "You lamentably missed! ";
 
     //HELP
