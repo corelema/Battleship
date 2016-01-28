@@ -17,9 +17,25 @@ public class GameManager {
         initGame();
     }
 
-    public void initGame() {
+    private void initGame() {
         initGameBoards();
         initBattleShips();
+    }
+
+    public AttackResponse fireAtPoint(Point tile) {
+        return null;
+    }
+
+    public Point getNextAlexaHit() {
+        return null;
+    }
+
+    public void didAlexaHit(boolean wasHit) {
+
+    }
+
+    public boolean isGameOver() {
+        return false;
     }
 
     private void initGameBoards() {
