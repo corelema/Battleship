@@ -12,9 +12,11 @@ public class GameManager {
     private Board playerTwoBoard;  // Alexa for now
 
     private Point alexasLastAttackPoint;
+    private int numberOfHits;
 
     public GameManager(GameParameters parameters) {
-        this.parameters = parameters;
+        this.parameters   = parameters;
+        this.numberOfHits = 0;
 
         initGame();
     }
@@ -79,11 +81,13 @@ public class GameManager {
 
     public void didAlexaHit(boolean wasHit) {
         String status = wasHit ? Tile.BATTLESHIP_HIT_TILE : Tile.FIRED_UPON_TILE;
+        this.numberOfHits = wasHit ? this.numberOfHits + 1 : numberOfHits;
+
         this.playerOneBoard.updateTileStatus(status, this.alexasLastAttackPoint);
     }
 
     public boolean isGameOver() {
-        return (playerOneBoard.areAllBattleShipsSunk() || playerTwoBoard.areAllBattleShipsSunk());
+        return (playerOneBoard.areAllBattleShipsSunk() || playerTwoBoard.areAllBattleShipsSunk() || this.numberOfHits == 2);
     }
 
     private AttackResponse fireAtPoint(Point point, Board board) {
