@@ -30,19 +30,19 @@ public class BattleshipSpeechlet implements Speechlet {
         Intent intent = intentRequest.getIntent();
         String intentName = (intent != null) ? intent.getName() : null;
 
+        //TODO: check if the game is already started before calling the setup methods, and send an error message if it is
+        //TODO: check if the game is already started before calling the setup methods, and send an error message if it is
         if ("startQuickGameIntent".equals(intentName)) {
             return OrdersTranslator.handleQuickGameAsked();
         } else if ("startAdvancedGameIntent".equals(intentName)) {
             return OrdersTranslator.handleAdvancedGameAsked();
         } else if ("startAdvancedGameWithParametersIntent".equals(intentName)) {
             return OrdersTranslator.handleAdvancedGameAsked(intent);
-        } else if ("parameterSizeOfGridIntent".equals(intentName)) {
-            return OrdersTranslator.handleParameterGiven(intent);
-        } else if ("parameterNumberOfShipsIntent".equals(intentName)) {
+        } else if ("parameterSizeOfGridIntent".equals(intentName) || "parameterNumberOfShipsIntent".equals(intentName)) {
             return OrdersTranslator.handleParameterGiven(intent);
         } else if ("answerHitOrMissIntent".equals(intentName)) {
             return OrdersTranslator.handleFireResultGivent(intent);
-        } else if ("fireAtXAndYIntent".equals(intentName) || "fireAtLetterAndNumberIntent".equals(intent)) {
+        } else if ("fireAtXAndYIntent".equals(intentName) || "fireAtLetterAndNumberIntent".equals(intentName)) {
             return OrdersTranslator.handleTwoFireCoordinatesGiven(intent);
         } else if ("oneFirePosition".equals(intentName) || "oneFirePositionLetter".equals(intentName)) {
             return OrdersTranslator.handleOneFireCoordinatesGiven(intent);

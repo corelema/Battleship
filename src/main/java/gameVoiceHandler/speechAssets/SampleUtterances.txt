@@ -32,6 +32,9 @@ parameterSizeOfGridIntent use grids {gridSize}
 parameterNumberOfShipsIntent {numberOfShips} ships
 parameterNumberOfShipsIntent ships {numberOfShips}
 parameterNumberOfShipsIntent ships number {numberOfShips}
+parameterNumberOfShipsIntent number of ships of {numberOfShips}
+parameterNumberOfShipsIntent number of ships {numberOfShips}
+parameterNumberOfShipsIntent {numberOfShips} ships
 parameterNumberOfShipsIntent create {numberOfShips} ships
 parameterNumberOfShipsIntent create a number of ships of {numberOfShips}
 parameterNumberOfShipsIntent create number of ships of {numberOfShips}
@@ -43,13 +46,24 @@ parameterNumberOfShipsIntent use {numberOfShips} ships
 
 answerHitOrMissIntent you {hitOrMiss}
 answerHitOrMissIntent {hitOrMiss}
-answerHitOrMissIntent Ok, you {hitOrMiss}
 answerHitOrMissIntent I think you {hitOrMiss}
 
 fireAtXAndYIntent fire at {line} {column}
 fireAtXAndYIntent {line} {column}
+fireAtXAndYIntent fire at {line} and {column}
+fireAtXAndYIntent {line} and {column}
+fireAtXAndYIntent fire at line {line} column {column}
+fireAtXAndYIntent line {line} column {column}
+fireAtXAndYIntent fire at line {line} and column {column}
+fireAtXAndYIntent line {line} and column {column}
 
 fireAtLetterAndNumberIntent fire at {lineLetter} {columnNumber}
 fireAtLetterAndNumberIntent {lineLetter} {columnNumber}
+fireAtLetterAndNumberIntent fire at {lineLetter} and {columnNumber}
+fireAtLetterAndNumberIntent {lineLetter} and {columnNumber}
+fireAtLetterAndNumberIntent fire at line {lineLetter} column {columnNumber}
+fireAtLetterAndNumberIntent line {lineLetter} column {columnNumber}
+fireAtLetterAndNumberIntent fire at line {lineLetter} and column {columnNumber}
+fireAtLetterAndNumberIntent line {lineLetter} and column {columnNumber}
 
 oneFirePosition fire at {lineOrColumn}

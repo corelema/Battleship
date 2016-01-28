@@ -3,21 +3,28 @@ package gameVoiceHandler;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.SpeechletResponse;
+import com.oracle.tools.packager.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.plaf.nimbus.State;
 
 /**
  * Created by corentinl on 1/23/16.
  */
 public class OrdersTranslator {
+    private static final Logger log = LoggerFactory.getLogger(OrdersTranslator.class);
+
     private static final String GRID_SIZE_SLOT = "gridSize";
     private static final String NUMBER_OF_SHIPS_SLOT = "numberOfShips";
     private static final String HIT_OR_MISS_SLOT = "hitOrMiss";
     private static final String LINE_SLOT = "line";
     private static final String COLUMN_SLOT = "column";
+    private static final String LINE_LETTER_SLOT = "lineLetter";
+    private static final String COLUMN_NUMBER_SLOT = "columnNumber";
     private static final String LINE_OR_COLUMN_SLOT = "lineOrColumn";
 
     private static String lastQuestion = "Oops. It seems that there is a bug";
-    private static int gridSize = -1;
-    private static int numberOfShips = -1;
 
     public static SpeechletResponse handleQuickGameAsked() {
         if (!StateManager.getInstance().isGamesStarted()) {
@@ -55,8 +62,8 @@ public class OrdersTranslator {
 
         try {
             if (gridSizeSlot != null && numberOfShipsSlot != null) {
-                gridSize = Integer.parseInt(gridSizeSlot.getValue());
-                numberOfShips = Integer.parseInt(numberOfShipsSlot.getValue());
+                StateManager.getInstance().setGridSize(Integer.parseInt(gridSizeSlot.getValue()));
+                StateManager.getInstance().setNumberOfShips(Integer.parseInt(numberOfShipsSlot.getValue()));
             }
         } catch (NumberFormatException e) {
             String speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
@@ -65,34 +72,86 @@ public class OrdersTranslator {
 
         //TODO: call the game: create a game with the given parameters. In here, we know that we have all the parameters. We might want to be able to create a game, give the parameters one by one, then call something like "isReadyToBeLaunched" then launching it
 
-        return SpeechesGenerator.newTellResponse("This functionality is not yet implemented");
+        return SpeechesGenerator.newTellResponse(Speeches.NOT_IMPLEMENTED);
     }
 
+    /**
+     * handles one parameter given at a time
+     * the parameter can be in either of the slots:
+     * GRID_SIZE_SLOT
+     * NUMBER_OF_SHIPS_SLOT
+     * */
     public static SpeechletResponse handleParameterGiven(Intent intent) {
-        Integer parameterValue = null;
-        boolean parameterIsGrid = (intent.getSlot(GRID_SIZE_SLOT) != null);
-        Slot givenParameterSlot = parameterIsGrid ? intent.getSlot(GRID_SIZE_SLOT) : intent.getSlot(NUMBER_OF_SHIPS_SLOT);
-
+        String speechText = "";
         try {
-            if (givenParameterSlot != null) {
-                parameterValue = Integer.parseInt(givenParameterSlot.getValue());
+            if (intent.getSlot(GRID_SIZE_SLOT) != null) {
+                StateManager.getInstance().setGridSize(Integer.parseInt(intent.getSlot(GRID_SIZE_SLOT).getValue()));
+                speechText = Speeches.GRID_SIZE_GIVEN + StateManager.getInstance().getGridSize() + ". ";
+            } else if (intent.getSlot(NUMBER_OF_SHIPS_SLOT) != null) {
+                StateManager.getInstance().setNumberOfShips(Integer.parseInt(intent.getSlot(NUMBER_OF_SHIPS_SLOT).getValue()));
+                speechText = Speeches.NUMBER_OF_SHIPS_GIVEN + StateManager.getInstance().getNumberOfShips() + ". ";
+            } else {
+                return SpeechesGenerator.newTellResponse(Speeches.ERROR);
             }
         } catch (NumberFormatException e) {
-            String speechText = "Sorry, I did not hear the grid size. Please say again?";
+            speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
             return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
         }
 
-        String speechText = "You asked for a " + (parameterIsGrid ? "grid of size " : "number of ships of ") + parameterValue.toString();
+        if (StateManager.getInstance().isGameReadyToBeStarted()) {
+            //TODO: call the game: pass the parameters to the instance of the game. If the game has everything, launch the game (we can suppose that the user might say only one parameter at a time)
+            StateManager.getInstance().startGame();
+            speechText += String.format(Speeches.GAME_START, StateManager.getInstance().getGridSize(), StateManager.getInstance().getNumberOfShips()) + Speeches.YOUR_TURN;
+        } else {
+            if (StateManager.getInstance().isGridSizeCorrect()) {
+                speechText += Speeches.PROMPT_NUMBER_OF_SHIPS_ONLY;
+            } else {
+                speechText += Speeches.PROMPT_GRID_SIZE_ONLY;
+            }
+        }
+
         return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
-
-        //TODO: call the game: pass the parameters to the instance of the game. If the game has everything, launch the game (we can suppose that the user might say only one parameter at a time)
-
     }
 
+    /**
+     * handles two fire coordinates given at a time
+     * the parameter can be either the slots:
+     * line -> AMAZON.NUMBER
+     * column -> AMAZON.NUMBER
+     * OR
+     * lineLetter -> LETTERS
+     * columnNumber -> AMAZON.NUMBER
+     * */
     public static SpeechletResponse handleTwoFireCoordinatesGiven(Intent intent) {
+        Slot lineSlot = intent.getSlot(LINE_SLOT);
+        Slot columnSlot = intent.getSlot(COLUMN_SLOT);
+        Slot lineLetterSlot = intent.getSlot(LINE_LETTER_SLOT);
+        Slot columnNumberSlot = intent.getSlot(COLUMN_NUMBER_SLOT);
+
+        int x = -1, y = -1;
+        String speechText = "";
+
+        try {
+            if (lineSlot != null && columnSlot != null) {
+                x = Integer.parseInt(lineSlot.getValue());
+                y = Integer.parseInt(columnSlot.getValue());
+                speechText = String.format(Speeches.YOU_FIRE, x, y);
+            } else if (lineLetterSlot != null && columnNumberSlot != null) {
+                String givenChar = lineLetterSlot.getValue();
+                x = givenChar.toCharArray()[0] - 'a' + 1;
+                y = Integer.parseInt(columnNumberSlot.getValue());
+                speechText = String.format(Speeches.YOU_FIRE, x, y);
+            } else {
+                return SpeechesGenerator.newTellResponse(Speeches.ERROR);
+            }
+        } catch (NumberFormatException e) {
+            speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+            return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+        }
+
         //TODO: call to the game: I am firing at x, y (need to create a Coordinates class)
 
-        return null;
+        return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
     }
 
     public static SpeechletResponse handleOneFireCoordinatesGiven(Intent intent) {
