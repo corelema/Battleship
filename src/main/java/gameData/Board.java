@@ -10,6 +10,7 @@ public class Board {
     private Battleship[] battleships;
 
     public Board(int rows, int columns) {
+        this.tiles = new Tile[rows][columns];
         for (int x = 0; x < rows; x++) {
             for (int y = 0; y < columns; y++) {
                 this.tiles[x][y] = new Tile(x,y);
