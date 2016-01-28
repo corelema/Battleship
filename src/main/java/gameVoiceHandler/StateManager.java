@@ -31,6 +31,10 @@ public class StateManager {
         return instance;
     }
 
+    public static void reset() {
+        instance = new StateManager();
+    }
+
     public boolean isGameReadyToBeStarted() {
         return (gridSize > 0 && numberOfShips > 0);
     }
