@@ -139,12 +139,18 @@ public class OrdersTranslator {
             } else if (lineLetterSlot != null && columnNumberSlot != null) {
                 String givenChar = lineLetterSlot.getValue();
                 x = givenChar.toCharArray()[0] - 'a' + 1;
+                if (x < 0) {
+                    x = givenChar.toCharArray()[0] - 'A' + 1;
+                }
                 y = Integer.parseInt(columnNumberSlot.getValue());
                 speechText = String.format(Speeches.YOU_FIRE, x, y);
             } else {
                 return SpeechesGenerator.newTellResponse(Speeches.ERROR);
             }
         } catch (NumberFormatException e) {
+            speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+            return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+        } catch (Exception e) {
             speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
             return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
         }
