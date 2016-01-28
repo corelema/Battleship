@@ -22,37 +22,28 @@ public class GameManager {
         initBattleShips();
     }
 
-    public AttackResponse fireAtPoint(Point tile) {
-        return null;
-    }
-
-    public Point getNextAlexaHit() {
-        return null;
-    }
-
-    public void didAlexaHit(boolean wasHit) {
-
-    }
-
-    public boolean isGameOver() {
-        return false;
-    }
-
     private void initGameBoards() {
         this.playerOneBoard = new Board(parameters.getRows(), parameters.getColumns());
         this.playerTwoBoard = new Board(parameters.getRows(), parameters.getColumns());
     }
 
     private void initBattleShips() {
-        Battleship[] ships = new Battleship[parameters.getNumberOfBattleShips()];
-        for (int i = 0; i < parameters.getNumberOfBattleShips(); i++) {
-           ships[i] = this.generateBattleship();
-        }
+        playerOneBoard.setBattleShips(this.generateBattleShipsForPlayer());
+        playerTwoBoard.setBattleShips(this.generateBattleShipsForPlayer());
     }
 
-    private Battleship generateBattleship() {
+    private Battleship[] generateBattleShipsForPlayer() {
+        Battleship[] ships = new Battleship[parameters.getNumberOfBattleShips()];
+        for (int i = 0; i < parameters.getNumberOfBattleShips(); i++) {
+            ships[i] = this.generateBattleShip();
+        }
+
+        return ships;
+    }
+
+    private Battleship generateBattleShip() {
         Tile[] occupiedTiles = new Tile[Battleship.battleShipLength()];
-        Point startPoint     = this.randomlyGeneratedStartingPointForShip(occupiedTiles.length);
+        Point startPoint     = this.randomlyGeneratedPoint();
 
         // Will work on something fancy if time permits;
         for (int i = 0; i < occupiedTiles.length; i++) {
@@ -64,12 +55,28 @@ public class GameManager {
         return ship;
     }
 
-    private Point randomlyGeneratedStartingPointForShip(int length) {
+    private Point randomlyGeneratedPoint() {
         Random randomNumber = new Random();
 
         int startX = randomNumber.nextInt(this.parameters.getRows());
         int startY = randomNumber.nextInt(this.parameters.getColumns());
 
         return new Point(startX, startY);
+    }
+
+    public AttackResponse fireAtPoint(Point tile) {
+        return null;
+    }
+
+    public Point getNextAlexaHit() {
+        return this.randomlyGeneratedPoint();
+    }
+
+    public void didAlexaHit(boolean wasHit) {
+
+    }
+
+    public boolean isGameOver() {
+        return (playerOneBoard.areAllBattleShipsSunk() || playerTwoBoard.areAllBattleShipsSunk());
     }
 }

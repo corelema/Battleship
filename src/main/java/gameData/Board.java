@@ -35,6 +35,9 @@ public class Board {
 
             if (space.containsShip()) {
                 attackSuccessful = true;
+                space.setTileState(Tile.BATTLESHIP_HIT_TILE);
+            } else {
+                space.setTileState(Tile.FIRED_UPON_TILE);
             }
         }
 
@@ -45,5 +48,18 @@ public class Board {
         Tile space = this.tiles[attackPoint.x][attackPoint.y];
 
         space.setTileState(status);
+    }
+
+    public boolean areAllBattleShipsSunk() {
+        boolean allShipsSunk = true;
+
+        for (Battleship ship : battleships) {
+            if (!ship.isSunk()) {
+                allShipsSunk = false;
+                break;
+            }
+        }
+
+        return allShipsSunk;
     }
 }
