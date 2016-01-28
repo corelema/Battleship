@@ -26,8 +26,8 @@ public class Board {
         }
     }
 
-    public AttackResponse fireAtPoint(Point tile) {
-        Tile space = this.tiles[tile.x][tile.y];
+    public AttackResponse fireAtPoint(Point point) {
+        Tile space = this.tiles[point.x][point.y];
         boolean canAttack = false;
         boolean attackSuccessful = false;
 
@@ -54,7 +54,7 @@ public class Board {
     public boolean areAllBattleShipsSunk() {
         boolean allShipsSunk = true;
 
-        for (Battleship ship : battleships) {
+        for (Battleship ship : this.battleships) {
             if (!ship.isSunk()) {
                 allShipsSunk = false;
                 break;
