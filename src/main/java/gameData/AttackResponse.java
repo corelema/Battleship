@@ -8,7 +8,15 @@ public class AttackResponse {
     private boolean attackSuccessful;
 
     public AttackResponse(boolean canAttack, boolean attackSuccessful) {
-        canAttack = canAttack;
-        attackSuccessful = attackSuccessful;
+        this.canAttack = canAttack;
+        this.attackSuccessful = attackSuccessful;
+    }
+
+    public boolean isCanAttack() {
+        return canAttack;
+    }
+
+    public boolean isAttackSuccessful() {
+        return attackSuccessful;
     }
 }

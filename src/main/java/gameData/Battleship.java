@@ -9,7 +9,7 @@ public class Battleship {
     private Tile[] occupiedTiles;
 
     public Battleship(Tile[] occupiedTiles) {
-        occupiedTiles = occupiedTiles;
+        this.occupiedTiles = occupiedTiles;
     }
 
     public boolean isSunk() {
@@ -25,5 +25,9 @@ public class Battleship {
 
     public Tile[] getOccupiedTiles() {
         return occupiedTiles;
+    }
+
+    static public int battleShipLength() {
+        return 2;
     }
 }

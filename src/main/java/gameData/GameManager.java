@@ -1,6 +1,7 @@
 package gameData;
 
 import java.awt.*;
+import java.util.Random;
 
 /**
  * Created by paul.moon on 1/28/16.
@@ -11,7 +12,7 @@ public class GameManager {
     private Board playerTwoBoard;
 
     public GameManager(GameParameters parameters) {
-        parameters = parameters;
+        this.parameters = parameters;
 
         initGame();
     }
@@ -21,12 +22,54 @@ public class GameManager {
         initBattleShips();
     }
 
+    private void initGameBoards() {
+        this.playerOneBoard = new Board(parameters.getRows(), parameters.getColumns());
+        this.playerTwoBoard = new Board(parameters.getRows(), parameters.getColumns());
+    }
+
+    private void initBattleShips() {
+        playerOneBoard.setBattleShips(this.generateBattleShipsForPlayer());
+        playerTwoBoard.setBattleShips(this.generateBattleShipsForPlayer());
+    }
+
+    private Battleship[] generateBattleShipsForPlayer() {
+        Battleship[] ships = new Battleship[parameters.getNumberOfBattleShips()];
+        for (int i = 0; i < parameters.getNumberOfBattleShips(); i++) {
+            ships[i] = this.generateBattleShip();
+        }
+
+        return ships;
+    }
+
+    private Battleship generateBattleShip() {
+        Tile[] occupiedTiles = new Tile[Battleship.battleShipLength()];
+        Point startPoint     = this.randomlyGeneratedPoint();
+
+        // Will work on something fancy if time permits;
+        for (int i = 0; i < occupiedTiles.length; i++) {
+            occupiedTiles[i] = new Tile(startPoint.x, startPoint.y++);
+        }
+
+        Battleship ship = new Battleship(occupiedTiles);
+
+        return ship;
+    }
+
+    private Point randomlyGeneratedPoint() {
+        Random randomNumber = new Random();
+
+        int startX = randomNumber.nextInt(this.parameters.getRows());
+        int startY = randomNumber.nextInt(this.parameters.getColumns());
+
+        return new Point(startX, startY);
+    }
+
     public AttackResponse fireAtPoint(Point tile) {
         return null;
     }
 
     public Point getNextAlexaHit() {
-        return null;
+        return this.randomlyGeneratedPoint();
     }
 
     public void didAlexaHit(boolean wasHit) {
@@ -34,28 +77,6 @@ public class GameManager {
     }
 
     public boolean isGameOver() {
-        return false;
-    }
-
-    private void initGameBoards() {
-        playerOneBoard = new Board(parameters.getRows(), parameters.getColumns());
-        playerTwoBoard = new Board(parameters.getRows(), parameters.getColumns());
-    }
-
-    private void initBattleShips() {
-        for (int i = 0; i < parameters.getNumberOfBattleShips(); i++) {
-
-        }
-    }
-
-//    private Battleship generateBattleship() {
-//
-//        Battleship ship = new Battleship();
-//
-//        return ship;
-//    }
-
-    private int battleShipLength() {
-        return 2;
+        return (playerOneBoard.areAllBattleShipsSunk() || playerTwoBoard.areAllBattleShipsSunk());
     }
 }
