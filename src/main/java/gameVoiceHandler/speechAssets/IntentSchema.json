@@ -60,6 +60,19 @@
       ]
     },
     {
+      "intent": "fireAtLetterAndNumberIntent",
+      "slots": [
+        {
+          "name": "lineLetter",
+          "type": "LETTERS"
+        },
+        {
+          "name": "columnNumber",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
       "intent": "oneFirePosition",
       "slots": [
         {
@@ -67,6 +80,15 @@
           "type": "AMAZON.NUMBER"
         }
         ]
+    },
+    {
+      "intent": "oneFirePositionLetter",
+      "slots": [
+        {
+          "name": "lineLetter",
+          "type": "LETTERS"
+        }
+      ]
     },
     {
       "intent": "AMAZON.HelpIntent"

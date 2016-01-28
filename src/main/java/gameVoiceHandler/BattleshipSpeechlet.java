@@ -17,7 +17,9 @@ public class BattleshipSpeechlet implements Speechlet {
 
     @Override
     public SpeechletResponse onLaunch(LaunchRequest launchRequest, Session session) throws SpeechletException {
-        return null;
+        log.info("onLaunch requestId={}, sessionId={}", launchRequest.getRequestId(),
+                session.getSessionId());
+        return getWelcomeResponse();
     }
 
     @Override
@@ -28,22 +30,22 @@ public class BattleshipSpeechlet implements Speechlet {
         Intent intent = intentRequest.getIntent();
         String intentName = (intent != null) ? intent.getName() : null;
 
+        //TODO: check if the game is already started before calling the setup methods, and send an error message if it is
+        //TODO: check if the game is already started before calling the setup methods, and send an error message if it is
         if ("startQuickGameIntent".equals(intentName)) {
             return OrdersTranslator.handleQuickGameAsked();
         } else if ("startAdvancedGameIntent".equals(intentName)) {
             return OrdersTranslator.handleAdvancedGameAsked();
         } else if ("startAdvancedGameWithParametersIntent".equals(intentName)) {
             return OrdersTranslator.handleAdvancedGameAsked(intent);
-        } else if ("parameterSizeOfGridIntent".equals(intentName)) {
-            return OrdersTranslator.handleParameterGiven(intent);
-        } else if ("parameterNumberOfShipsIntent".equals(intentName)) {
+        } else if ("parameterSizeOfGridIntent".equals(intentName) || "parameterNumberOfShipsIntent".equals(intentName)) {
             return OrdersTranslator.handleParameterGiven(intent);
         } else if ("answerHitOrMissIntent".equals(intentName)) {
             return OrdersTranslator.handleFireResultGivent(intent);
-        } else if ("fireAtXAndYIntent".equals(intentName)) {
-            return OrdersTranslator.handleFireCoordinatesGiven(intent);
-        } else if ("oneFirePosition".equals(intentName)) {
-            return OrdersTranslator.handleFireCoordinatesGiven(intent);
+        } else if ("fireAtXAndYIntent".equals(intentName) || "fireAtLetterAndNumberIntent".equals(intentName)) {
+            return OrdersTranslator.handleTwoFireCoordinatesGiven(intent);
+        } else if ("oneFirePosition".equals(intentName) || "oneFirePositionLetter".equals(intentName)) {
+            return OrdersTranslator.handleOneFireCoordinatesGiven(intent);
         } else if ("AMAZON.HelpIntent".equals(intentName)) {
             return OrdersTranslator.handleHelpAsked();
         } else if ("AMAZON.StopIntent".equals(intentName)) {
@@ -51,12 +53,22 @@ public class BattleshipSpeechlet implements Speechlet {
         } else if ("AMAZON.CancelIntent".equals(intentName)) {
             return OrdersTranslator.handleCancel();
         } else {
-            throw new SpeechletException("Invalid Intent");
+            return OrdersTranslator.handleUnrecognizedIntent();
         }
+
+        //TODO: Need to add
     }
 
     @Override
     public void onSessionEnded(SessionEndedRequest sessionEndedRequest, Session session) throws SpeechletException {
 
     }
+
+    private SpeechletResponse getWelcomeResponse() {
+        String welcomeMessage = Speeches.WELCOME + Speeches.HELP_SPEECH_BEGINNING;
+        String reprompt = Speeches.HELP_SPEECH_BEGINNING_REPROMPT;
+
+        return SpeechesGenerator.newAskResponse(welcomeMessage, false, reprompt, false);
+    }
+
 }
