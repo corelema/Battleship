@@ -13,7 +13,7 @@ public class BattleshipSPeechletRequestsStreamHandler extends SpeechletRequestSt
 
     static {
         supportedApplicationIds = new HashSet<String>();
-        supportedApplicationIds.add("amzn1.echo-sdk-ams.app.4bca183b-9938-4203-a19f-ce41c60b40f2");
+        //supportedApplicationIds.add("amzn1.echo-sdk-ams.app.4bca183b-9938-4203-a19f-ce41c60b40f2");
     }
 
     public BattleshipSPeechletRequestsStreamHandler() {

@@ -39,6 +39,7 @@ public class StateManager {
         this.gridSize = 3;
         this.numberOfShips = 1;
         voiceState = VoiceState.QUICK_GAME_STARTED;
+        turnState = TurnState.PLAYER;
     }
 
     public void advancedGameAsked() {
@@ -47,6 +48,7 @@ public class StateManager {
 
     public void startAdvancedGame() {
         voiceState = VoiceState.ADVANCED_GAME_STARTED;
+        turnState = TurnState.PLAYER;
     }
 
     public boolean isGamesStarted(){

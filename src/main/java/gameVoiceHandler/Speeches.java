@@ -23,7 +23,7 @@ public class Speeches {
     public static final String REPEAT = ", could you repeat please? ";
 
     //QUICK GAME
-    public static final String GAME_LAUNCH = "A %d by %d game with %d ships has been created for you. ";
+    public static final String GAME_LAUNCH = "I am ready, let's start the game with a grid size of %d and %d ships. ";
     public static final String GAME_ALREADY_STARTED = "The game has already began, "
             + "if you wish to start a new game, you may end this one first by saying stop. ";
 
@@ -36,7 +36,6 @@ public class Speeches {
     public static final String PROMPT_NUMBER_OF_SHIPS_ONLY = "I got the grid size, could you provide a number of ships now? ";
 
     //GAME TURNS
-    public static final String GAME_START = "I am ready, let's start the game with a grid size of %d and %d ships. ";
     public static final String YOUR_TURN = "It's your turn! Please provide me a line and a column. ";
     public static final String MY_TURN = "It's my turn now! I am firing at line %d, and column %d. ";
 
