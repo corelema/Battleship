@@ -8,8 +8,10 @@ import java.util.Random;
  */
 public class GameManager {
     private GameParameters parameters;
-    private Board playerOneBoard;
-    private Board playerTwoBoard;
+    private Board playerOneBoard;  // User
+    private Board playerTwoBoard;  // Alexa for now
+
+    private Point alexasLastAttackPoint;
 
     public GameManager(GameParameters parameters) {
         this.parameters = parameters;
@@ -64,19 +66,27 @@ public class GameManager {
         return new Point(startX, startY);
     }
 
-    public AttackResponse fireAtPoint(Point tile) {
-        return null;
+    public AttackResponse fireAtPoint(Point point) {
+        return this.fireAtPoint(point, this.playerTwoBoard);
     }
 
     public Point getNextAlexaHit() {
-        return this.randomlyGeneratedPoint();
+        this.alexasLastAttackPoint = this.randomlyGeneratedPoint();
+        this.fireAtPoint(this.alexasLastAttackPoint, this.playerOneBoard);
+
+        return this.alexasLastAttackPoint;
     }
 
     public void didAlexaHit(boolean wasHit) {
-
+        String status = wasHit ? Tile.BATTLESHIP_HIT_TILE : Tile.FIRED_UPON_TILE;
+        this.playerOneBoard.updateTileStatus(status, this.alexasLastAttackPoint);
     }
 
     public boolean isGameOver() {
         return (playerOneBoard.areAllBattleShipsSunk() || playerTwoBoard.areAllBattleShipsSunk());
+    }
+
+    private AttackResponse fireAtPoint(Point point, Board board) {
+        return board.fireAtPoint(point);
     }
 }
