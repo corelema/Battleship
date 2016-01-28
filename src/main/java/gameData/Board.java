@@ -12,7 +12,7 @@ public class Board {
     public Board(int rows, int columns) {
         for (int x = 0; x < rows; x++) {
             for (int y = 0; y < columns; y++) {
-                tiles[x][y] = new Tile(x,y);
+                this.tiles[x][y] = new Tile(x,y);
             }
         }
     }
@@ -26,7 +26,7 @@ public class Board {
     }
 
     public AttackResponse fireAtPoint(Point tile) {
-        Tile space = tiles[tile.x][tile.y];
+        Tile space = this.tiles[tile.x][tile.y];
         boolean canAttack = false;
         boolean attackSuccessful = false;
 
@@ -42,7 +42,7 @@ public class Board {
     }
 
     public void updateTileStatus(String status, Point attackPoint) {
-        Tile space = tiles[attackPoint.x][attackPoint.y];
+        Tile space = this.tiles[attackPoint.x][attackPoint.y];
 
         space.setTileState(status);
     }

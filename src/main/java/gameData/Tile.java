@@ -22,9 +22,9 @@ public class Tile {
     }
 
     public Tile(int x, int y) {
-        tileState = OPEN_TILE;
-        x         = x;
-        y         = y;
+        this.tileState = OPEN_TILE;
+        this.x         = x;
+        this.y         = y;
     }
 
     public boolean isOpen() {

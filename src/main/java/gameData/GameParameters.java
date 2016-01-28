@@ -10,10 +10,10 @@ public class GameParameters {
     private int numberOfBattleShips;
 
     public GameParameters(int rows, int columns, int numberOfPlayers, int numberOfBattleShips) {
-        rows                = rows;
-        columns             = columns;
-        numberOfPlayers     = numberOfPlayers;
-        numberOfBattleShips = numberOfBattleShips;
+        this.rows                = rows;
+        this.columns             = columns;
+        this.numberOfPlayers     = numberOfPlayers;
+        this.numberOfBattleShips = numberOfBattleShips;
     }
 
     public int getRows() {
