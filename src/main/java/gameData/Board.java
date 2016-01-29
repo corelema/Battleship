@@ -58,11 +58,15 @@ public class Board {
     public boolean areAllBattleShipsSunk() {
         boolean allShipsSunk = true;
 
-        for (Battleship ship : this.battleships) {
-            if (!ship.isSunk()) {
-                allShipsSunk = false;
-                break;
+        if (this.battleships.length > 0) {
+            for (Battleship ship : this.battleships) {
+                if (!ship.isSunk()) {
+                    allShipsSunk = false;
+                    break;
+                }
             }
+        } else {
+            allShipsSunk = false;
         }
 
         return allShipsSunk;
