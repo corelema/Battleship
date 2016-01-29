@@ -82,6 +82,19 @@ public class GameManager {
         return (playerOneBoard.areAllBattleShipsSunk() || playerTwoBoard.areAllBattleShipsSunk() || this.numberOfHits == 2);
     }
 
+    public boolean didPlayerOneWin() {
+        return playerOneBoard.areAllBattleShipsSunk();
+    }
+
+    public boolean didPlayerTwoWin() {
+        return playerTwoBoard.areAllBattleShipsSunk();
+    }
+
+    public boolean didAlexWin() {
+        return this.numberOfHits == 2;
+    }
+
+
     private AttackResponse fireAtPoint(Point point, Board board) {
         return board.fireAtPoint(point);
     }
