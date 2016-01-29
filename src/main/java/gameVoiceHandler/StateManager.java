@@ -7,7 +7,7 @@ import java.util.List;
  * Created by corentinl on 1/23/16.
  */
 public class StateManager {
-    private static StateManager instance = null;
+    private static StateManager instance;
 
     private int gridSize;
     private int numberOfShips;

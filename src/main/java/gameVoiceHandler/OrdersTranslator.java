@@ -82,14 +82,19 @@ public class OrdersTranslator {
     }
     
     private static SpeechletResponse startAdvancedGame() {
-        StateManager.getInstance().startAdvancedGame();
-        initializeGameManager();
+        if (!StateManager.getInstance().isGamesStarted()) {
+            StateManager.getInstance().startAdvancedGame();
+            initializeGameManager();
 
-        String speechOutput = startGameSpeech() + Speeches.PROMPT_LINE_COLUMN;
-        String repromptText = Speeches.PROMPT_LINE_COLUMN;
-        lastQuestion = repromptText;
+            String speechOutput = startGameSpeech() + Speeches.PROMPT_LINE_COLUMN;
+            String repromptText = Speeches.PROMPT_LINE_COLUMN;
+            lastQuestion = repromptText;
 
-        return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
+            return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
+        }
+
+        String speechOutput = Speeches.GAME_ALREADY_STARTED;
+        return SpeechesGenerator.newAskResponse(speechOutput, false, lastQuestion, false);
     }
 
     /**
@@ -262,6 +267,7 @@ public class OrdersTranslator {
                     Point alexaFire = gameManager.getNextAlexaHit();
 
                     repromptText = String.format(Speeches.MY_TURN, alexaFire.x + 1, alexaFire.y + 1);
+                    StateManager.getInstance().setTurnState(TurnState.ALEXA);
 
                     lastQuestion = repromptText;
                     speechOutput += repromptText;
@@ -269,7 +275,7 @@ public class OrdersTranslator {
 
                 //StateManager.getInstance().setTurnState(TurnState.ALEXA);
             } else {
-                speechOutput += Speeches.NOT_YOUR_TURN + lastQuestion;
+                return Speeches.ALREAD_TRIED_THIS_SPOT;
             }
 
             x = -1;
@@ -277,7 +283,7 @@ public class OrdersTranslator {
 
             return speechOutput;
         } else {
-            return String.format(Speeches.COORDINATES_NOT_VALID, 1, StateManager.getInstance().getGridSize()) + lastQuestion;
+            return String.format(Speeches.COORDINATES_NOT_VALID, 1, StateManager.getInstance().getGridSize(), x, y) + lastQuestion;
         }
     }
 
@@ -294,7 +300,7 @@ public class OrdersTranslator {
         int indexY = y-1;
 
         return (indexX < StateManager.getInstance().getGridSize()
-                && indexX >=0
+                && indexX >= 0
                 && indexY < StateManager.getInstance().getGridSize()
                 && indexY >= 0);
     }
@@ -317,6 +323,8 @@ public class OrdersTranslator {
                 } else {
                     speechOutput = "Damn, I will do better next time! ";
                 }
+
+                StateManager.getInstance().setTurnState(TurnState.PLAYER);
 
                 if (gameManager.isGameOver()) {
                     speechOutput += endGame();

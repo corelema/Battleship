@@ -15,7 +15,6 @@ public class BattleshipSpeechlet implements Speechlet {
 
     @Override
     public void onSessionStarted(SessionStartedRequest sessionStartedRequest, Session session) throws SpeechletException {
-        StateManager.getInstance().reset();
     }
 
     @Override
@@ -47,6 +46,25 @@ public class BattleshipSpeechlet implements Speechlet {
         if (isFiringRelatedRequest(intentName)
                 && !(StateManager.getInstance().getVoiceState() == VoiceState.ADVANCED_GAME_STARTED
                     || StateManager.getInstance().getVoiceState() == VoiceState.QUICK_GAME_STARTED)) {
+/*
+            VoiceState state = StateManager.getInstance().getVoiceState();
+
+            String speechOutput = "";
+
+            if (state == VoiceState.INITIALIZATION) {
+                speechOutput = "initialization";
+            }
+            if (state == VoiceState.QUICK_GAME_STARTED) {
+                speechOutput = "quick game";
+            }
+            if (state == VoiceState.ADVANCED_GAME_ASKED) {
+                speechOutput = "advanced game asked";
+            }
+            if (state == VoiceState.ADVANCED_GAME_STARTED) {
+                speechOutput = "advanced game started";
+            }
+
+*/
             String speechOutput = Speeches.NO_FIRE_YET;
             return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         }

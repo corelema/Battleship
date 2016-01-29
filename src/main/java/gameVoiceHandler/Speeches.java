@@ -36,7 +36,7 @@ public class Speeches {
     public static final String PROMPT_NUMBER_OF_SHIPS_ONLY = "I got the grid size, could you provide a number of ships now? ";
 
     //GAME TURNS
-    public static final String MY_TURN = "It's my turn now! I am firing at line %d, and column %d. ";
+    public static final String MY_TURN = "It's my turn now! I am firing at line %d, and column %d. Did I hit, or did I miss? ";
 
     public static final String PROMPT_LINE_COLUMN = "It's your turn, please provide a line and a column where you want to hit. ";
     public static final String PROMPT_LINE_ONLY= "I got the column, could you provide a line now? ";
@@ -45,7 +45,8 @@ public class Speeches {
     public static final String YOU_GAVE_ONE_COORDINATE = "You gave the coordinate %d. ";
     public static final String YOU_FIRE = "You are firing at line %d and column %d. ";
     public static final String COORDINATES_NOT_VALID = "Hum, it seems that the coordinates you gave are not within the range. "
-            + "They should be between %d and %d";
+            + "They should be between %d and %d, and you entered lines %d and column %d";
+    public static final String ALREAD_TRIED_THIS_SPOT = "You already tried those coordinates, dumbass. Try other ones! ";
 
     public static final String NOT_YOUR_TURN = "This is not your turn, you sneaky! ";
     public static final String WAS_YOUR_TURN = "This is your turn, unless you want me to bomb you twice in a row! ";
