@@ -44,7 +44,7 @@ public class GameManager {
     private Battleship[] generateBattleShipsForPlayer() {
         Battleship[] ships = new Battleship[parameters.getNumberOfBattleShips()];
         for (int i = 0; i < parameters.getNumberOfBattleShips(); i++) {
-            ships[i] = Battleship.generateBattleship(this.randomlyGeneratedPoint());
+            ships[i] = Battleship.generateBattleship(this.randomlyGeneratedPoint(), this.parameters.getRows(), this.parameters.getColumns());
         }
 
         return ships;
@@ -81,6 +81,19 @@ public class GameManager {
     public boolean isGameOver() {
         return (playerOneBoard.areAllBattleShipsSunk() || playerTwoBoard.areAllBattleShipsSunk() || this.numberOfHits == 2);
     }
+
+    public boolean didPlayerOneWin() {
+        return playerOneBoard.areAllBattleShipsSunk();
+    }
+
+    public boolean didPlayerTwoWin() {
+        return playerTwoBoard.areAllBattleShipsSunk();
+    }
+
+    public boolean didAlexWin() {
+        return this.numberOfHits == 2;
+    }
+
 
     private AttackResponse fireAtPoint(Point point, Board board) {
         return board.fireAtPoint(point);
