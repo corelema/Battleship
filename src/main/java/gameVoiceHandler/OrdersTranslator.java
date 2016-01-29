@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.awt.peer.ScrollbarPeer;
 
 /**
  * Created by corentinl on 1/23/16.
@@ -249,6 +250,9 @@ public class OrdersTranslator {
             if (attackResponse.isCanAttack()) {
                 if (attackResponse.isAttackSuccessful()) {
                     speechOutput += Speeches.HIT;
+                    if (gameManager.isGameOver()) {
+                        speechOutput += endGame();
+                    }
                 } else {
                     speechOutput += Speeches.MISS;
                 }
@@ -270,8 +274,12 @@ public class OrdersTranslator {
 
             return speechOutput;
         } else {
-            return String.format(Speeches.COORDINATES_NOT_VALID, 1, StateManager.getInstance().getGridSize() + lastQuestion);
+            return String.format(Speeches.COORDINATES_NOT_VALID, 1, StateManager.getInstance().getGridSize()) + lastQuestion;
         }
+    }
+
+    private static String endGame(){
+        return Speeches.YOU_WIN + Speeches.ANYTHING_ELSE;
     }
 
     private static boolean canFire() {
@@ -299,11 +307,16 @@ public class OrdersTranslator {
 
                 if (isHit) {
                     speechOutput = "Haha, I hit you! ";
+                    if (gameManager.isGameOver()) {
+                        speechOutput += endGame();
+                    }
                 } else {
                     speechOutput = "Damn, I will do better next time! ";
                 }
 
-                String repromptText = "Sorry, my abilities are limited for now.";
+                speechOutput += Speeches.PROMPT_LINE_COLUMN;
+                String repromptText = Speeches.PROMPT_LINE_COLUMN;
+                lastQuestion = repromptText;
 
                 StateManager.getInstance().setTurnState(TurnState.PLAYER);
 

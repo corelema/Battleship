@@ -5,6 +5,8 @@ import com.amazon.speech.speechlet.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.plaf.nimbus.State;
+
 /**
  * Created by corentinl on 1/20/16.
  */
@@ -13,12 +15,14 @@ public class BattleshipSpeechlet implements Speechlet {
 
     @Override
     public void onSessionStarted(SessionStartedRequest sessionStartedRequest, Session session) throws SpeechletException {
+        StateManager.getInstance().reset();
     }
 
     @Override
     public SpeechletResponse onLaunch(LaunchRequest launchRequest, Session session) throws SpeechletException {
         log.info("onLaunch requestId={}, sessionId={}", launchRequest.getRequestId(),
                 session.getSessionId());
+        StateManager.getInstance().reset();
         return getWelcomeResponse();
     }
 
