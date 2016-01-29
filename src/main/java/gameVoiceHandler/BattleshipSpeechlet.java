@@ -20,6 +20,7 @@ public class BattleshipSpeechlet implements Speechlet {
 
     public static GameManager gameManager; //Trying to keep it in this class to see if this object doesn't get killed
 
+    private static String sessionId = "";
 
     @Override
     public void onSessionStarted(SessionStartedRequest sessionStartedRequest, Session session) throws SpeechletException {
@@ -36,6 +37,8 @@ public class BattleshipSpeechlet implements Speechlet {
     public SpeechletResponse onIntent(IntentRequest intentRequest, Session session) throws SpeechletException {
         log.info("onIntent requestId={}, sessionId={}", intentRequest.getRequestId(),
                 session.getSessionId());
+
+
 
         Intent intent = intentRequest.getIntent();
         String intentName = (intent != null) ? intent.getName() : null;
@@ -89,6 +92,16 @@ public class BattleshipSpeechlet implements Speechlet {
         session.setAttribute(STATE_MANAGER, stateManager);
 
         return speechletResponse;
+    }
+
+    private void resetGameManagerIfNecessary(Session session) {
+        String newSessionId = session.getSessionId();
+
+        if (!newSessionId.equals(sessionId)) {
+            sessionId = newSessionId;
+            BattleshipSpeechlet.gameManager = null;
+            OrdersTranslator.gameManager = null;
+        }
     }
 
     private StateManager getStateManager(Session session) {

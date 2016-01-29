@@ -19,7 +19,7 @@ import java.awt.peer.ScrollbarPeer;
 public class OrdersTranslator {
     private static final Logger log = LoggerFactory.getLogger(OrdersTranslator.class);
 
-    private static GameManager gameManager;
+    public static GameManager gameManager;
 
     private static final String GRID_SIZE_SLOT = "gridSize";
     private static final String NUMBER_OF_SHIPS_SLOT = "numberOfShips";
@@ -322,7 +322,7 @@ public class OrdersTranslator {
                 boolean isHit = hitOrMissSlotSlot.getValue().equals("hit");
 
                 if (isHit) {
-                    speechOutput = "Haha, I hit you! ";
+                    speechOutput = "Haha, I got you! ";
                 } else {
                     speechOutput = "Damn, I will do better next time! ";
                 }

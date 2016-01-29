@@ -92,7 +92,7 @@ public class GameManager {
     }
 
     public boolean isGameOver() {
-        return (playerOneBoard.areAllBattleShipsSunk() || alexaBoard.areAllBattleShipsSunk() || this.numberOfHits >= 2 || this.numberOfHitsByPlayer >= 2);
+        return (playerOneBoard.areAllBattleShipsSunk() || alexaBoard.areAllBattleShipsSunk() || this.numberOfHits >= 1 || this.numberOfHitsByPlayer >= 1);
     }
 
     public boolean didPlayerOneWin() {
@@ -104,7 +104,7 @@ public class GameManager {
     }
 
     public boolean didAlexWin() {
-        return this.numberOfHits >= 2;
+        return this.numberOfHits >= 1;
     }
 
 
