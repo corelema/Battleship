@@ -7,13 +7,15 @@ import java.awt.*;
  */
 public class Battleship {
     private Tile[] occupiedTiles;
+    private int timesHit;
 
-    public static Battleship generateBattleship(Point startPoint) {
+    public static Battleship generateBattleship(Point startPoint, int maxWidth, int maxHeight) {
         Tile[] occupiedTiles = new Tile[Battleship.battleShipLength()];
 
         // Will work on something fancy if time permits;
         for (int i = 0; i < occupiedTiles.length; i++) {
-            occupiedTiles[i] = new Tile(startPoint.x, startPoint.y++, Tile.SHIP_COVERED_TILE);
+            int column = startPoint.y + 1 < maxHeight ? startPoint.y + 1 : startPoint.y - 1;
+            occupiedTiles[i] = new Tile(startPoint.x, column, Tile.SHIP_COVERED_TILE);
         }
 
         Battleship ship = new Battleship(occupiedTiles);
@@ -26,18 +28,19 @@ public class Battleship {
     }
 
     public boolean isSunk() {
-        boolean isSunk = true;
-        for (Tile tile : occupiedTiles) {
-            if (!tile.hasBeenHit()) {
-                isSunk = false;
-            }
-        }
-
-        return isSunk;
+        return this.timesHit == this.length();
     }
 
     public Tile[] getOccupiedTiles() {
         return occupiedTiles;
+    }
+
+    public int length() {
+        return this.occupiedTiles.length;
+    }
+
+    public void battleshipHit() {
+        this.timesHit++;
     }
 
     static public int battleShipLength() {

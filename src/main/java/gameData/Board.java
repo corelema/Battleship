@@ -33,7 +33,7 @@ public class Board {
         boolean canAttack = false;
         boolean attackSuccessful = false;
 
-        if (!space.hasBeenHit() || !space.hasBeenFiredUpon()) {
+        if (!space.hasBeenHit() && !space.hasBeenFiredUpon()) {
             canAttack = true;
 
             if (space.containsShip()) {
