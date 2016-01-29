@@ -44,7 +44,7 @@ public class GameManager {
     private Battleship[] generateBattleShipsForPlayer() {
         Battleship[] ships = new Battleship[parameters.getNumberOfBattleShips()];
         for (int i = 0; i < parameters.getNumberOfBattleShips(); i++) {
-            ships[i] = Battleship.generateBattleship(this.randomlyGeneratedPoint());
+            ships[i] = Battleship.generateBattleship(this.randomlyGeneratedPoint(), this.parameters.getRows(), this.parameters.getColumns());
         }
 
         return ships;
