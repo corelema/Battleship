@@ -2,16 +2,19 @@ package gameVoiceHandler;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.plaf.nimbus.State;
+
 
 /**
  * Created by corentinl on 1/20/16.
  */
 public class BattleshipSpeechlet implements Speechlet {
     private static final Logger log = LoggerFactory.getLogger(BattleshipSpeechlet.class);
+
+    private static final String STATE_MANAGER = "STATEMANAGER";
 
     @Override
     public void onSessionStarted(SessionStartedRequest sessionStartedRequest, Session session) throws SpeechletException {
@@ -21,7 +24,6 @@ public class BattleshipSpeechlet implements Speechlet {
     public SpeechletResponse onLaunch(LaunchRequest launchRequest, Session session) throws SpeechletException {
         log.info("onLaunch requestId={}, sessionId={}", launchRequest.getRequestId(),
                 session.getSessionId());
-        StateManager.getInstance().reset();
         return getWelcomeResponse();
     }
 
@@ -33,67 +35,78 @@ public class BattleshipSpeechlet implements Speechlet {
         Intent intent = intentRequest.getIntent();
         String intentName = (intent != null) ? intent.getName() : null;
 
-        if (isInitializationRequest(intentName) && StateManager.getInstance().getVoiceState() != VoiceState.INITIALIZATION) {
+        StateManager stateManager = getStateManager(session);
+        
+        if (isInitializationRequest(intentName) && !stateManager.getVoiceState().equals(StateManager.INITIALIZATION)) {
             String speechOutput = Speeches.NO_INITIALIZATION;
             return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         }
 
-        if (isAdvancedGameSetupRequest(intentName) && StateManager.getInstance().getVoiceState() != VoiceState.ADVANCED_GAME_STARTED) {
+        if (isAdvancedGameSetupRequest(intentName) && !stateManager.getVoiceState().equals(StateManager.ADVANCED_GAME_STARTED)) {
             String speechOutput = Speeches.NO_ADVANCED_GAME_SETUP;
             return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         }
 
         if (isFiringRelatedRequest(intentName)
-                && !(StateManager.getInstance().getVoiceState() == VoiceState.ADVANCED_GAME_STARTED
-                    || StateManager.getInstance().getVoiceState() == VoiceState.QUICK_GAME_STARTED)) {
-/*
-            VoiceState state = StateManager.getInstance().getVoiceState();
-
-            String speechOutput = "";
-
-            if (state == VoiceState.INITIALIZATION) {
-                speechOutput = "initialization";
-            }
-            if (state == VoiceState.QUICK_GAME_STARTED) {
-                speechOutput = "quick game";
-            }
-            if (state == VoiceState.ADVANCED_GAME_ASKED) {
-                speechOutput = "advanced game asked";
-            }
-            if (state == VoiceState.ADVANCED_GAME_STARTED) {
-                speechOutput = "advanced game started";
-            }
-
-*/
+                && !(stateManager.getVoiceState().equals(StateManager.ADVANCED_GAME_STARTED)
+                    || stateManager.getVoiceState().equals(StateManager.QUICK_GAME_STARTED))) {
             String speechOutput = Speeches.NO_FIRE_YET;
             return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         }
 
+        SpeechletResponse speechletResponse;
+
         if ("startQuickGameIntent".equals(intentName)) {
-            return OrdersTranslator.handleQuickGameAsked();
+            speechletResponse =  OrdersTranslator.handleQuickGameAsked(stateManager);
         } else if ("startAdvancedGameIntent".equals(intentName)) {
-            return OrdersTranslator.handleAdvancedGameAsked();
+            speechletResponse =  OrdersTranslator.handleAdvancedGameAsked(stateManager);
         } else if ("startAdvancedGameWithParametersIntent".equals(intentName)) {
-            return OrdersTranslator.handleAdvancedGameAsked(intent);
+            speechletResponse =  OrdersTranslator.handleAdvancedGameAsked(intent, stateManager);
         } else if ("parameterSizeOfGridIntent".equals(intentName) || "parameterNumberOfShipsIntent".equals(intentName)) {
-            return OrdersTranslator.handleParameterGiven(intent);
+            speechletResponse =  OrdersTranslator.handleParameterGiven(intent, stateManager);
         } else if ("answerHitOrMissIntent".equals(intentName)) {
-            return OrdersTranslator.handleFireResultGiven(intent);
+            speechletResponse =  OrdersTranslator.handleFireResultGiven(intent, stateManager);
         } else if ("fireAtXAndYIntent".equals(intentName) || "fireAtLetterAndNumberIntent".equals(intentName)) {
-            return OrdersTranslator.handleTwoFireCoordinatesGiven(intent);
+            speechletResponse =  OrdersTranslator.handleTwoFireCoordinatesGiven(intent, stateManager);
         } else if ("oneFirePosition".equals(intentName) || "oneFirePositionLetter".equals(intentName)) {
-            return OrdersTranslator.handleOneFireCoordinatesGiven(intent);
+            speechletResponse =  OrdersTranslator.handleOneFireCoordinatesGiven(intent, stateManager);
         } else if ("AMAZON.HelpIntent".equals(intentName)) {
-            return OrdersTranslator.handleHelpAsked();
+            speechletResponse =  OrdersTranslator.handleHelpAsked(stateManager);
         } else if ("AMAZON.StopIntent".equals(intentName)) {
-            return OrdersTranslator.handleStop();
+            speechletResponse =  OrdersTranslator.handleStop(stateManager);
         } else if ("AMAZON.CancelIntent".equals(intentName)) {
-            return OrdersTranslator.handleCancel();
+            speechletResponse =  OrdersTranslator.handleCancel(stateManager);
         } else {
-            return OrdersTranslator.handleUnrecognizedIntent();
+            speechletResponse =  OrdersTranslator.handleUnrecognizedIntent();
         }
+
+        //session.setAttribute("StateManagerUpdated", stateManager);
+
+        return speechletResponse;
     }
 
+    private StateManager getStateManager(Session session) {
+
+        StateManager stateManager = null;
+
+        if (session.getAttribute(STATE_MANAGER) != null) {
+            java.util.LinkedHashMap stateManagerMap =  (java.util.LinkedHashMap)session.getAttribute(STATE_MANAGER);
+
+            int gridSize = (int)stateManagerMap.get("gridSize");
+            int numberOfShips = (int)stateManagerMap.get("numberOfShips");
+            String voiceState = (String)stateManagerMap.get("voiceState");
+            String turnState = (String)stateManagerMap.get("turnState");
+
+            stateManager = new StateManager(gridSize, numberOfShips, voiceState, turnState);
+        }
+
+        if (stateManager == null) {
+            stateManager = new StateManager();
+            session.setAttribute(STATE_MANAGER, stateManager);
+        }
+        return stateManager;
+    }
+    
     private boolean isInitializationRequest(String intentName) {
         if ("startQuickGameIntent".equals(intentName)
                 || "startAdvancedGameIntent".equals(intentName)

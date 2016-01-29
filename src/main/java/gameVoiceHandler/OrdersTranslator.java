@@ -33,20 +33,20 @@ public class OrdersTranslator {
 
     private static int x = -1, y = -1;
 
-    public static SpeechletResponse handleQuickGameAsked() {
-        StateManager.getInstance().startQuickGame();
-        initializeGameManager();
+    public static SpeechletResponse handleQuickGameAsked(StateManager stateManager) {
+        stateManager.startQuickGame();
+        initializeGameManager(stateManager);
 
-        String speechOutput = startGameSpeech() + Speeches.PROMPT_LINE_COLUMN;
+        String speechOutput = startGameSpeech(stateManager) + Speeches.PROMPT_LINE_COLUMN;
         String repromptText = Speeches.PROMPT_LINE_COLUMN;
         lastQuestion = repromptText;
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
     }
 
-    public static SpeechletResponse handleAdvancedGameAsked() {
-        if (!StateManager.getInstance().isGamesStarted()) {
-            StateManager.getInstance().advancedGameAsked();
+    public static SpeechletResponse handleAdvancedGameAsked(StateManager stateManager) {
+        if (!stateManager.isGamesStarted()) {
+            stateManager.advancedGameAsked();
             String speechOutput = Speeches.ADVANCED_GAME_LAUNCH + Speeches.ADVANCED_GAME_PARAMETERS_PROMPT;
 
             String repromptText = Speeches.ADVANCED_GAME_PARAMETERS_PROMPT;
@@ -59,34 +59,34 @@ public class OrdersTranslator {
         }
     }
 
-    public static SpeechletResponse handleAdvancedGameAsked(Intent intent) {
+    public static SpeechletResponse handleAdvancedGameAsked(Intent intent, StateManager stateManager) {
         Slot gridSizeSlot = intent.getSlot(GRID_SIZE_SLOT);
         Slot numberOfShipsSlot = intent.getSlot(NUMBER_OF_SHIPS_SLOT);
 
         try {
             if (gridSizeSlot != null && numberOfShipsSlot != null) {
-                StateManager.getInstance().setGridSize(Integer.parseInt(gridSizeSlot.getValue()));
-                StateManager.getInstance().setNumberOfShips(Integer.parseInt(numberOfShipsSlot.getValue()));
+                stateManager.setGridSize(Integer.parseInt(gridSizeSlot.getValue()));
+                stateManager.setNumberOfShips(Integer.parseInt(numberOfShipsSlot.getValue()));
             }
         } catch (NumberFormatException e) {
             String speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER + Speeches.REPEAT;
             return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         }
 
-        if (StateManager.getInstance().isGameReadyToBeStarted()) {
-            return startAdvancedGame();
+        if (stateManager.isGameReadyToBeStarted()) {
+            return startAdvancedGame(stateManager);
         } else {
             String speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER + Speeches.REPEAT;
             return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         }
     }
     
-    private static SpeechletResponse startAdvancedGame() {
-        if (!StateManager.getInstance().isGamesStarted()) {
-            StateManager.getInstance().startAdvancedGame();
-            initializeGameManager();
+    private static SpeechletResponse startAdvancedGame(StateManager stateManager) {
+        if (!stateManager.isGamesStarted()) {
+            stateManager.startAdvancedGame();
+            initializeGameManager(stateManager);
 
-            String speechOutput = startGameSpeech() + Speeches.PROMPT_LINE_COLUMN;
+            String speechOutput = startGameSpeech(stateManager) + Speeches.PROMPT_LINE_COLUMN;
             String repromptText = Speeches.PROMPT_LINE_COLUMN;
             lastQuestion = repromptText;
 
@@ -103,15 +103,15 @@ public class OrdersTranslator {
      * GRID_SIZE_SLOT
      * NUMBER_OF_SHIPS_SLOT
      * */
-    public static SpeechletResponse handleParameterGiven(Intent intent) {
+    public static SpeechletResponse handleParameterGiven(Intent intent, StateManager stateManager) {
         String speechOutput = "";
         try {
             if (intent.getSlot(GRID_SIZE_SLOT) != null) {
-                StateManager.getInstance().setGridSize(Integer.parseInt(intent.getSlot(GRID_SIZE_SLOT).getValue()));
-                speechOutput = Speeches.GRID_SIZE_GIVEN + StateManager.getInstance().getGridSize() + ". ";
+                stateManager.setGridSize(Integer.parseInt(intent.getSlot(GRID_SIZE_SLOT).getValue()));
+                speechOutput = Speeches.GRID_SIZE_GIVEN + stateManager.getGridSize() + ". ";
             } else if (intent.getSlot(NUMBER_OF_SHIPS_SLOT) != null) {
-                StateManager.getInstance().setNumberOfShips(Integer.parseInt(intent.getSlot(NUMBER_OF_SHIPS_SLOT).getValue()));
-                speechOutput = Speeches.NUMBER_OF_SHIPS_GIVEN + StateManager.getInstance().getNumberOfShips() + ". ";
+                stateManager.setNumberOfShips(Integer.parseInt(intent.getSlot(NUMBER_OF_SHIPS_SLOT).getValue()));
+                speechOutput = Speeches.NUMBER_OF_SHIPS_GIVEN + stateManager.getNumberOfShips() + ". ";
             } else {
                 return SpeechesGenerator.newTellResponse(Speeches.ERROR);
             }
@@ -120,16 +120,16 @@ public class OrdersTranslator {
             return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         }
 
-        if (StateManager.getInstance().isGameReadyToBeStarted()) {
-            if (StateManager.getInstance().isGameReadyToBeStarted()) {
-                return startAdvancedGame();
+        if (stateManager.isGameReadyToBeStarted()) {
+            if (stateManager.isGameReadyToBeStarted()) {
+                return startAdvancedGame(stateManager);
             } else {
                 speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER + Speeches.REPEAT;
                 return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
             }
             
         } else {
-            if (StateManager.getInstance().isGridSizeCorrect()) {
+            if (stateManager.isGridSizeCorrect()) {
                 speechOutput += Speeches.PROMPT_NUMBER_OF_SHIPS_ONLY;
             } else {
                 speechOutput += Speeches.PROMPT_GRID_SIZE_ONLY;
@@ -148,8 +148,8 @@ public class OrdersTranslator {
      * lineLetter -> LETTERS
      * columnNumber -> AMAZON.NUMBER
      * */
-    public static SpeechletResponse handleTwoFireCoordinatesGiven(Intent intent) {
-        if (StateManager.getInstance().getTurnState() == TurnState.PLAYER) {
+    public static SpeechletResponse handleTwoFireCoordinatesGiven(Intent intent, StateManager stateManager) {
+        if (stateManager.getTurnState().equals(StateManager.PLAYER)) {
             Slot lineSlot = intent.getSlot(LINE_SLOT);
             Slot columnSlot = intent.getSlot(COLUMN_SLOT);
             Slot lineLetterSlot = intent.getSlot(LINE_LETTER_SLOT);
@@ -179,7 +179,7 @@ public class OrdersTranslator {
                 return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
             }
 
-            speechOutput += fire();
+            speechOutput += fire(stateManager);
 
             return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         } else {
@@ -195,8 +195,8 @@ public class OrdersTranslator {
      * OR
      * lineLetter -> LETTERS
      * */
-    public static SpeechletResponse handleOneFireCoordinatesGiven(Intent intent) {
-        if (StateManager.getInstance().getTurnState() == TurnState.PLAYER) {
+    public static SpeechletResponse handleOneFireCoordinatesGiven(Intent intent, StateManager stateManager) {
+        if (stateManager.getTurnState().equals(StateManager.PLAYER)) {
             Slot lineLetterSlot = intent.getSlot(LINE_LETTER_SLOT);
             Slot lineOrColumnSlot = intent.getSlot(LINE_OR_COLUMN_SLOT);
 
@@ -236,7 +236,7 @@ public class OrdersTranslator {
                     return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
                 }
 
-                speechOutput += fire();
+                speechOutput += fire(stateManager);
             }
             return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         } else {
@@ -245,8 +245,8 @@ public class OrdersTranslator {
         }
     }
 
-    private static String fire() {
-        if (canFire()) {
+    private static String fire(StateManager stateManager) {
+        if (canFire(stateManager)) {
             String speechOutput = String.format(Speeches.YOU_FIRE, x, y);
             String repromptText = "";
 
@@ -267,13 +267,13 @@ public class OrdersTranslator {
                     Point alexaFire = gameManager.getNextAlexaHit();
 
                     repromptText = String.format(Speeches.MY_TURN, alexaFire.x + 1, alexaFire.y + 1);
-                    StateManager.getInstance().setTurnState(TurnState.ALEXA);
+                    stateManager.setTurnState(StateManager.ALEXA);
 
                     lastQuestion = repromptText;
                     speechOutput += repromptText;
                 }
 
-                //StateManager.getInstance().setTurnState(TurnState.ALEXA);
+                //stateManager.setTurnState(TurnState.ALEXA);
             } else {
                 return Speeches.ALREAD_TRIED_THIS_SPOT;
             }
@@ -283,7 +283,7 @@ public class OrdersTranslator {
 
             return speechOutput;
         } else {
-            return String.format(Speeches.COORDINATES_NOT_VALID, 1, StateManager.getInstance().getGridSize(), x, y) + lastQuestion;
+            return String.format(Speeches.COORDINATES_NOT_VALID, 1, stateManager.getGridSize(), x, y) + lastQuestion;
         }
     }
 
@@ -295,21 +295,21 @@ public class OrdersTranslator {
         }
     }
 
-    private static boolean canFire() {
+    private static boolean canFire(StateManager stateManager) {
         int indexX = x-1;
         int indexY = y-1;
 
-        return (indexX < StateManager.getInstance().getGridSize()
+        return (indexX < stateManager.getGridSize()
                 && indexX >= 0
-                && indexY < StateManager.getInstance().getGridSize()
+                && indexY < stateManager.getGridSize()
                 && indexY >= 0);
     }
 
     /**
      * handles two fire coordinates given at a time
      * */
-    public static SpeechletResponse handleFireResultGiven(Intent intent) {
-        if (StateManager.getInstance().getTurnState() == TurnState.PLAYER) {
+    public static SpeechletResponse handleFireResultGiven(Intent intent, StateManager stateManager) {
+        if (stateManager.getTurnState().equals(StateManager.PLAYER)) {
             Slot hitOrMissSlotSlot = intent.getSlot(HIT_OR_MISS_SLOT);
 
             String speechOutput = "";
@@ -324,7 +324,7 @@ public class OrdersTranslator {
                     speechOutput = "Damn, I will do better next time! ";
                 }
 
-                StateManager.getInstance().setTurnState(TurnState.PLAYER);
+                stateManager.setTurnState(StateManager.PLAYER);
 
                 if (gameManager.isGameOver()) {
                     speechOutput += endGame();
@@ -334,11 +334,11 @@ public class OrdersTranslator {
                 String repromptText = Speeches.PROMPT_LINE_COLUMN;
                 lastQuestion = repromptText;
 
-                StateManager.getInstance().setTurnState(TurnState.PLAYER);
+                stateManager.setTurnState(StateManager.PLAYER);
 
                 return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
             } else {
-                return handleHelpAsked();
+                return handleHelpAsked(stateManager);
             }
         } else {
             String speechOutput = Speeches.WAS_YOUR_TURN + lastQuestion;
@@ -346,8 +346,8 @@ public class OrdersTranslator {
         }
     }
 
-    public static SpeechletResponse handleHelpAsked() {
-        if (!StateManager.getInstance().isGamesStarted()) {
+    public static SpeechletResponse handleHelpAsked(StateManager stateManager) {
+        if (!stateManager.isGamesStarted()) {
             String speechOutput = Speeches.HELP_SPEECH_BEGINNING;
 
             String repromptText = Speeches.HELP_SPEECH_BEGINNING_REPROMPT;
@@ -360,16 +360,16 @@ public class OrdersTranslator {
         }
     }
 
-    public static SpeechletResponse handleCancel() {
-        StateManager.getInstance().reset();
+    public static SpeechletResponse handleCancel(StateManager stateManager) {
+        //stateManager.reset();
 
         String speechOutput = Speeches.LEAVING_MESSAGE;
 
         return SpeechesGenerator.newTellResponse(speechOutput);
     }
 
-    public static SpeechletResponse handleStop() {
-        StateManager.getInstance().reset();
+    public static SpeechletResponse handleStop(StateManager stateManager) {
+        //stateManager.reset();
 
         String speechOutput = Speeches.LEAVING_MESSAGE;
 
@@ -383,16 +383,14 @@ public class OrdersTranslator {
         return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
     }
 
-    private static void initializeGameManager() {
-        StateManager stateManager = StateManager.getInstance();
+    private static void initializeGameManager(StateManager stateManager) {
         int gridSize = stateManager.getGridSize();
         int numberOfShips = stateManager.getNumberOfShips();
         GameParameters gameParameters = new GameParameters(gridSize, gridSize, 1, numberOfShips);
         gameManager = new GameManager(gameParameters);
     }
 
-    private static String startGameSpeech() {
-        StateManager stateManager = StateManager.getInstance();
+    private static String startGameSpeech(StateManager stateManager) {
         String speechOutput = String.format(Speeches.GAME_LAUNCH, stateManager.getGridSize(), stateManager.getNumberOfShips());
 
         return speechOutput;
