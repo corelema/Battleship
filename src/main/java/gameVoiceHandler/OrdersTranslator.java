@@ -8,6 +8,7 @@ import gameData.GameManager;
 import gameData.GameParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.misc.Launcher;
 
 import java.awt.*;
 import java.awt.peer.ScrollbarPeer;
@@ -313,14 +314,12 @@ public class OrdersTranslator {
      * handles two fire coordinates given at a time
      * */
     public static SpeechletResponse handleFireResultGiven(Intent intent, StateManager stateManager) {
-        if (stateManager.getTurnState().equals(StateManager.PLAYER)) {
+        if (stateManager.getTurnState().equals(StateManager.ALEXA)) {
             Slot hitOrMissSlotSlot = intent.getSlot(HIT_OR_MISS_SLOT);
 
             String speechOutput = "";
             if (hitOrMissSlotSlot != null && hitOrMissSlotSlot.getValue() != null) {
                 boolean isHit = hitOrMissSlotSlot.getValue().equals("hit");
-
-                //TODO: call the game: give true or false, to say that Alexa hit or missed.
 
                 if (isHit) {
                     speechOutput = "Haha, I hit you! ";
@@ -332,6 +331,9 @@ public class OrdersTranslator {
                 if (gameManager == null) {
                     initializeGameManager(stateManager);
                 }
+
+                gameManager.didAlexaHit(isHit);
+
                 if (gameManager.isGameOver()) {
                     speechOutput += endGame();
                     return SpeechesGenerator.newTellResponse(speechOutput);
@@ -394,6 +396,8 @@ public class OrdersTranslator {
         int numberOfShips = stateManager.getNumberOfShips();
         GameParameters gameParameters = new GameParameters(gridSize, gridSize, 1, numberOfShips);
         gameManager = new GameManager(gameParameters);
+        BattleshipSpeechlet.gameManager = gameManager;
+        BattleshipSPeechletRequestsStreamHandler.gameManager = gameManager;
 
         Util.updateGameManager(gameManager);
     }

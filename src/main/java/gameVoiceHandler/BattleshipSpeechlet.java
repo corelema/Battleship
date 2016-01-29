@@ -4,6 +4,7 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gameData.GameManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,9 @@ public class BattleshipSpeechlet implements Speechlet {
     private static final Logger log = LoggerFactory.getLogger(BattleshipSpeechlet.class);
 
     private static final String STATE_MANAGER = "STATEMANAGER";
+
+    public static GameManager gameManager; //Trying to keep it in this class to see if this object doesn't get killed
+
 
     @Override
     public void onSessionStarted(SessionStartedRequest sessionStartedRequest, Session session) throws SpeechletException {
@@ -134,6 +138,7 @@ public class BattleshipSpeechlet implements Speechlet {
 
     @Override
     public void onSessionEnded(SessionEndedRequest sessionEndedRequest, Session session) throws SpeechletException {
+        gameManager = null;
     }
 
     private SpeechletResponse getWelcomeResponse() {

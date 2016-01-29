@@ -49,14 +49,21 @@ public class Board {
     }
 
     public void updateTileStatus(String status, Point attackPoint, Battleship battleship) {
-        Tile space = this.tiles[attackPoint.x][attackPoint.y];
+        if (tiles != null) {
+            Tile space = this.tiles[attackPoint.x][attackPoint.y];
 
-        space.setTileState(status);
-        space.setBattleShip(battleship);
+            if (space != null) {
+                space.setTileState(status);
+                space.setBattleShip(battleship);
+            }
+        }
     }
 
     public boolean areAllBattleShipsSunk() {
         boolean allShipsSunk = true;
+
+        if (battleships == null)
+            return false;
 
         if (this.battleships.length > 0) {
             for (Battleship ship : this.battleships) {
