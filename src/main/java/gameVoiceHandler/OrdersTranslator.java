@@ -250,9 +250,14 @@ public class OrdersTranslator {
             String speechOutput = String.format(Speeches.YOU_FIRE, x, y);
             String repromptText = "";
 
+            if (gameManager == null) {
+                initializeGameManager(stateManager);
+            }
             AttackResponse attackResponse = gameManager.fireAtPoint(new Point(x - 1, y - 1));
 
             if (attackResponse.isCanAttack()) {
+                stateManager.setTurnState(StateManager.ALEXA);
+
                 if (attackResponse.isAttackSuccessful()) {
                     speechOutput += Speeches.HIT;
                     if (gameManager.isGameOver()) {
@@ -267,7 +272,6 @@ public class OrdersTranslator {
                     Point alexaFire = gameManager.getNextAlexaHit();
 
                     repromptText = String.format(Speeches.MY_TURN, alexaFire.x + 1, alexaFire.y + 1);
-                    stateManager.setTurnState(StateManager.ALEXA);
 
                     lastQuestion = repromptText;
                     speechOutput += repromptText;
@@ -325,7 +329,9 @@ public class OrdersTranslator {
                 }
 
                 stateManager.setTurnState(StateManager.PLAYER);
-
+                if (gameManager == null) {
+                    initializeGameManager(stateManager);
+                }
                 if (gameManager.isGameOver()) {
                     speechOutput += endGame();
                     return SpeechesGenerator.newTellResponse(speechOutput);
@@ -388,6 +394,8 @@ public class OrdersTranslator {
         int numberOfShips = stateManager.getNumberOfShips();
         GameParameters gameParameters = new GameParameters(gridSize, gridSize, 1, numberOfShips);
         gameManager = new GameManager(gameParameters);
+
+        Util.updateGameManager(gameManager);
     }
 
     private static String startGameSpeech(StateManager stateManager) {

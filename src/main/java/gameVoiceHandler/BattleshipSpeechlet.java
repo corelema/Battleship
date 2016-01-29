@@ -3,6 +3,7 @@ package gameVoiceHandler;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,7 @@ public class BattleshipSpeechlet implements Speechlet {
         String intentName = (intent != null) ? intent.getName() : null;
 
         StateManager stateManager = getStateManager(session);
+        Util.session = session;
         
         if (isInitializationRequest(intentName) && !stateManager.getVoiceState().equals(StateManager.INITIALIZATION)) {
             String speechOutput = Speeches.NO_INITIALIZATION;
@@ -80,7 +82,7 @@ public class BattleshipSpeechlet implements Speechlet {
             speechletResponse =  OrdersTranslator.handleUnrecognizedIntent();
         }
 
-        //session.setAttribute("StateManagerUpdated", stateManager);
+        session.setAttribute(STATE_MANAGER, stateManager);
 
         return speechletResponse;
     }
@@ -91,13 +93,8 @@ public class BattleshipSpeechlet implements Speechlet {
 
         if (session.getAttribute(STATE_MANAGER) != null) {
             java.util.LinkedHashMap stateManagerMap =  (java.util.LinkedHashMap)session.getAttribute(STATE_MANAGER);
-
-            int gridSize = (int)stateManagerMap.get("gridSize");
-            int numberOfShips = (int)stateManagerMap.get("numberOfShips");
-            String voiceState = (String)stateManagerMap.get("voiceState");
-            String turnState = (String)stateManagerMap.get("turnState");
-
-            stateManager = new StateManager(gridSize, numberOfShips, voiceState, turnState);
+            final ObjectMapper mapper = new ObjectMapper();
+            stateManager = mapper.convertValue(stateManagerMap, StateManager.class);
         }
 
         if (stateManager == null) {
