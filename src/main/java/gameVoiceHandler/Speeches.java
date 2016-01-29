@@ -45,6 +45,8 @@ public class Speeches {
 
     public static final String YOU_GAVE_ONE_COORDINATE = "You gave the coordinate %d. ";
     public static final String YOU_FIRE = "You are firing at line %d and column %d. ";
+    public static final String COORDINATES_NOT_VALID = "Hum, it seems that the coordinates you gave are not within the range. "
+            + "They should be between %d and %d";
 
     public static final String NOT_YOUR_TURN = "This is not your turn, you sneaky! ";
     public static final String WAS_YOUR_TURN = "This is your turn, unless you want me to bomb you twice in a row! ";
@@ -52,7 +54,7 @@ public class Speeches {
     public static final String ALREADY_HIT = "It seems that you already hit this position, could you give me another one? ";
     public static final String HIT = "That's a hit! ";
     //public static final String HIT = "That's a hit! but don't get cocky cow-boy... ";
-    public static final String MISS = "You lamentably missed! ";
+    public static final String MISS = "You miserably missed! ";
 
     //HELP
     public static final String HELP_SPEECH_BEGINNING = "I need you to choose between"

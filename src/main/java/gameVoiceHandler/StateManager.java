@@ -31,8 +31,11 @@ public class StateManager {
         return instance;
     }
 
-    public static void reset() {
-        instance = new StateManager();
+    public void reset() {
+        gridSize = -1;
+        numberOfShips = -1;
+        voiceState = VoiceState.INITIALIZATION;
+        turnState = TurnState.PLAYER;
     }
 
     public boolean isGameReadyToBeStarted() {

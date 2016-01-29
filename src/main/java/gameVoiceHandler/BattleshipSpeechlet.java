@@ -93,7 +93,8 @@ public class BattleshipSpeechlet implements Speechlet {
         if ("answerHitOrMissIntent".equals(intentName)
                 || "fireAtXAndYIntent".equals(intentName)
                 || "fireAtLetterAndNumberIntent".equals(intentName)
-                || "oneFirePosition".equals(intentName)) {
+                || "oneFirePosition".equals(intentName)
+                || "oneFirePositionLetter".equals(intentName)) {
             return true;
         }
         return false;
@@ -101,7 +102,6 @@ public class BattleshipSpeechlet implements Speechlet {
 
     @Override
     public void onSessionEnded(SessionEndedRequest sessionEndedRequest, Session session) throws SpeechletException {
-        StateManager.reset();
     }
 
     private SpeechletResponse getWelcomeResponse() {

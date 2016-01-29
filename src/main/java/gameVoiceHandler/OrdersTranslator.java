@@ -33,19 +33,14 @@ public class OrdersTranslator {
     private static int x = -1, y = -1;
 
     public static SpeechletResponse handleQuickGameAsked() {
-        if (StateManager.getInstance().getVoiceState() == VoiceState.INITIALIZATION) { //Safety, shouldn't be necessary
-            StateManager.getInstance().startQuickGame();
-            initializeGameManager();
+        StateManager.getInstance().startQuickGame();
+        initializeGameManager();
 
-            String speechOutput = startGameSpeech() + Speeches.PROMPT_LINE_COLUMN;
-            String repromptText = Speeches.PROMPT_LINE_COLUMN;
-            lastQuestion = repromptText;
+        String speechOutput = startGameSpeech() + Speeches.PROMPT_LINE_COLUMN;
+        String repromptText = Speeches.PROMPT_LINE_COLUMN;
+        lastQuestion = repromptText;
 
-            return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
-        } else {
-            String speechOutput = Speeches.GAME_ALREADY_STARTED;
-            return SpeechesGenerator.newAskResponse(speechOutput, false, lastQuestion, false);
-        }
+        return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
     }
 
     public static SpeechletResponse handleAdvancedGameAsked() {
@@ -178,7 +173,7 @@ public class OrdersTranslator {
                 return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
             }
 
-            speechOutput += fire(x, y);
+            speechOutput += fire();
 
             return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         } else {
@@ -235,7 +230,7 @@ public class OrdersTranslator {
                     return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
                 }
 
-                speechOutput += fire(x, y);
+                speechOutput += fire();
             }
             return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         } else {
@@ -244,37 +239,49 @@ public class OrdersTranslator {
         }
     }
 
-    private static String fire(int x, int y) {
-        String speechOutput = String.format(Speeches.YOU_FIRE, x, y);
-        String repromptText = "";
+    private static String fire() {
+        if (canFire()) {
+            String speechOutput = String.format(Speeches.YOU_FIRE, x, y);
+            String repromptText = "";
 
-        //TODO: call to the game: I am firing at x, y (need to create a Coordinates class)
+            AttackResponse attackResponse = gameManager.fireAtPoint(new Point(x - 1, y - 1));
 
-        AttackResponse attackResponse = gameManager.fireAtPoint(new Point(x, y));
+            if (attackResponse.isCanAttack()) {
+                if (attackResponse.isAttackSuccessful()) {
+                    speechOutput += Speeches.HIT;
+                } else {
+                    speechOutput += Speeches.MISS;
+                }
 
-        if (attackResponse.isCanAttack()) {
-            if (attackResponse.isAttackSuccessful()) {
-                speechOutput += Speeches.HIT;
+                Point alexaFire = gameManager.getNextAlexaHit();
+
+                repromptText = String.format(Speeches.MY_TURN, alexaFire.x + 1, alexaFire.y + 1);
+
+                lastQuestion = repromptText;
+                speechOutput += repromptText;
+
+                //StateManager.getInstance().setTurnState(TurnState.ALEXA);
             } else {
-                speechOutput += Speeches.MISS;
+                speechOutput += Speeches.NOT_YOUR_TURN + lastQuestion;
             }
 
-            Point alexaFire = gameManager.getNextAlexaHit();
+            x = -1;
+            y = -1;
 
-            repromptText = String.format(Speeches.MY_TURN, alexaFire.getX(), alexaFire.getY());
-
-            lastQuestion = repromptText;
-            speechOutput += repromptText;
-
-            //StateManager.getInstance().setTurnState(TurnState.ALEXA);
+            return speechOutput;
         } else {
-            speechOutput += Speeches.NOT_YOUR_TURN + lastQuestion;
+            return String.format(Speeches.COORDINATES_NOT_VALID, 1, StateManager.getInstance().getGridSize() + lastQuestion);
         }
+    }
 
-        x = -1;
-        y = -1;
+    private static boolean canFire() {
+        int indexX = x-1;
+        int indexY = y-1;
 
-        return speechOutput;
+        return (indexX < StateManager.getInstance().getGridSize()
+                && indexX >=0
+                && indexY < StateManager.getInstance().getGridSize()
+                && indexY >= 0);
     }
 
     /**
@@ -325,12 +332,16 @@ public class OrdersTranslator {
     }
 
     public static SpeechletResponse handleCancel() {
+        StateManager.getInstance().reset();
+
         String speechOutput = Speeches.LEAVING_MESSAGE;
 
         return SpeechesGenerator.newTellResponse(speechOutput);
     }
 
     public static SpeechletResponse handleStop() {
+        StateManager.getInstance().reset();
+
         String speechOutput = Speeches.LEAVING_MESSAGE;
 
         return SpeechesGenerator.newTellResponse(speechOutput);
