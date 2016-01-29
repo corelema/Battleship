@@ -79,7 +79,7 @@ public class GameManager {
     }
 
     public boolean isGameOver() {
-        return (playerOneBoard.areAllBattleShipsSunk() || playerTwoBoard.areAllBattleShipsSunk() || this.numberOfHits == 2);
+        return (playerTwoBoard.areAllBattleShipsSunk() || this.numberOfHits == 2);
     }
 
     public boolean didPlayerOneWin() {
