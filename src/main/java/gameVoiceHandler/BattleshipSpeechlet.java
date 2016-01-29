@@ -5,6 +5,8 @@ import com.amazon.speech.speechlet.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.plaf.nimbus.State;
+
 /**
  * Created by corentinl on 1/20/16.
  */
@@ -19,6 +21,7 @@ public class BattleshipSpeechlet implements Speechlet {
     public SpeechletResponse onLaunch(LaunchRequest launchRequest, Session session) throws SpeechletException {
         log.info("onLaunch requestId={}, sessionId={}", launchRequest.getRequestId(),
                 session.getSessionId());
+        StateManager.getInstance().reset();
         return getWelcomeResponse();
     }
 
@@ -43,6 +46,25 @@ public class BattleshipSpeechlet implements Speechlet {
         if (isFiringRelatedRequest(intentName)
                 && !(StateManager.getInstance().getVoiceState() == VoiceState.ADVANCED_GAME_STARTED
                     || StateManager.getInstance().getVoiceState() == VoiceState.QUICK_GAME_STARTED)) {
+/*
+            VoiceState state = StateManager.getInstance().getVoiceState();
+
+            String speechOutput = "";
+
+            if (state == VoiceState.INITIALIZATION) {
+                speechOutput = "initialization";
+            }
+            if (state == VoiceState.QUICK_GAME_STARTED) {
+                speechOutput = "quick game";
+            }
+            if (state == VoiceState.ADVANCED_GAME_ASKED) {
+                speechOutput = "advanced game asked";
+            }
+            if (state == VoiceState.ADVANCED_GAME_STARTED) {
+                speechOutput = "advanced game started";
+            }
+
+*/
             String speechOutput = Speeches.NO_FIRE_YET;
             return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         }
@@ -92,7 +114,9 @@ public class BattleshipSpeechlet implements Speechlet {
     private boolean isFiringRelatedRequest(String intentName) {
         if ("answerHitOrMissIntent".equals(intentName)
                 || "fireAtXAndYIntent".equals(intentName)
-                || "oneFirePosition".equals(intentName)) {
+                || "fireAtLetterAndNumberIntent".equals(intentName)
+                || "oneFirePosition".equals(intentName)
+                || "oneFirePositionLetter".equals(intentName)) {
             return true;
         }
         return false;
@@ -100,7 +124,6 @@ public class BattleshipSpeechlet implements Speechlet {
 
     @Override
     public void onSessionEnded(SessionEndedRequest sessionEndedRequest, Session session) throws SpeechletException {
-
     }
 
     private SpeechletResponse getWelcomeResponse() {

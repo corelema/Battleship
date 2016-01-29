@@ -3,17 +3,22 @@ package gameVoiceHandler;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.SpeechletResponse;
-import com.oracle.tools.packager.Log;
+import gameData.AttackResponse;
+import gameData.GameManager;
+import gameData.GameParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.plaf.nimbus.State;
+import java.awt.*;
+import java.awt.peer.ScrollbarPeer;
 
 /**
  * Created by corentinl on 1/23/16.
  */
 public class OrdersTranslator {
     private static final Logger log = LoggerFactory.getLogger(OrdersTranslator.class);
+
+    private static GameManager gameManager;
 
     private static final String GRID_SIZE_SLOT = "gridSize";
     private static final String NUMBER_OF_SHIPS_SLOT = "numberOfShips";
@@ -29,21 +34,14 @@ public class OrdersTranslator {
     private static int x = -1, y = -1;
 
     public static SpeechletResponse handleQuickGameAsked() {
-        if (StateManager.getInstance().getVoiceState() == VoiceState.INITIALIZATION) { //Safety, shouldn't be necessary
-            StateManager.getInstance().startQuickGame();
+        StateManager.getInstance().startQuickGame();
+        initializeGameManager();
 
-            //TODO: call the game:  to create a 3 by 3 game with one ship of size 2
+        String speechOutput = startGameSpeech() + Speeches.PROMPT_LINE_COLUMN;
+        String repromptText = Speeches.PROMPT_LINE_COLUMN;
+        lastQuestion = repromptText;
 
-            String speechOutput = startGameSpeech() + Speeches.PROMPT_LINE_COLUMN;
-
-            String repromptText = Speeches.PROMPT_LINE_COLUMN;
-            lastQuestion = repromptText;
-
-            return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
-        } else {
-            String speechOutput = Speeches.GAME_ALREADY_STARTED;
-            return SpeechesGenerator.newAskResponse(speechOutput, false, lastQuestion, false);
-        }
+        return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
     }
 
     public static SpeechletResponse handleAdvancedGameAsked() {
@@ -71,13 +69,32 @@ public class OrdersTranslator {
                 StateManager.getInstance().setNumberOfShips(Integer.parseInt(numberOfShipsSlot.getValue()));
             }
         } catch (NumberFormatException e) {
-            String speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER + Speeches.REPEAT;
-            return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+            String speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER + Speeches.REPEAT;
+            return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         }
 
-        //TODO: call the game: create a game with the given parameters. In here, we know that we have all the parameters. We might want to be able to create a game, give the parameters one by one, then call something like "isReadyToBeLaunched" then launching it
+        if (StateManager.getInstance().isGameReadyToBeStarted()) {
+            return startAdvancedGame();
+        } else {
+            String speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER + Speeches.REPEAT;
+            return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
+        }
+    }
+    
+    private static SpeechletResponse startAdvancedGame() {
+        if (!StateManager.getInstance().isGamesStarted()) {
+            StateManager.getInstance().startAdvancedGame();
+            initializeGameManager();
 
-        return SpeechesGenerator.newTellResponse(Speeches.NOT_IMPLEMENTED);
+            String speechOutput = startGameSpeech() + Speeches.PROMPT_LINE_COLUMN;
+            String repromptText = Speeches.PROMPT_LINE_COLUMN;
+            lastQuestion = repromptText;
+
+            return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
+        }
+
+        String speechOutput = Speeches.GAME_ALREADY_STARTED;
+        return SpeechesGenerator.newAskResponse(speechOutput, false, lastQuestion, false);
     }
 
     /**
@@ -87,35 +104,39 @@ public class OrdersTranslator {
      * NUMBER_OF_SHIPS_SLOT
      * */
     public static SpeechletResponse handleParameterGiven(Intent intent) {
-        String speechText = "";
+        String speechOutput = "";
         try {
             if (intent.getSlot(GRID_SIZE_SLOT) != null) {
                 StateManager.getInstance().setGridSize(Integer.parseInt(intent.getSlot(GRID_SIZE_SLOT).getValue()));
-                speechText = Speeches.GRID_SIZE_GIVEN + StateManager.getInstance().getGridSize() + ". ";
+                speechOutput = Speeches.GRID_SIZE_GIVEN + StateManager.getInstance().getGridSize() + ". ";
             } else if (intent.getSlot(NUMBER_OF_SHIPS_SLOT) != null) {
                 StateManager.getInstance().setNumberOfShips(Integer.parseInt(intent.getSlot(NUMBER_OF_SHIPS_SLOT).getValue()));
-                speechText = Speeches.NUMBER_OF_SHIPS_GIVEN + StateManager.getInstance().getNumberOfShips() + ". ";
+                speechOutput = Speeches.NUMBER_OF_SHIPS_GIVEN + StateManager.getInstance().getNumberOfShips() + ". ";
             } else {
                 return SpeechesGenerator.newTellResponse(Speeches.ERROR);
             }
         } catch (NumberFormatException e) {
-            speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
-            return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+            speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+            return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         }
 
         if (StateManager.getInstance().isGameReadyToBeStarted()) {
-            //TODO: call the game: pass the parameters to the instance of the game. If the game has everything, launch the game (we can suppose that the user might say only one parameter at a time)
-            StateManager.getInstance().startAdvancedGame();
-            speechText += String.format(Speeches.GAME_START, StateManager.getInstance().getGridSize(), StateManager.getInstance().getNumberOfShips()) + Speeches.YOUR_TURN;
+            if (StateManager.getInstance().isGameReadyToBeStarted()) {
+                return startAdvancedGame();
+            } else {
+                speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER + Speeches.REPEAT;
+                return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
+            }
+            
         } else {
             if (StateManager.getInstance().isGridSizeCorrect()) {
-                speechText += Speeches.PROMPT_NUMBER_OF_SHIPS_ONLY;
+                speechOutput += Speeches.PROMPT_NUMBER_OF_SHIPS_ONLY;
             } else {
-                speechText += Speeches.PROMPT_GRID_SIZE_ONLY;
+                speechOutput += Speeches.PROMPT_GRID_SIZE_ONLY;
             }
         }
 
-        return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+        return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
     }
 
     /**
@@ -134,7 +155,7 @@ public class OrdersTranslator {
             Slot lineLetterSlot = intent.getSlot(LINE_LETTER_SLOT);
             Slot columnNumberSlot = intent.getSlot(COLUMN_NUMBER_SLOT);
 
-            String speechText = "";
+            String speechOutput = "";
 
             try {
                 if (lineSlot != null && columnSlot != null) {
@@ -151,16 +172,16 @@ public class OrdersTranslator {
                     return SpeechesGenerator.newTellResponse(Speeches.ERROR);
                 }
             } catch (NumberFormatException e) {
-                speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
-                return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+                speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+                return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
             } catch (Exception e) {
-                speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
-                return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+                speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+                return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
             }
 
-            speechText += fire(x, y);
+            speechOutput += fire();
 
-            return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+            return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         } else {
             String speechOutput = Speeches.NOT_YOUR_TURN + lastQuestion;
             return SpeechesGenerator.newAskResponse(speechOutput, false, lastQuestion, false);
@@ -181,28 +202,28 @@ public class OrdersTranslator {
 
             int z = -1;
 
-            String speechText = "";
+            String speechOutput = "";
 
             try {
                 if (lineOrColumnSlot != null) {
                     z = Integer.parseInt(lineLetterSlot.getValue());
-                    speechText = String.format(Speeches.YOU_GAVE_ONE_COORDINATE, z);
+                    speechOutput = String.format(Speeches.YOU_GAVE_ONE_COORDINATE, z);
                 } else if (lineLetterSlot != null) {
                     String givenChar = lineLetterSlot.getValue();
                     z = givenChar.toCharArray()[0] - 'a' + 1;
                     if (z < 0) {
                         z = givenChar.toCharArray()[0] - 'A' + 1;
                     }
-                    speechText = String.format(Speeches.YOU_GAVE_ONE_COORDINATE, z);
+                    speechOutput = String.format(Speeches.YOU_GAVE_ONE_COORDINATE, z);
                 } else {
                     return SpeechesGenerator.newTellResponse(Speeches.ERROR);
                 }
             } catch (NumberFormatException e) {
-                speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
-                return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+                speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+                return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
             } catch (Exception e) {
-                speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
-                return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+                speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+                return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
             }
 
             if (x == -1) {
@@ -211,34 +232,77 @@ public class OrdersTranslator {
                 if (y == -1) {
                     y = z;
                 } else {
-                    speechText = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
-                    return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+                    speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
+                    return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
                 }
 
-                speechText += fire(x, y);
+                speechOutput += fire();
             }
-            return SpeechesGenerator.newAskResponse(speechText, false, speechText, false);
+            return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         } else {
             String speechOutput = Speeches.NOT_YOUR_TURN + lastQuestion;
             return SpeechesGenerator.newAskResponse(speechOutput, false, lastQuestion, false);
         }
     }
 
-    private static String fire(int x, int y) {
-        String speechText = String.format(Speeches.YOU_FIRE, x, y);
+    private static String fire() {
+        if (canFire()) {
+            String speechOutput = String.format(Speeches.YOU_FIRE, x, y);
+            String repromptText = "";
 
-        //TODO: call to the game: I am firing at x, y (need to create a Coordinates class)
+            AttackResponse attackResponse = gameManager.fireAtPoint(new Point(x - 1, y - 1));
 
-        if (true) {
+            if (attackResponse.isCanAttack()) {
+                if (attackResponse.isAttackSuccessful()) {
+                    speechOutput += Speeches.HIT;
+                    if (gameManager.isGameOver()) {
+                        speechOutput += endGame();
+                    }
+                } else {
+                    speechOutput += Speeches.MISS;
+                }
 
+                if (!gameManager.isGameOver()) {
 
-            StateManager.getInstance().setTurnState(TurnState.ALEXA);
+                    Point alexaFire = gameManager.getNextAlexaHit();
+
+                    repromptText = String.format(Speeches.MY_TURN, alexaFire.x + 1, alexaFire.y + 1);
+                    StateManager.getInstance().setTurnState(TurnState.ALEXA);
+
+                    lastQuestion = repromptText;
+                    speechOutput += repromptText;
+                }
+
+                //StateManager.getInstance().setTurnState(TurnState.ALEXA);
+            } else {
+                return Speeches.ALREAD_TRIED_THIS_SPOT;
+            }
+
+            x = -1;
+            y = -1;
+
+            return speechOutput;
+        } else {
+            return String.format(Speeches.COORDINATES_NOT_VALID, 1, StateManager.getInstance().getGridSize(), x, y) + lastQuestion;
         }
+    }
 
-        x = -1;
-        y = -1;
+    private static String endGame(){
+        if (gameManager.didAlexWin()) {
+            return Speeches.YOU_LOSE;
+        } else {
+            return Speeches.YOU_WIN;
+        }
+    }
 
-        return speechText;
+    private static boolean canFire() {
+        int indexX = x-1;
+        int indexY = y-1;
+
+        return (indexX < StateManager.getInstance().getGridSize()
+                && indexX >= 0
+                && indexY < StateManager.getInstance().getGridSize()
+                && indexY >= 0);
     }
 
     /**
@@ -260,7 +324,15 @@ public class OrdersTranslator {
                     speechOutput = "Damn, I will do better next time! ";
                 }
 
-                String repromptText = "Sorry, my abilities are limited for now.";
+                StateManager.getInstance().setTurnState(TurnState.PLAYER);
+
+                if (gameManager.isGameOver()) {
+                    speechOutput += endGame();
+                    return SpeechesGenerator.newTellResponse(speechOutput);
+                }
+                speechOutput += Speeches.PROMPT_LINE_COLUMN;
+                String repromptText = Speeches.PROMPT_LINE_COLUMN;
+                lastQuestion = repromptText;
 
                 StateManager.getInstance().setTurnState(TurnState.PLAYER);
 
@@ -289,12 +361,16 @@ public class OrdersTranslator {
     }
 
     public static SpeechletResponse handleCancel() {
+        StateManager.getInstance().reset();
+
         String speechOutput = Speeches.LEAVING_MESSAGE;
 
         return SpeechesGenerator.newTellResponse(speechOutput);
     }
 
     public static SpeechletResponse handleStop() {
+        StateManager.getInstance().reset();
+
         String speechOutput = Speeches.LEAVING_MESSAGE;
 
         return SpeechesGenerator.newTellResponse(speechOutput);
@@ -307,9 +383,17 @@ public class OrdersTranslator {
         return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
     }
 
+    private static void initializeGameManager() {
+        StateManager stateManager = StateManager.getInstance();
+        int gridSize = stateManager.getGridSize();
+        int numberOfShips = stateManager.getNumberOfShips();
+        GameParameters gameParameters = new GameParameters(gridSize, gridSize, 1, numberOfShips);
+        gameManager = new GameManager(gameParameters);
+    }
+
     private static String startGameSpeech() {
         StateManager stateManager = StateManager.getInstance();
-        String speechOutput = String.format(Speeches.GAME_LAUNCH, stateManager.getGridSize(), stateManager.getGridSize(), stateManager.getNumberOfShips());
+        String speechOutput = String.format(Speeches.GAME_LAUNCH, stateManager.getGridSize(), stateManager.getNumberOfShips());
 
         return speechOutput;
     }

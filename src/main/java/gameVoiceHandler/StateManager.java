@@ -7,7 +7,7 @@ import java.util.List;
  * Created by corentinl on 1/23/16.
  */
 public class StateManager {
-    private static StateManager instance = null;
+    private static StateManager instance;
 
     private int gridSize;
     private int numberOfShips;
@@ -31,6 +31,13 @@ public class StateManager {
         return instance;
     }
 
+    public void reset() {
+        gridSize = -1;
+        numberOfShips = -1;
+        voiceState = VoiceState.INITIALIZATION;
+        turnState = TurnState.PLAYER;
+    }
+
     public boolean isGameReadyToBeStarted() {
         return (gridSize > 0 && numberOfShips > 0);
     }
@@ -39,6 +46,7 @@ public class StateManager {
         this.gridSize = 3;
         this.numberOfShips = 1;
         voiceState = VoiceState.QUICK_GAME_STARTED;
+        turnState = TurnState.PLAYER;
     }
 
     public void advancedGameAsked() {
@@ -47,6 +55,7 @@ public class StateManager {
 
     public void startAdvancedGame() {
         voiceState = VoiceState.ADVANCED_GAME_STARTED;
+        turnState = TurnState.PLAYER;
     }
 
     public boolean isGamesStarted(){

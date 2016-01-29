@@ -23,7 +23,7 @@ public class Speeches {
     public static final String REPEAT = ", could you repeat please? ";
 
     //QUICK GAME
-    public static final String GAME_LAUNCH = "A %d by %d game with %d ships has been created for you. ";
+    public static final String GAME_LAUNCH = "I am ready, let's start the game with a grid size of %d and %d ship. ";
     public static final String GAME_ALREADY_STARTED = "The game has already began, "
             + "if you wish to start a new game, you may end this one first by saying stop. ";
 
@@ -36,8 +36,7 @@ public class Speeches {
     public static final String PROMPT_NUMBER_OF_SHIPS_ONLY = "I got the grid size, could you provide a number of ships now? ";
 
     //GAME TURNS
-    public static final String GAME_START = "I am ready, let's start the game with a grid size of %d and %d ships. ";
-    public static final String YOUR_TURN = "It's your turn! Please provide me a line and a column. ";
+    public static final String MY_TURN = "It's my turn now! I am firing at line %d, and column %d. Did I hit, or did I miss? ";
 
     public static final String PROMPT_LINE_COLUMN = "It's your turn, please provide a line and a column where you want to hit. ";
     public static final String PROMPT_LINE_ONLY= "I got the column, could you provide a line now? ";
@@ -45,13 +44,22 @@ public class Speeches {
 
     public static final String YOU_GAVE_ONE_COORDINATE = "You gave the coordinate %d. ";
     public static final String YOU_FIRE = "You are firing at line %d and column %d. ";
+    public static final String COORDINATES_NOT_VALID = "Hum, it seems that the coordinates you gave are not within the range. "
+            + "They should be between %d and %d, and you entered lines %d and column %d";
+    public static final String ALREAD_TRIED_THIS_SPOT = "You already tried those coordinates, dumbass. Try other ones! ";
 
     public static final String NOT_YOUR_TURN = "This is not your turn, you sneaky! ";
     public static final String WAS_YOUR_TURN = "This is your turn, unless you want me to bomb you twice in a row! ";
 
     public static final String ALREADY_HIT = "It seems that you already hit this position, could you give me another one? ";
-    public static final String HIT = "That's a hit! but don't get cocky cow-boy... ";
-    public static final String MISS = "You lamentably missed! ";
+    public static final String HIT = "That's a hit! ";
+    //public static final String HIT = "That's a hit! but don't get cocky cow-boy... ";
+    public static final String MISS = "You miserably missed! ";
+
+    //WINNING
+    public static final String YOU_WIN = "Ok, you win, but be careful because skynet will destroy you, one day... ";
+    public static final String YOU_LOSE = "You loose! The machines will kill all of you! ";
+    public static final String ANYTHING_ELSE = "Anything else you want to say before I leave you? ";
 
     //HELP
     public static final String HELP_SPEECH_BEGINNING = "I need you to choose between"
