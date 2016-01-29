@@ -23,7 +23,7 @@ public class Board {
 
         for (Battleship battleship : battleShips) {
             for (Tile occupiedTile : battleship.getOccupiedTiles()) {
-                this.updateTileStatus(Tile.SHIP_COVERED_TILE, new Point(occupiedTile.getX(), occupiedTile.getY()));
+                this.updateTileStatus(Tile.SHIP_COVERED_TILE, new Point(occupiedTile.getX(), occupiedTile.getY()), battleship);
             }
         }
     }
@@ -39,6 +39,7 @@ public class Board {
             if (space.containsShip()) {
                 attackSuccessful = true;
                 space.setTileState(Tile.BATTLESHIP_HIT_TILE);
+                space.getShip().battleshipHit();
             } else {
                 space.setTileState(Tile.FIRED_UPON_TILE);
             }
@@ -47,10 +48,11 @@ public class Board {
         return new AttackResponse(canAttack, attackSuccessful);
     }
 
-    public void updateTileStatus(String status, Point attackPoint) {
+    public void updateTileStatus(String status, Point attackPoint, Battleship battleship) {
         Tile space = this.tiles[attackPoint.x][attackPoint.y];
 
         space.setTileState(status);
+        space.setBattleShip(battleship);
     }
 
     public boolean areAllBattleShipsSunk() {

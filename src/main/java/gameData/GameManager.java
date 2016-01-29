@@ -75,7 +75,7 @@ public class GameManager {
         String status = wasHit ? Tile.BATTLESHIP_HIT_TILE : Tile.FIRED_UPON_TILE;
         this.numberOfHits = wasHit ? this.numberOfHits + 1 : numberOfHits;
 
-        this.playerTwoBoard.updateTileStatus(status, this.alexasLastAttackPoint);
+        this.playerTwoBoard.updateTileStatus(status, this.alexasLastAttackPoint, new Battleship(new Tile[2]));
     }
 
     public boolean isGameOver() {
@@ -83,11 +83,11 @@ public class GameManager {
     }
 
     public boolean didPlayerOneWin() {
-        return playerOneBoard.areAllBattleShipsSunk();
+        return playerTwoBoard.areAllBattleShipsSunk();
     }
 
     public boolean didPlayerTwoWin() {
-        return playerTwoBoard.areAllBattleShipsSunk();
+        return playerOneBoard.areAllBattleShipsSunk();
     }
 
     public boolean didAlexWin() {

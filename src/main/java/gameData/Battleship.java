@@ -9,12 +9,12 @@ public class Battleship {
     private Tile[] occupiedTiles;
     private int timesHit;
 
-    public static Battleship generateBattleship(Point startPoint, int maxWidth, int maxHeight) {
+    public static Battleship generateBattleship(Point startPoint, int numberOfRows, int numberOfColumns) {
         Tile[] occupiedTiles = new Tile[Battleship.battleShipLength()];
 
         // Will work on something fancy if time permits;
         for (int i = 0; i < occupiedTiles.length; i++) {
-            int column = startPoint.y + 1 < maxHeight ? startPoint.y + 1 : startPoint.y - 1;
+            int column = startPoint.y + i > numberOfColumns - 1 ? startPoint.y - i : startPoint.y + i;
             occupiedTiles[i] = new Tile(startPoint.x, column, Tile.SHIP_COVERED_TILE);
         }
 
