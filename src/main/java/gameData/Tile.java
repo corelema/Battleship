@@ -12,6 +12,7 @@ public class Tile {
     public static final String BATTLESHIP_HIT_TILE = "hit";
 
     private String tileState;
+    private Battleship ship;
     private int x;
     private int y;
 
