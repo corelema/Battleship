@@ -57,7 +57,7 @@ public class Speeches {
 
     //WINNING
     public static final String YOU_WIN = "Ok, you win, but be careful because skynet will destroy you, one day... ";
-    public static final String YOU_LOOSE = "You loose! The machines will kill all of you! ";
+    public static final String YOU_LOSE = "You loose! The machines will kill all of you! ";
     public static final String ANYTHING_ELSE = "Anything else you want to say before I leave you? ";
 
     //HELP

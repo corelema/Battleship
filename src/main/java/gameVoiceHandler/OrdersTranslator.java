@@ -257,12 +257,15 @@ public class OrdersTranslator {
                     speechOutput += Speeches.MISS;
                 }
 
-                Point alexaFire = gameManager.getNextAlexaHit();
+                if (!gameManager.isGameOver()) {
 
-                repromptText = String.format(Speeches.MY_TURN, alexaFire.x + 1, alexaFire.y + 1);
+                    Point alexaFire = gameManager.getNextAlexaHit();
 
-                lastQuestion = repromptText;
-                speechOutput += repromptText;
+                    repromptText = String.format(Speeches.MY_TURN, alexaFire.x + 1, alexaFire.y + 1);
+
+                    lastQuestion = repromptText;
+                    speechOutput += repromptText;
+                }
 
                 //StateManager.getInstance().setTurnState(TurnState.ALEXA);
             } else {
@@ -279,7 +282,11 @@ public class OrdersTranslator {
     }
 
     private static String endGame(){
-        return Speeches.YOU_WIN + Speeches.ANYTHING_ELSE;
+        if (gameManager.didAlexWin()) {
+            return Speeches.YOU_LOSE;
+        } else {
+            return Speeches.YOU_WIN;
+        }
     }
 
     private static boolean canFire() {
@@ -307,13 +314,14 @@ public class OrdersTranslator {
 
                 if (isHit) {
                     speechOutput = "Haha, I hit you! ";
-                    if (gameManager.isGameOver()) {
-                        speechOutput += endGame();
-                    }
                 } else {
                     speechOutput = "Damn, I will do better next time! ";
                 }
 
+                if (gameManager.isGameOver()) {
+                    speechOutput += endGame();
+                    return SpeechesGenerator.newTellResponse(speechOutput);
+                }
                 speechOutput += Speeches.PROMPT_LINE_COLUMN;
                 String repromptText = Speeches.PROMPT_LINE_COLUMN;
                 lastQuestion = repromptText;
