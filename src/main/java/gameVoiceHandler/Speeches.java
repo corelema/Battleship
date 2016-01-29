@@ -51,7 +51,6 @@ public class Speeches {
     public static final String NOT_YOUR_TURN = "This is not your turn, you sneaky! ";
     public static final String WAS_YOUR_TURN = "This is your turn, unless you want me to bomb you twice in a row! ";
 
-    public static final String ALREADY_HIT = "It seems that you already hit this position, could you give me another one? ";
     public static final String HIT = "That's a hit! ";
     //public static final String HIT = "That's a hit! but don't get cocky cow-boy... ";
     public static final String MISS = "You miserably missed! ";
@@ -59,7 +58,6 @@ public class Speeches {
     //WINNING
     public static final String YOU_WIN = "Ok, you win, but be careful because skynet will destroy you, one day... ";
     public static final String YOU_LOSE = "You loose! The machines will kill all of you! ";
-    public static final String ANYTHING_ELSE = "Anything else you want to say before I leave you? ";
 
     //HELP
     public static final String HELP_SPEECH_BEGINNING = "I need you to choose between"
