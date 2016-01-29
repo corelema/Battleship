@@ -35,12 +35,20 @@ public class Tile {
         this.setTileState(tileState);
     }
 
+    public void setBattleShip(Battleship ship) {
+        this.ship = ship;
+    }
+
+    public Battleship getShip() {
+        return this.ship;
+    }
+
     public boolean isOpen() {
         return Objects.equals(tileState, OPEN_TILE);
     }
 
     public boolean containsShip() {
-        return Objects.equals(tileState, SHIP_COVERED_TILE);
+        return Objects.equals(tileState, SHIP_COVERED_TILE) && this.ship != null;
     }
 
     public boolean hasBeenFiredUpon() {
