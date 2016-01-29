@@ -19,9 +19,11 @@ public class Board {
     }
 
     public void setBattleShips(Battleship[] battleShips) {
+        this.battleships = battleShips;
+
         for (Battleship battleship : battleShips) {
-            for (Tile selectedTile : battleship.getOccupiedTiles()) {
-                selectedTile.setTileState(Tile.SHIP_COVERED_TILE);
+            for (Tile occupiedTile : battleship.getOccupiedTiles()) {
+                this.updateTileStatus(Tile.SHIP_COVERED_TILE, new Point(occupiedTile.getX(), occupiedTile.getY()));
             }
         }
     }
