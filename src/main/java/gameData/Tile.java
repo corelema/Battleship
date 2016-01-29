@@ -16,15 +16,22 @@ public class Tile {
     private int y;
 
     public void setTileState(String state) {
-        if (Objects.equals(state, OPEN_TILE) || (Objects.equals(state, SHIP_COVERED_TILE)) || (Objects.equals(state, FIRED_UPON_TILE))) {
+        if (Objects.equals(state, OPEN_TILE) || (Objects.equals(state, SHIP_COVERED_TILE)) || (Objects.equals(state, FIRED_UPON_TILE) || Objects.equals(state, BATTLESHIP_HIT_TILE))) {
             tileState = state;
         }
     }
 
     public Tile(int x, int y) {
-        this.tileState = OPEN_TILE;
         this.x         = x;
         this.y         = y;
+        this.tileState = OPEN_TILE;
+    }
+
+    public Tile(int x, int y, String tileState) {
+        this.x          = x;
+        this.y          = y;
+
+        this.setTileState(tileState);
     }
 
     public boolean isOpen() {

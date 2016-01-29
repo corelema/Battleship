@@ -12,9 +12,11 @@ public class GameManager {
     private Board playerTwoBoard;  // Alexa for now
 
     private Point alexasLastAttackPoint;
+    private int numberOfHits;
 
     public GameManager(GameParameters parameters) {
-        this.parameters = parameters;
+        this.parameters   = parameters;
+        this.numberOfHits = 0;
 
         initGame();
     }
@@ -31,30 +33,21 @@ public class GameManager {
 
     private void initBattleShips() {
         playerOneBoard.setBattleShips(this.generateBattleShipsForPlayer());
-        playerTwoBoard.setBattleShips(this.generateBattleShipsForPlayer());
+
+        if (this.parameters.getNumberOfPlayers() > 1) {
+            playerTwoBoard.setBattleShips(this.generateBattleShipsForPlayer());
+        } else {
+            playerTwoBoard.setBattleShips(new Battleship[0]);
+        }
     }
 
     private Battleship[] generateBattleShipsForPlayer() {
         Battleship[] ships = new Battleship[parameters.getNumberOfBattleShips()];
         for (int i = 0; i < parameters.getNumberOfBattleShips(); i++) {
-            ships[i] = this.generateBattleShip();
+            ships[i] = Battleship.generateBattleship(this.randomlyGeneratedPoint());
         }
 
         return ships;
-    }
-
-    private Battleship generateBattleShip() {
-        Tile[] occupiedTiles = new Tile[Battleship.battleShipLength()];
-        Point startPoint     = this.randomlyGeneratedPoint();
-
-        // Will work on something fancy if time permits;
-        for (int i = 0; i < occupiedTiles.length; i++) {
-            occupiedTiles[i] = new Tile(startPoint.x, startPoint.y++);
-        }
-
-        Battleship ship = new Battleship(occupiedTiles);
-
-        return ship;
     }
 
     private Point randomlyGeneratedPoint() {
@@ -66,8 +59,9 @@ public class GameManager {
         return new Point(startX, startY);
     }
 
+    // TODO: bounds checking
     public AttackResponse fireAtPoint(Point point) {
-        return this.fireAtPoint(point, this.playerTwoBoard);
+        return this.fireAtPoint(point, this.playerOneBoard);
     }
 
     public Point getNextAlexaHit() {
@@ -79,11 +73,13 @@ public class GameManager {
 
     public void didAlexaHit(boolean wasHit) {
         String status = wasHit ? Tile.BATTLESHIP_HIT_TILE : Tile.FIRED_UPON_TILE;
-        this.playerOneBoard.updateTileStatus(status, this.alexasLastAttackPoint);
+        this.numberOfHits = wasHit ? this.numberOfHits + 1 : numberOfHits;
+
+        this.playerTwoBoard.updateTileStatus(status, this.alexasLastAttackPoint);
     }
 
     public boolean isGameOver() {
-        return (playerOneBoard.areAllBattleShipsSunk() || playerTwoBoard.areAllBattleShipsSunk());
+        return (playerOneBoard.areAllBattleShipsSunk() || playerTwoBoard.areAllBattleShipsSunk() || this.numberOfHits == 2);
     }
 
     private AttackResponse fireAtPoint(Point point, Board board) {
