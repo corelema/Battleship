@@ -1,4 +1,4 @@
-package gameVoiceHandler;
+package gameVoiceHandler.intents.speeches;
 
 /**
  * Created by corentinl on 1/23/16.
@@ -54,6 +54,9 @@ public class Speeches {
     public static final String HIT = "That's a hit! ";
     //public static final String HIT = "That's a hit! but don't get cocky cow-boy... ";
     public static final String MISS = "You miserably missed! ";
+
+    public static final String GOT_YOU = "Haha, I got you! ";
+    public static final String YOU_GOT_ME = "Damn, I will do better next time! ";
 
     //WINNING
     public static final String YOU_WIN = "Ok, you win, but be careful because skynet will destroy you, one day... ";

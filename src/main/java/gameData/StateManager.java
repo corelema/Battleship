@@ -1,10 +1,9 @@
-package gameVoiceHandler;
+package gameData;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.ArrayList;
-import java.util.List;
+import gameData.enums.Difficulty;
+import gameData.enums.VoiceState;
 
 /**
  * Created by corentinl on 1/23/16.
@@ -18,20 +17,18 @@ public class StateManager {
     public static final String PLAYER = "PLAYER";
     public static final String ALEXA = "ALEXA";
 
-    @JsonProperty
     private int gridSize;
-    @JsonProperty
     private int numberOfShips;
-    @JsonProperty
     private String voiceState;
-    @JsonProperty
     private String turnState;
+    private Difficulty difficulty;
 
-    public StateManager(@JsonProperty("gridSize") int gridSize, @JsonProperty("numberOfShips") int numberOfShips, @JsonProperty("voiceState") String voiceState, @JsonProperty("turnState") String turnState) {
+    public StateManager(int gridSize, int numberOfShips, String voiceState, String turnState, Difficulty difficulty) {
         this.gridSize = gridSize;
         this.numberOfShips = numberOfShips;
         this.voiceState = voiceState;
         this.turnState = turnState;
+        this.difficulty = difficulty;
     }
 
     public StateManager() {
@@ -39,9 +36,8 @@ public class StateManager {
         numberOfShips = -1;
         voiceState = INITIALIZATION;
         turnState = PLAYER;
-
+        difficulty = Difficulty.EASY;
     }
-
 
     @JsonIgnore
     public boolean isGameReadyToBeStarted() {
@@ -64,9 +60,25 @@ public class StateManager {
         turnState = PLAYER;
     }
 
+    public GameParameters generateGameParameters() {
+        return new GameParameters(gridSize, gridSize, numberOfShips, difficulty);
+    }
+
+    /**STATE**/
+
     @JsonIgnore
     public boolean isGamesStarted(){
         return (voiceState.equals(QUICK_GAME_STARTED) || voiceState.equals(VoiceState.ADVANCED_GAME_STARTED));
+    }
+
+    @JsonIgnore
+    public boolean isGamesBeingInitialized(){
+        return (voiceState.equals(INITIALIZATION));
+    }
+
+    @JsonIgnore
+    public boolean isAdvancedGameBeingInitizlized(){
+        return (voiceState.equals(ADVANCED_GAME_ASKED));
     }
 
     public String missingParametersSentence() {
@@ -117,10 +129,6 @@ public class StateManager {
     @JsonProperty("numberOfShips")
     public void setNumberOfShips(int numberOfShips) {
         this.numberOfShips = numberOfShips;
-    }
-
-    public String getVoiceState() {
-        return voiceState;
     }
 
     @JsonProperty("voiceState")

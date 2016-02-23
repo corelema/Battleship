@@ -1,114 +1,90 @@
 package gameData;
 
-import java.awt.*;
-import java.util.Random;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import gameData.Battleships.ShipGenerator;
+import gameData.fireAlgorithms.FireAlgorithmRandom;
+import gameData.fireAlgorithms.FireAlgorithmAbstract;
+import gameData.Battleships.Battleship;
+import gameData.Boards.AlexaBoard;
+import gameData.Boards.PlayerBoard;
+
+import java.awt.Point;
+import java.util.List;
+
 
 /**
  * Created by paul.moon on 1/28/16.
  */
 public class GameManager {
+    @JsonProperty
     private GameParameters parameters;
-    private Board playerOneBoard;  // User
-    private Board alexaBoard;  // Alexa for now
+    @JsonProperty
+    private PlayerBoard playerOneBoard;
+    @JsonProperty
+    private AlexaBoard alexaBoard;
+    private FireAlgorithmAbstract fireAlgorithm;
+    @JsonProperty
+    private Point lastAlexaAttackCoordinates;
 
-    private Point alexasLastAttackPoint;
-    private int numberOfHits;
-    private int numberOfHitsByPlayer;
+    public GameManager() {
+    }
 
     public GameManager(GameParameters parameters) {
-        this.parameters   = parameters;
-        this.numberOfHits = 0;
-        numberOfHitsByPlayer = 0;
-
+        this.parameters = parameters;
         initGame();
     }
 
     private void initGame() {
         initGameBoards();
         initBattleShips();
+        initFireAlgorithm();
     }
 
     private void initGameBoards() {
-        this.playerOneBoard = new Board(parameters.getRows(), parameters.getColumns());
-        this.alexaBoard = new Board(parameters.getRows(), parameters.getColumns());
+        playerOneBoard = new PlayerBoard(parameters.getNbRows(), parameters.getNbColumns());
+        alexaBoard = new AlexaBoard(parameters.getNbRows(), parameters.getNbColumns());
     }
 
     private void initBattleShips() {
-        alexaBoard.setBattleShips(this.generateBattleShipsForPlayer());
+        List<Battleship> randomBattleships = new ShipGenerator().generateDefaultShips();
+        alexaBoard.addBattleShips(randomBattleships);
+    }
 
-        /*
-        if (this.parameters.getNumberOfPlayers() > 1) {
-            alexaBoard.setBattleShips(this.generateBattleShipsForPlayer());
-        } else {
-            alexaBoard.setBattleShips(new Battleship[0]);
+    private void initFireAlgorithm() {
+        if (alexaBoard != null) { //TODO: Make sure that initFireAlgorithm is called after initGameBoards
+            fireAlgorithm = new FireAlgorithmRandom(parameters.getNbRows(), parameters.getNbColumns(), alexaBoard);
         }
-        */
     }
 
-    private Battleship[] generateBattleShipsForPlayer() {
-        Battleship[] ships = new Battleship[parameters.getNumberOfBattleShips()];
-        for (int i = 0; i < parameters.getNumberOfBattleShips(); i++) {
-            ships[i] = Battleship.generateBattleship(this.randomlyGeneratedPoint(), this.parameters.getRows(), this.parameters.getColumns());
-        }
-
-        return ships;
+    public AttackResponse fireAtPoint(Point coordinates) {
+        return alexaBoard.fireAtPoint(coordinates);
     }
 
-    private Point randomlyGeneratedPoint() {
-        Random randomNumber = new Random();
+    public Point nextAlexaHit() {
+        this.lastAlexaAttackCoordinates = this.fireAlgorithm.getNextHit();
 
-        int startX = randomNumber.nextInt(this.parameters.getRows());
-        int startY = randomNumber.nextInt(this.parameters.getColumns());
-
-        return new Point(startX, startY);
+        return lastAlexaAttackCoordinates;
     }
 
-    // TODO: bounds checking
-    public AttackResponse fireAtPoint(Point point) {
-        AttackResponse response = this.fireAtPoint(point, this.alexaBoard);
-
-        if (response.isCanAttack() && response.isAttackSuccessful()) {
-            numberOfHitsByPlayer++;
-        }
-
-        return response;
-    }
-
-    public Point getNextAlexaHit() {
-        this.alexasLastAttackPoint = this.randomlyGeneratedPoint();
-        this.fireAtPoint(this.alexasLastAttackPoint, this.playerOneBoard);
-
-        return this.alexasLastAttackPoint;
+    public void giveResultForAlexasTurn(boolean wasHit) {
+        this.playerOneBoard.updateTileWithAttackResult(lastAlexaAttackCoordinates, wasHit);
     }
 
     public void didAlexaHit(boolean wasHit) {
-        String status = wasHit ? Tile.BATTLESHIP_HIT_TILE : Tile.FIRED_UPON_TILE;
-
-        if (wasHit) {
-            numberOfHits++;
-        }
-
-        //this.playerOneBoard.updateTileStatus(status, this.alexasLastAttackPoint, new Battleship(new Tile[2]));
+        this.playerOneBoard.updateTileWithAttackResult(lastAlexaAttackCoordinates, wasHit);
     }
 
-    public boolean isGameOver() {
-        return (playerOneBoard.areAllBattleShipsSunk() || alexaBoard.areAllBattleShipsSunk() || this.numberOfHits >= 1 || this.numberOfHitsByPlayer >= 1);
+    public boolean gameIsOver() {
+        //return (playerOneBoard.areAllBattleShipsSunk() || alexaBoard.areAllBattleShipsSunk());
+        return false;
     }
 
     public boolean didPlayerOneWin() {
-        return alexaBoard.areAllBattleShipsSunk();
+        //return alexaBoard.areAllBattleShipsSunk();
+        return false;
     }
 
-    public boolean didPlayerTwoWin() {
+    public boolean didAlexaWin() {
         return playerOneBoard.areAllBattleShipsSunk();
-    }
-
-    public boolean didAlexWin() {
-        return this.numberOfHits >= 1;
-    }
-
-
-    private AttackResponse fireAtPoint(Point point, Board board) {
-        return board.fireAtPoint(point);
     }
 }
