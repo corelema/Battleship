@@ -17,6 +17,8 @@ public class StateManager {
     public static final String PLAYER = "PLAYER";
     public static final String ALEXA = "ALEXA";
 
+    //TODO: Extract the GameParameters in its own instance, to avoid duplication between here and GameManager
+
     private int gridSize;
     private int numberOfShips;
     private String voiceState;

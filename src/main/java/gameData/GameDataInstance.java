@@ -16,7 +16,6 @@ public class GameDataInstance {
     private static GameManager gameManager;
     private static StateManager stateManager;
 
-
     private GameDataInstance() {
     }
 
@@ -37,7 +36,7 @@ public class GameDataInstance {
         return instance;
     }
 
-    public void serializeAll() {
+    public void saveToSession() {
         serializeGameManager();
         serializeStateManager();
     }
@@ -52,10 +51,6 @@ public class GameDataInstance {
 
     public boolean isGameManagerInstantiated() {
         return (gameManager != null);
-    }
-
-    public boolean isStateManagerInstantiated() {
-        return (stateManager != null);
     }
 
     /*GETTERS AND SETTERS*/

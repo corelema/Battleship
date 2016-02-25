@@ -6,8 +6,9 @@ import gameData.GameDataInstance;
 import gameData.GameManager;
 import gameData.GameParameters;
 import gameData.StateManager;
-import gameVoiceHandler.intents.BadIntentUtil;
+import gameVoiceHandler.intents.handlers.Utils.BadIntentUtil;
 import gameVoiceHandler.intents.HandlerInterface;
+import gameVoiceHandler.intents.handlers.Utils.GameStarterUtil;
 import gameVoiceHandler.intents.speeches.SharedSpeeches;
 import gameVoiceHandler.intents.speeches.Speeches;
 import gameVoiceHandler.intents.speeches.SpeechesGenerator;
@@ -24,15 +25,12 @@ public class HandleStartQuickGame implements HandlerInterface {
 
         StateManager stateManager = gameDataInstance.getStateManager();
 
-        stateManager.startQuickGame();
-        GameParameters gameParameters = stateManager.generateGameParameters();
-        GameManager gameManager = new GameManager(gameParameters);
-
-        gameDataInstance.setGameManager(gameManager);
+        GameStarterUtil.startQuickGame(gameDataInstance);
 
         String speechOutput = SharedSpeeches.startGameSpeech(stateManager) + Speeches.PROMPT_LINE_COLUMN;
         String repromptText = Speeches.PROMPT_LINE_COLUMN;
-        //lastQuestion = repromptText;
+
+        gameDataInstance.getGameManager().setLastQuestionAsked(repromptText);
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
     }

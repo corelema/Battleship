@@ -46,8 +46,4 @@ public class PlayerBoard extends BoardAbstract {
             }
         }
     }
-
-    public boolean areAllBattleShipsSunk() {
-        return numberOfHitsReceived == numberOfHitsNecessary;
-    }
 }

@@ -16,6 +16,7 @@ import java.util.List;
  * Created by paul.moon on 1/28/16.
  */
 public class GameManager {
+    //TODO: Check if I need the JsonProperty, and if I need the getter and setters
     @JsonProperty
     private GameParameters parameters;
     @JsonProperty
@@ -25,6 +26,12 @@ public class GameManager {
     private FireAlgorithmAbstract fireAlgorithm;
     @JsonProperty
     private Point lastAlexaAttackCoordinates;
+    @JsonProperty
+    private int lastPlayerAttackXCoordinate;
+    @JsonProperty
+    private int lastPlayerAttackYCoordinate;
+
+    private static String lastQuestionAsked;
 
     public GameManager() {
     }
@@ -75,16 +82,40 @@ public class GameManager {
     }
 
     public boolean gameIsOver() {
-        //return (playerOneBoard.areAllBattleShipsSunk() || alexaBoard.areAllBattleShipsSunk());
-        return false;
-    }
-
-    public boolean didPlayerOneWin() {
-        //return alexaBoard.areAllBattleShipsSunk();
-        return false;
+        return (playerOneBoard.areAllBattleShipsSunk() || alexaBoard.areAllBattleShipsSunk());
     }
 
     public boolean didAlexaWin() {
         return playerOneBoard.areAllBattleShipsSunk();
+    }
+
+    /**GETTERS AND SETTERS**/
+
+    public GameParameters getParameters() {
+        return parameters;
+    }
+
+    public String getLastQuestionAsked() {
+        return lastQuestionAsked;
+    }
+
+    public void setLastQuestionAsked(String lastQuestionAsked) {
+        this.lastQuestionAsked = lastQuestionAsked;
+    }
+
+    public int getLastPlayerAttackYCoordinate() {
+        return lastPlayerAttackYCoordinate;
+    }
+
+    public void setLastPlayerAttackYCoordinate(int lastPlayerAttackYCoordinate) {
+        this.lastPlayerAttackYCoordinate = lastPlayerAttackYCoordinate;
+    }
+
+    public int getLastPlayerAttackXCoordinate() {
+        return lastPlayerAttackXCoordinate;
+    }
+
+    public void setLastPlayerAttackXCoordinate(int lastPlayerAttackXCoordinate) {
+        this.lastPlayerAttackXCoordinate = lastPlayerAttackXCoordinate;
     }
 }

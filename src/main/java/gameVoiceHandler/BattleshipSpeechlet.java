@@ -42,7 +42,11 @@ public class BattleshipSpeechlet implements Speechlet {
         HandlerFactory factory = new HandlerFactory();
         HandlerInterface handler = factory.getHandler(intentName);
 
-        return handler.handleIntent(intent, gameDataInstance);
+        SpeechletResponse speechletResponse = handler.handleIntent(intent, gameDataInstance);
+
+        gameDataInstance.saveToSession();
+
+        return speechletResponse;
     }
 
     @Override

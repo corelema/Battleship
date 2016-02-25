@@ -92,4 +92,8 @@ public abstract class BoardAbstract {
 
         return s.toString();
     }
+
+    public boolean areAllBattleShipsSunk() {
+        return numberOfHitsReceived == numberOfHitsNecessary;
+    }
 }

@@ -6,11 +6,13 @@ import gameData.GameDataInstance;
 import gameData.GameManager;
 import gameData.GameParameters;
 import gameData.StateManager;
-import gameVoiceHandler.intents.BadIntentUtil;
+import gameVoiceHandler.intents.handlers.Utils.BadIntentUtil;
 import gameVoiceHandler.intents.HandlerInterface;
+import gameVoiceHandler.intents.handlers.Utils.GameStarterUtil;
 import gameVoiceHandler.intents.speeches.SharedSpeeches;
 import gameVoiceHandler.intents.speeches.Speeches;
 import gameVoiceHandler.intents.speeches.SpeechesGenerator;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  * Created by corentinl on 2/22/16.
@@ -27,37 +29,30 @@ public class HandleGameParameter implements HandlerInterface {
 
         StateManager stateManager = gameDataInstance.getStateManager();
 
-        String speechOutput = "";
-        try {
-            if (intent.getSlot(GRID_SIZE_SLOT) != null) {
-                stateManager.setGridSize(Integer.parseInt(intent.getSlot(GRID_SIZE_SLOT).getValue()));
+        String speechOutput = GameStarterUtil.incorrectParametersSpeech();
+        String repromptText = speechOutput;
+
+        if (intent.getSlot(GRID_SIZE_SLOT) != null) {
+            String gridSizeParameter = intent.getSlot(GRID_SIZE_SLOT).getValue();
+            if (NumberUtils.isNumber(gridSizeParameter)) {
+                stateManager.setGridSize(Integer.parseInt(gridSizeParameter));
                 speechOutput = Speeches.GRID_SIZE_GIVEN + stateManager.getGridSize() + ". ";
-            } else if (intent.getSlot(NUMBER_OF_SHIPS_SLOT) != null) {
-                stateManager.setNumberOfShips(Integer.parseInt(intent.getSlot(NUMBER_OF_SHIPS_SLOT).getValue()));
-                speechOutput = Speeches.NUMBER_OF_SHIPS_GIVEN + stateManager.getNumberOfShips() + ". ";
-            } else {
-                return SpeechesGenerator.newTellResponse(Speeches.ERROR);
             }
-        } catch (NumberFormatException e) {
-            speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
-            return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
+        } else if (intent.getSlot(NUMBER_OF_SHIPS_SLOT) != null) {
+            String numberOfShipsParameters = intent.getSlot(NUMBER_OF_SHIPS_SLOT).getValue();
+            if (NumberUtils.isNumber(numberOfShipsParameters)) {
+                stateManager.setNumberOfShips(Integer.parseInt(numberOfShipsParameters));
+                speechOutput = Speeches.NUMBER_OF_SHIPS_GIVEN + stateManager.getNumberOfShips() + ". ";
+            }
         }
 
         if (stateManager.isGameReadyToBeStarted()) {
-            if (stateManager.isGameReadyToBeStarted()) {
-                return startAdvancedGame(gameDataInstance);
-            } else {
-                speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER + Speeches.REPEAT;
-                return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
-            }
-
+            speechOutput += GameStarterUtil.startAdvancedGame(gameDataInstance);
+            repromptText = Speeches.PROMPT_LINE_COLUMN;
         } else {
-            if (stateManager.isGridSizeCorrect()) {
-                speechOutput += Speeches.PROMPT_NUMBER_OF_SHIPS_ONLY;
-            } else {
-                speechOutput += Speeches.PROMPT_GRID_SIZE_ONLY;
-            }
+            speechOutput += missingParameterPrompt(stateManager);
         }
+        gameDataInstance.getGameManager().setLastQuestionAsked(repromptText);
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
     }
@@ -66,24 +61,7 @@ public class HandleGameParameter implements HandlerInterface {
         return gameDataInstance.getStateManager().isAdvancedGameBeingInitizlized();
     }
 
-    private static SpeechletResponse startAdvancedGame(GameDataInstance gameDataInstance) {
-        StateManager stateManager = gameDataInstance.getStateManager();
-        if (!stateManager.isGamesStarted()) { //TODO: check if I can remove
-            stateManager.startAdvancedGame();
-
-            GameParameters gameParameters = stateManager.generateGameParameters();
-            GameManager gameManager = new GameManager(gameParameters);
-
-            gameDataInstance.setGameManager(gameManager);
-
-            String speechOutput = SharedSpeeches.startGameSpeech(stateManager) + Speeches.PROMPT_LINE_COLUMN;
-            String repromptText = Speeches.PROMPT_LINE_COLUMN;
-            //lastQuestion = repromptText;
-
-            return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
-        }
-
-        String speechOutput = Speeches.GAME_ALREADY_STARTED;
-        return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);//lastQuestion, false);
+    private String missingParameterPrompt(StateManager stateManager) {
+        return stateManager.isGridSizeCorrect() ? Speeches.PROMPT_NUMBER_OF_SHIPS_ONLY : Speeches.PROMPT_GRID_SIZE_ONLY;
     }
 }

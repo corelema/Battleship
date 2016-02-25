@@ -1,4 +1,4 @@
-package gameVoiceHandler.intents;
+package gameVoiceHandler.intents.handlers.Utils;
 
 import com.amazon.speech.speechlet.SpeechletResponse;
 import gameVoiceHandler.intents.speeches.Speeches;

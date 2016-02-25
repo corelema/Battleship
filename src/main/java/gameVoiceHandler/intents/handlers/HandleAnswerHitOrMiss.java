@@ -6,7 +6,7 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import gameData.GameDataInstance;
 import gameData.GameManager;
 import gameData.StateManager;
-import gameVoiceHandler.intents.BadIntentUtil;
+import gameVoiceHandler.intents.handlers.Utils.BadIntentUtil;
 import gameVoiceHandler.intents.HandlerInterface;
 import gameVoiceHandler.intents.speeches.SharedSpeeches;
 import gameVoiceHandler.intents.speeches.Speeches;
@@ -50,7 +50,7 @@ public class HandleAnswerHitOrMiss implements HandlerInterface {
                 }
                 speechOutput += Speeches.PROMPT_LINE_COLUMN;
                 String repromptText = Speeches.PROMPT_LINE_COLUMN;
-                //lastQuestion = repromptText;
+                gameManager.setLastQuestionAsked(repromptText);
 
                 stateManager.setTurnState(StateManager.PLAYER);
 
@@ -59,8 +59,8 @@ public class HandleAnswerHitOrMiss implements HandlerInterface {
                 return handleHelpAsked();
             }
         } else {
-            String speechOutput = Speeches.WAS_YOUR_TURN;// + lastQuestion;
-            return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);//lastQuestion, false);
+            String speechOutput = Speeches.WAS_YOUR_TURN + gameManager.getLastQuestionAsked();
+            return SpeechesGenerator.newAskResponse(speechOutput, false, gameManager.getLastQuestionAsked(), false);
         }
     }
 

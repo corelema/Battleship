@@ -11,7 +11,7 @@ public class SharedSpeeches {
     public static String startGameSpeech(StateManager stateManager) {
         String speechOutput = String.format(Speeches.GAME_LAUNCH, stateManager.getGridSize(), stateManager.getNumberOfShips());
 
-        return speechOutput;
+        return speechOutput + Speeches.PROMPT_LINE_COLUMN;
     }
 
     public static String endingString(GameManager gameManager){

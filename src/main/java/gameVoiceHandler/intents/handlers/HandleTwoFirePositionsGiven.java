@@ -7,11 +7,13 @@ import gameData.AttackResponse;
 import gameData.GameDataInstance;
 import gameData.GameManager;
 import gameData.StateManager;
-import gameVoiceHandler.intents.BadIntentUtil;
+import gameVoiceHandler.intents.handlers.Utils.BadIntentUtil;
 import gameVoiceHandler.intents.HandlerInterface;
+import gameVoiceHandler.intents.handlers.Utils.GameFireUtil;
 import gameVoiceHandler.intents.speeches.SharedSpeeches;
 import gameVoiceHandler.intents.speeches.Speeches;
 import gameVoiceHandler.intents.speeches.SpeechesGenerator;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.awt.*;
 
@@ -26,8 +28,6 @@ public class HandleTwoFirePositionsGiven implements HandlerInterface {
     private static final String COLUMN_SLOT = "column";
     private static final String LINE_LETTER_SLOT = "lineLetter";
     private static final String COLUMN_NUMBER_SLOT = "columnNumber";
-    private static int x = -1, y = -1;
-
 
     @Override
     public SpeechletResponse handleIntent(Intent intent, GameDataInstance gameDataInstance) {
@@ -38,41 +38,23 @@ public class HandleTwoFirePositionsGiven implements HandlerInterface {
         StateManager stateManager = gameDataInstance.getStateManager();
 
         if (stateManager.getTurnState().equals(StateManager.PLAYER)) {
-            Slot lineSlot = intent.getSlot(LINE_SLOT);
-            Slot columnSlot = intent.getSlot(COLUMN_SLOT);
-            Slot lineLetterSlot = intent.getSlot(LINE_LETTER_SLOT);
-            Slot columnNumberSlot = intent.getSlot(COLUMN_NUMBER_SLOT);
+
 
             String speechOutput = "";
+            GameManager gameManager = gameDataInstance.getGameManager();
+            parseFireCoordinates(intent, gameManager);
 
-            try {
-                if (lineSlot != null && columnSlot != null) {
-                    x = Integer.parseInt(lineSlot.getValue());
-                    y = Integer.parseInt(columnSlot.getValue());
-                } else if (lineLetterSlot != null && columnNumberSlot != null) {
-                    String givenChar = lineLetterSlot.getValue();
-                    x = givenChar.toCharArray()[0] - 'a' + 1;
-                    if (x < 0) {
-                        x = givenChar.toCharArray()[0] - 'A' + 1;
-                    }
-                    y = Integer.parseInt(columnNumberSlot.getValue());
-                } else {
-                    return SpeechesGenerator.newTellResponse(Speeches.ERROR);
-                }
-            } catch (NumberFormatException e) {
+            if (gameDataInstance.getGameManager().getLastPlayerAttackXCoordinate() == -1
+                    || gameDataInstance.getGameManager().getLastPlayerAttackYCoordinate() == -1) {
                 speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
-                return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
-            } catch (Exception e) {
-                speechOutput = Speeches.IM_SORRY + Speeches.INCORRECT_NUMBER;
-                return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
+            } else {
+                speechOutput += GameFireUtil.fire(gameDataInstance);
             }
-
-            speechOutput += fire(gameDataInstance);
 
             return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
         } else {
-            String speechOutput = Speeches.NOT_YOUR_TURN;// + lastQuestion;
-            return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);//lastQuestion, false);
+            String speechOutput = Speeches.NOT_YOUR_TURN + gameDataInstance.getGameManager().getLastQuestionAsked();
+            return SpeechesGenerator.newAskResponse(speechOutput, false, gameDataInstance.getGameManager().getLastQuestionAsked(), false);
         }
     }
 
@@ -80,59 +62,36 @@ public class HandleTwoFirePositionsGiven implements HandlerInterface {
         return gameDataInstance.getStateManager().isGamesStarted();
     }
 
-    private static String fire(GameDataInstance gameDataInstance) {
-        StateManager stateManager = gameDataInstance.getStateManager();
-        GameManager gameManager = gameDataInstance.getGameManager();
+    private static void parseFireCoordinates(Intent intent, GameManager gameManager) {
+        Slot lineSlot = intent.getSlot(LINE_SLOT);
+        Slot columnSlot = intent.getSlot(COLUMN_SLOT);
+        Slot lineLetterSlot = intent.getSlot(LINE_LETTER_SLOT);
+        Slot columnNumberSlot = intent.getSlot(COLUMN_NUMBER_SLOT);
 
-        if (canFire(stateManager)) {
-            String speechOutput = String.format(Speeches.YOU_FIRE, x, y);
-            String repromptText = "";
+        int x = -1;
+        int y = -1;
 
-            AttackResponse attackResponse = gameManager.fireAtPoint(new Point(x - 1, y - 1));
+        if (lineSlot != null && columnSlot != null) {
+            String lineSlotValue = lineSlot.getValue();
+            String columnSlotValue = columnSlot.getValue();
 
-            if (attackResponse.isCanAttack()) {
-                stateManager.setTurnState(StateManager.ALEXA);
+            if (NumberUtils.isNumber(lineSlotValue) && NumberUtils.isNumber(columnSlotValue))
+            x = Integer.parseInt(lineSlotValue);
+            y = Integer.parseInt(columnSlotValue);
+        } else if (lineLetterSlot != null && columnNumberSlot != null) {
+            String lineLetterSlotValue = lineLetterSlot.getValue();
+            String columnNumberSlotValue = columnNumberSlot.getValue();
 
-                if (attackResponse.isAttackSuccessful()) {
-                    speechOutput += Speeches.HIT;
-                    if (gameManager.gameIsOver()) {
-                        speechOutput += SharedSpeeches.endingString(gameManager);
-                    }
-                } else {
-                    speechOutput += Speeches.MISS;
-                }
-
-                if (!gameManager.gameIsOver()) {
-
-                    Point alexaFire = gameManager.nextAlexaHit();
-
-                    repromptText = String.format(Speeches.MY_TURN, alexaFire.x + 1, alexaFire.y + 1);
-
-                    //lastQuestion = repromptText;
-                    speechOutput += repromptText;
-                }
-
-                //stateManager.setTurnState(TurnState.ALEXA);
-            } else {
-                return Speeches.ALREAD_TRIED_THIS_SPOT;
+            x = lineLetterSlotValue.toCharArray()[0] - 'a' + 1;
+            if (x < 0) {
+                x = lineLetterSlotValue.toCharArray()[0] - 'A' + 1;
             }
 
-            x = -1;
-            y = -1;
-
-            return speechOutput;
-        } else {
-            return String.format(Speeches.COORDINATES_NOT_VALID, 1, stateManager.getGridSize(), x, y);// + lastQuestion;
+            if (NumberUtils.isNumber(columnNumberSlotValue))
+            y = Integer.parseInt(columnNumberSlotValue);
         }
-    }
 
-    private static boolean canFire(StateManager stateManager) {
-        int indexX = x-1;
-        int indexY = y-1;
-
-        return (indexX < stateManager.getGridSize()
-                && indexX >= 0
-                && indexY < stateManager.getGridSize()
-                && indexY >= 0);
+        gameManager.setLastPlayerAttackXCoordinate(x);
+        gameManager.setLastPlayerAttackYCoordinate(y);
     }
 }
