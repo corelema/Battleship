@@ -1,101 +1,119 @@
 package gameData;
 
-import java.awt.*;
-import java.util.Random;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import gameData.Battleships.ShipGenerator;
+import gameData.Boards.Coordinates;
+import gameData.fireAlgorithms.FireAlgorithmRandom;
+import gameData.fireAlgorithms.FireAlgorithmAbstract;
+import gameData.Battleships.Battleship;
+import gameData.Boards.AlexaBoard;
+import gameData.Boards.PlayerBoard;
+
+import java.util.List;
+
 
 /**
  * Created by paul.moon on 1/28/16.
  */
 public class GameManager {
+    //TODO: Check if I need the JsonProperty, and if I need the getter and setters
+    @JsonProperty
     private GameParameters parameters;
-    private Board playerOneBoard;  // User
-    private Board playerTwoBoard;  // Alexa for now
+    @JsonProperty
+    private PlayerBoard playerOneBoard;
+    @JsonProperty
+    private AlexaBoard alexaBoard;
+    private FireAlgorithmAbstract fireAlgorithm;
+    @JsonProperty
+    private Coordinates lastAlexaAttackCoordinates = new Coordinates(-1, -1);
+    @JsonProperty
+    private int lastPlayerAttackXCoordinate;
+    @JsonProperty
+    private int lastPlayerAttackYCoordinate;
+    @JsonProperty
+    private static String lastQuestionAsked;
+    @JsonProperty
+    private static boolean answerInstructionsGiven;
 
-    private Point alexasLastAttackPoint;
-    private int numberOfHits;
+    public GameManager() {
+    }
 
     public GameManager(GameParameters parameters) {
-        this.parameters   = parameters;
-        this.numberOfHits = 0;
-
+        this.parameters = parameters;
         initGame();
     }
 
     private void initGame() {
         initGameBoards();
         initBattleShips();
+        initFireAlgorithm();
     }
 
     private void initGameBoards() {
-        this.playerOneBoard = new Board(parameters.getRows(), parameters.getColumns());
-        this.playerTwoBoard = new Board(parameters.getRows(), parameters.getColumns());
+        alexaBoard = new AlexaBoard(parameters.getNbRows(), parameters.getNbColumns());
+        playerOneBoard = new PlayerBoard(parameters.getNbRows(), parameters.getNbColumns());
     }
 
     private void initBattleShips() {
-        playerOneBoard.setBattleShips(this.generateBattleShipsForPlayer());
+        List<Battleship> randomBattleships = new ShipGenerator().generateDefaultShips();
+        alexaBoard.addBattleShips(randomBattleships);
+        playerOneBoard.setNumberOfHitsNecessary(alexaBoard.getNumberOfHitsNecessary());
+    }
 
-        if (this.parameters.getNumberOfPlayers() > 1) {
-            playerTwoBoard.setBattleShips(this.generateBattleShipsForPlayer());
-        } else {
-            playerTwoBoard.setBattleShips(new Battleship[0]);
+    public void initFireAlgorithm() {
+        if (playerOneBoard != null) { //TODO: Make sure that initFireAlgorithm is called after initGameBoards
+            fireAlgorithm = new FireAlgorithmRandom(parameters.getNbRows(), parameters.getNbColumns(), playerOneBoard);
         }
     }
 
-    private Battleship[] generateBattleShipsForPlayer() {
-        Battleship[] ships = new Battleship[parameters.getNumberOfBattleShips()];
-        for (int i = 0; i < parameters.getNumberOfBattleShips(); i++) {
-            ships[i] = Battleship.generateBattleship(this.randomlyGeneratedPoint(), this.parameters.getRows(), this.parameters.getColumns());
-        }
-
-        return ships;
+    public AttackResponse fireAtCoordinates(Coordinates coordinates) {
+        return alexaBoard.fireAtCoordinates(coordinates);
     }
 
-    private Point randomlyGeneratedPoint() {
-        Random randomNumber = new Random();
-
-        int startX = randomNumber.nextInt(this.parameters.getRows());
-        int startY = randomNumber.nextInt(this.parameters.getColumns());
-
-        return new Point(startX, startY);
-    }
-
-    // TODO: bounds checking
-    public AttackResponse fireAtPoint(Point point) {
-        return this.fireAtPoint(point, this.playerOneBoard);
-    }
-
-    public Point getNextAlexaHit() {
-        this.alexasLastAttackPoint = this.randomlyGeneratedPoint();
-        this.fireAtPoint(this.alexasLastAttackPoint, this.playerOneBoard);
-
-        return this.alexasLastAttackPoint;
+    public Coordinates nextAlexaHit() {
+        lastAlexaAttackCoordinates = fireAlgorithm.getNextHit();
+        return lastAlexaAttackCoordinates;
     }
 
     public void didAlexaHit(boolean wasHit) {
-        String status = wasHit ? Tile.BATTLESHIP_HIT_TILE : Tile.FIRED_UPON_TILE;
-        this.numberOfHits = wasHit ? this.numberOfHits + 1 : numberOfHits;
-
-        this.playerTwoBoard.updateTileStatus(status, this.alexasLastAttackPoint, new Battleship(new Tile[2]));
+        this.playerOneBoard.updateTileWithAttackResult(lastAlexaAttackCoordinates, wasHit);
     }
 
-    public boolean isGameOver() {
-        return (playerOneBoard.areAllBattleShipsSunk() || playerTwoBoard.areAllBattleShipsSunk() || this.numberOfHits == 2);
+    public boolean gameIsOver() {
+        return (playerOneBoard.areAllBattleShipsSunk() || alexaBoard.areAllBattleShipsSunk());
     }
 
-    public boolean didPlayerOneWin() {
-        return playerTwoBoard.areAllBattleShipsSunk();
-    }
-
-    public boolean didPlayerTwoWin() {
+    public boolean didAlexaWin() {
         return playerOneBoard.areAllBattleShipsSunk();
     }
 
-    public boolean didAlexWin() {
-        return this.numberOfHits == 2;
+    /**GETTERS AND SETTERS**/
+
+    public GameParameters getParameters() {
+        return parameters;
     }
 
+    public String getLastQuestionAsked() {
+        return lastQuestionAsked;
+    }
 
-    private AttackResponse fireAtPoint(Point point, Board board) {
-        return board.fireAtPoint(point);
+    public void setLastQuestionAsked(String lastQuestionAsked) {
+        this.lastQuestionAsked = lastQuestionAsked;
+    }
+
+    public int getLastPlayerAttackYCoordinate() {
+        return lastPlayerAttackYCoordinate;
+    }
+
+    public void setLastPlayerAttackYCoordinate(int lastPlayerAttackYCoordinate) {
+        this.lastPlayerAttackYCoordinate = lastPlayerAttackYCoordinate;
+    }
+
+    public int getLastPlayerAttackXCoordinate() {
+        return lastPlayerAttackXCoordinate;
+    }
+
+    public void setLastPlayerAttackXCoordinate(int lastPlayerAttackXCoordinate) {
+        this.lastPlayerAttackXCoordinate = lastPlayerAttackXCoordinate;
     }
 }

@@ -1,6 +1,7 @@
 package gameVoiceHandler;
 
 import com.amazon.speech.speechlet.lambda.SpeechletRequestStreamHandler;
+import gameData.GameManager;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,6 +11,8 @@ import java.util.Set;
  */
 public class BattleshipSPeechletRequestsStreamHandler extends SpeechletRequestStreamHandler {
     private static final Set<String> supportedApplicationIds;
+
+    public static GameManager gameManager;
 
     static {
         supportedApplicationIds = new HashSet<String>();

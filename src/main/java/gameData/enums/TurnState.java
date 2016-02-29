@@ -1,4 +1,4 @@
-package gameVoiceHandler;
+package gameData.enums;
 
 /**
  * Created by corentinl on 1/28/16.
