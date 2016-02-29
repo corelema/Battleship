@@ -4,6 +4,7 @@ import gameData.*;
 import gameData.Boards.Coordinates;
 import gameData.enums.TurnState;
 import gameVoiceHandler.intents.speeches.Speeches;
+import gameVoiceHandler.intents.speeches.SpeechesGenerator;
 
 import java.awt.*;
 
@@ -28,7 +29,7 @@ public class GameFireUtil {
             if (attackResponse.isCanAttack()) {
                 stateManager.setTurnState(TurnState.ALEXA);
 
-                speechOutput += attackResponse.isAttackSuccessful() ? Speeches.HIT : Speeches.MISS;
+                speechOutput += attackResponse.isAttackSuccessful() ? SpeechesGenerator.pickOne(Speeches.HIT) : SpeechesGenerator.pickOne(Speeches.MISS);
 
                 if (gameManager.gameIsOver()) {
                     speechOutput += GameEndUtil.endingString(gameManager);
