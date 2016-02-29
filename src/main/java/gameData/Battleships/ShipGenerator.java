@@ -1,5 +1,6 @@
 package gameData.Battleships;
 
+import gameData.Boards.Coordinates;
 import gameData.enums.Orientation;
 import gameData.Boards.AlexaBoard;
 import gameData.GameCommon;
@@ -60,7 +61,7 @@ public class ShipGenerator {
     }
 
     private static Battleship generateAndAddOneShip(int nbRows, int nbColumns, int shipSize, AlexaBoard tempBoard) {
-        Point origin = randomCoordinates(nbRows, nbColumns, shipSize);
+        Coordinates origin = randomCoordinates(nbRows, nbColumns, shipSize);
         Orientation orientation = randomOrientation(nbRows, nbColumns, origin, shipSize);
         Battleship randomBattleship = new Battleship(origin, shipSize, orientation);
 
@@ -73,7 +74,7 @@ public class ShipGenerator {
         }
     }
 
-    private static Point randomCoordinates(int nbRows, int nbColumns, int shipSize) {
+    private static Coordinates randomCoordinates(int nbRows, int nbColumns, int shipSize) {
         int x = ThreadLocalRandom.current().nextInt(0, nbRows);
         int y = ThreadLocalRandom.current().nextInt(0, nbColumns);
 
@@ -86,10 +87,10 @@ public class ShipGenerator {
             numberOfIterations++;
         }
 
-        return new Point(x, y);
+        return new Coordinates(x, y);
     }
 
-    private static Orientation randomOrientation(int nbRows, int nbColumns, Point origin, int shipSize) {
+    private static Orientation randomOrientation(int nbRows, int nbColumns, Coordinates origin, int shipSize) {
         List<Orientation> possibleOrientation = new ArrayList<Orientation>();
 
         if (origin.y + shipSize <= nbColumns) {

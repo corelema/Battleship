@@ -1,9 +1,9 @@
 package gameData.fireAlgorithms;
 
-import gameData.enums.TileState;
 import gameData.Boards.BoardAbstract;
+import gameData.Boards.Coordinates;
+import gameData.enums.TileState;
 
-import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -15,7 +15,7 @@ public class FireAlgorithmRandom extends FireAlgorithmAbstract {
     }
 
     @Override
-    public Point getNextHit() {
+    public Coordinates getNextHit() {
         int x = -1;
         int y = -1;
         boolean coordinatesFound = false;
@@ -30,6 +30,6 @@ public class FireAlgorithmRandom extends FireAlgorithmAbstract {
             }
         } while (coordinatesFound == false);
 
-        return new Point(x, y);
+        return new Coordinates(x, y);
     }
 }

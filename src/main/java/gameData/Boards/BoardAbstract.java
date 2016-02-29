@@ -60,7 +60,7 @@ public abstract class BoardAbstract {
         return state;
     }
 
-    private boolean checkVerticalSpaceIsFree(Point origin, int shipSize) {
+    private boolean checkVerticalSpaceIsFree(Coordinates origin, int shipSize) {
         for (int i = 0 ; i < shipSize ; i++) {
             if (tiles[origin.x + i][origin.y] == TileState.BOAT_U) {
                 return false;
@@ -69,7 +69,7 @@ public abstract class BoardAbstract {
         return true;
     }
 
-    private boolean checkHorizontalSpaceIsFree(Point origin, int shipSize) {
+    private boolean checkHorizontalSpaceIsFree(Coordinates origin, int shipSize) {
         for (int i = 0 ; i < shipSize ; i++) {
             if (tiles[origin.x][origin.y + i] == TileState.BOAT_U) {
                 return false;
@@ -95,5 +95,15 @@ public abstract class BoardAbstract {
 
     public boolean areAllBattleShipsSunk() {
         return numberOfHitsReceived == numberOfHitsNecessary;
+    }
+
+    /**GETTERS AND SETTERS**/
+
+    public int getNumberOfHitsNecessary() {
+        return numberOfHitsNecessary;
+    }
+
+    public void setNumberOfHitsNecessary(int numberOfHitsNecessary) {
+        this.numberOfHitsNecessary = numberOfHitsNecessary;
     }
 }

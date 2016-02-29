@@ -63,7 +63,7 @@ public class AlexaBoard extends BoardAbstract {
     }
 
     private boolean addBattleShipHorizontally(Battleship battleship) {
-        Point origin = battleship.getOrigin();
+        Coordinates origin = battleship.getOrigin();
 
         for (int y = 0 ; y < battleship.getSize() ; y++) {
             if (tiles[origin.x][origin.y + y] == TileState.WATER_U) {
@@ -76,7 +76,7 @@ public class AlexaBoard extends BoardAbstract {
     }
 
     private boolean addBattleShipVertically(Battleship battleship) {
-        Point origin = battleship.getOrigin();
+        Coordinates origin = battleship.getOrigin();
 
         for (int x = 0 ; x < battleship.getSize() ; x++) {
             if (tiles[origin.x + x][origin.y] == TileState.WATER_U) {
@@ -95,7 +95,7 @@ public class AlexaBoard extends BoardAbstract {
      * @param	coordinates     The coordinates where to port the attack
      * @return	                An AttackResponse object containing whether the attack was possible and successful
      */
-    public AttackResponse fireAtPoint(Point coordinates) {
+    public AttackResponse fireAtCoordinates(Coordinates coordinates) {
         TileState tile = this.tiles[coordinates.x][coordinates.y];
         boolean areCoordinatesInBounds = CoordinatesUtil.coordinatesAreInBoud(tiles.length, tiles[0].length, coordinates.x, coordinates.y);
         boolean canAttack = (tile == TileState.WATER_U || tile == TileState.BOAT_U);

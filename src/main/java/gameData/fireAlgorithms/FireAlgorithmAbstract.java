@@ -1,8 +1,7 @@
 package gameData.fireAlgorithms;
 
 import gameData.Boards.BoardAbstract;
-
-import java.awt.*;
+import gameData.Boards.Coordinates;
 
 /**
  * Created by corentinl on 2/2/16.
@@ -18,5 +17,5 @@ public abstract class FireAlgorithmAbstract {
         this.board = board;
     }
 
-    public abstract Point getNextHit();
+    public abstract Coordinates getNextHit();
 }

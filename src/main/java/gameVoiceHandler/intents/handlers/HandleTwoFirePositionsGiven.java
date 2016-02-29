@@ -3,19 +3,16 @@ package gameVoiceHandler.intents.handlers;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.SpeechletResponse;
-import gameData.AttackResponse;
 import gameData.GameDataInstance;
 import gameData.GameManager;
 import gameData.StateManager;
+import gameData.enums.TurnState;
 import gameVoiceHandler.intents.handlers.Utils.BadIntentUtil;
 import gameVoiceHandler.intents.HandlerInterface;
 import gameVoiceHandler.intents.handlers.Utils.GameFireUtil;
-import gameVoiceHandler.intents.speeches.SharedSpeeches;
 import gameVoiceHandler.intents.speeches.Speeches;
 import gameVoiceHandler.intents.speeches.SpeechesGenerator;
 import org.apache.commons.lang3.math.NumberUtils;
-
-import java.awt.*;
 
 /**
  * Created by corentinl on 2/22/16.
@@ -37,7 +34,7 @@ public class HandleTwoFirePositionsGiven implements HandlerInterface {
 
         StateManager stateManager = gameDataInstance.getStateManager();
 
-        if (stateManager.getTurnState().equals(StateManager.PLAYER)) {
+        if (stateManager.getTurnState().equals(TurnState.PLAYER)) {
 
 
             String speechOutput = "";
@@ -51,7 +48,11 @@ public class HandleTwoFirePositionsGiven implements HandlerInterface {
                 speechOutput += GameFireUtil.fire(gameDataInstance);
             }
 
-            return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
+            if (gameManager.gameIsOver()) {
+                return SpeechesGenerator.newTellResponse(speechOutput);
+            } else {
+                return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);//TODO: Check the reprompt
+            }
         } else {
             String speechOutput = Speeches.NOT_YOUR_TURN + gameDataInstance.getGameManager().getLastQuestionAsked();
             return SpeechesGenerator.newAskResponse(speechOutput, false, gameDataInstance.getGameManager().getLastQuestionAsked(), false);

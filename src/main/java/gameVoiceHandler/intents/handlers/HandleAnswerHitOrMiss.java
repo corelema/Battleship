@@ -6,9 +6,10 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import gameData.GameDataInstance;
 import gameData.GameManager;
 import gameData.StateManager;
+import gameData.enums.TurnState;
 import gameVoiceHandler.intents.handlers.Utils.BadIntentUtil;
 import gameVoiceHandler.intents.HandlerInterface;
-import gameVoiceHandler.intents.speeches.SharedSpeeches;
+import gameVoiceHandler.intents.handlers.Utils.GameEndUtil;
 import gameVoiceHandler.intents.speeches.Speeches;
 import gameVoiceHandler.intents.speeches.SpeechesGenerator;
 
@@ -27,36 +28,33 @@ public class HandleAnswerHitOrMiss implements HandlerInterface {
         StateManager stateManager = gameDataInstance.getStateManager();
         GameManager gameManager = gameDataInstance.getGameManager();
 
-        if (stateManager.getTurnState().equals(StateManager.ALEXA)) {
+        if (stateManager.getTurnState().equals(TurnState.ALEXA)) {
             Slot hitOrMissSlotSlot = intent.getSlot(HIT_OR_MISS_SLOT);
 
             String speechOutput = "";
             if (hitOrMissSlotSlot != null && hitOrMissSlotSlot.getValue() != null) {
+                stateManager.setTurnState(TurnState.PLAYER);
+
                 boolean isHit = hitOrMissSlotSlot.getValue().equals("hit");
-
-                if (isHit) {
-                    speechOutput = Speeches.GOT_YOU;
-                } else {
-                    speechOutput = Speeches.YOU_GOT_ME;
-                }
-
-                stateManager.setTurnState(StateManager.PLAYER);
+                speechOutput = isHit ? Speeches.GOT_YOU : Speeches.YOU_GOT_ME;
 
                 gameManager.didAlexaHit(isHit);
 
                 if (gameManager.gameIsOver()) {
-                    speechOutput += SharedSpeeches.endingString(gameManager);
+                    speechOutput += GameEndUtil.endingString(gameManager);
                     return SpeechesGenerator.newTellResponse(speechOutput);
+                } else {
+                    speechOutput += Speeches.PROMPT_LINE_COLUMN;
+                    String repromptText = Speeches.PROMPT_LINE_COLUMN;
+                    gameManager.setLastQuestionAsked(repromptText);
+
+                    stateManager.setTurnState(TurnState.PLAYER);
+
+                    return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
                 }
-                speechOutput += Speeches.PROMPT_LINE_COLUMN;
-                String repromptText = Speeches.PROMPT_LINE_COLUMN;
-                gameManager.setLastQuestionAsked(repromptText);
-
-                stateManager.setTurnState(StateManager.PLAYER);
-
-                return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
             } else {
-                return handleHelpAsked();
+                speechOutput = gameManager.getLastQuestionAsked();
+                return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
             }
         } else {
             String speechOutput = Speeches.WAS_YOUR_TURN + gameManager.getLastQuestionAsked();

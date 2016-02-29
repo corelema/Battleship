@@ -3,6 +3,7 @@ package gameData;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gameData.enums.Difficulty;
+import gameData.enums.TurnState;
 import gameData.enums.VoiceState;
 
 /**
@@ -14,18 +15,15 @@ public class StateManager {
     public static final String ADVANCED_GAME_ASKED = "ADVANCED_GAME_ASKED";
     public static final String ADVANCED_GAME_STARTED = "ADVANCED_GAME_STARTED";
 
-    public static final String PLAYER = "PLAYER";
-    public static final String ALEXA = "ALEXA";
-
     //TODO: Extract the GameParameters in its own instance, to avoid duplication between here and GameManager
 
     private int gridSize;
     private int numberOfShips;
     private String voiceState;
-    private String turnState;
+    private TurnState turnState;
     private Difficulty difficulty;
 
-    public StateManager(int gridSize, int numberOfShips, String voiceState, String turnState, Difficulty difficulty) {
+    public StateManager(int gridSize, int numberOfShips, String voiceState, TurnState turnState, Difficulty difficulty) {
         this.gridSize = gridSize;
         this.numberOfShips = numberOfShips;
         this.voiceState = voiceState;
@@ -37,7 +35,7 @@ public class StateManager {
         gridSize = -1;
         numberOfShips = -1;
         voiceState = INITIALIZATION;
-        turnState = PLAYER;
+        turnState = TurnState.PLAYER;
         difficulty = Difficulty.EASY;
     }
 
@@ -50,7 +48,7 @@ public class StateManager {
         this.gridSize = 3;
         this.numberOfShips = 1;
         voiceState = QUICK_GAME_STARTED;
-        turnState = PLAYER;
+        turnState = TurnState.PLAYER;
     }
 
     public void advancedGameAsked() {
@@ -59,7 +57,7 @@ public class StateManager {
 
     public void startAdvancedGame() {
         voiceState = ADVANCED_GAME_STARTED;
-        turnState = PLAYER;
+        turnState = TurnState.PLAYER;
     }
 
     public GameParameters generateGameParameters() {
@@ -138,12 +136,12 @@ public class StateManager {
         this.voiceState = voiceState;
     }
 
-    public String getTurnState() {
+    public TurnState getTurnState() {
         return turnState;
     }
 
     @JsonProperty("turnState")
-    public void setTurnState(String turnState) {
+    public void setTurnState(TurnState turnState) {
         this.turnState = turnState;
     }
 }

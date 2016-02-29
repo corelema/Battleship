@@ -1,5 +1,6 @@
 package gameData.Battleships;
 
+import gameData.Boards.Coordinates;
 import gameData.enums.Orientation;
 
 import java.awt.*;
@@ -8,21 +9,21 @@ import java.awt.*;
  * Created by paul.moon on 1/28/16.
  */
 public class Battleship {
-    private Point origin;
+    private Coordinates origin;
     private int size;
     Orientation orientation;
 
-    public Battleship (Point origin, int size, Orientation orientation) {
+    public Battleship (Coordinates origin, int size, Orientation orientation) {
         this.origin = origin;
         this.size = size;
         this.orientation = orientation;
     }
 
-    public Point getOrigin() {
+    public Coordinates getOrigin() {
         return origin;
     }
 
-    public void setOrigin(Point origin) {
+    public void setOrigin(Coordinates origin) {
         this.origin = origin;
     }
 

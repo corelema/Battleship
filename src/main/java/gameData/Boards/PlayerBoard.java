@@ -33,7 +33,7 @@ public class PlayerBoard extends BoardAbstract {
      *
      * @param	coordinates     The coordinates where to port the attack
      */
-    public void updateTileWithAttackResult(Point coordinates, boolean wasHit) {
+    public void updateTileWithAttackResult(Coordinates coordinates, boolean wasHit) {
         if (coordinates.x >= 0
                 && coordinates.x < tiles.length
                 && coordinates.y >= 0

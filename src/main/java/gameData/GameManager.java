@@ -2,13 +2,13 @@ package gameData;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gameData.Battleships.ShipGenerator;
+import gameData.Boards.Coordinates;
 import gameData.fireAlgorithms.FireAlgorithmRandom;
 import gameData.fireAlgorithms.FireAlgorithmAbstract;
 import gameData.Battleships.Battleship;
 import gameData.Boards.AlexaBoard;
 import gameData.Boards.PlayerBoard;
 
-import java.awt.Point;
 import java.util.List;
 
 
@@ -25,13 +25,15 @@ public class GameManager {
     private AlexaBoard alexaBoard;
     private FireAlgorithmAbstract fireAlgorithm;
     @JsonProperty
-    private Point lastAlexaAttackCoordinates;
+    private Coordinates lastAlexaAttackCoordinates = new Coordinates(-1, -1);
     @JsonProperty
     private int lastPlayerAttackXCoordinate;
     @JsonProperty
     private int lastPlayerAttackYCoordinate;
-
+    @JsonProperty
     private static String lastQuestionAsked;
+    @JsonProperty
+    private static boolean answerInstructionsGiven;
 
     public GameManager() {
     }
@@ -48,33 +50,29 @@ public class GameManager {
     }
 
     private void initGameBoards() {
-        playerOneBoard = new PlayerBoard(parameters.getNbRows(), parameters.getNbColumns());
         alexaBoard = new AlexaBoard(parameters.getNbRows(), parameters.getNbColumns());
+        playerOneBoard = new PlayerBoard(parameters.getNbRows(), parameters.getNbColumns());
     }
 
     private void initBattleShips() {
         List<Battleship> randomBattleships = new ShipGenerator().generateDefaultShips();
         alexaBoard.addBattleShips(randomBattleships);
+        playerOneBoard.setNumberOfHitsNecessary(alexaBoard.getNumberOfHitsNecessary());
     }
 
-    private void initFireAlgorithm() {
-        if (alexaBoard != null) { //TODO: Make sure that initFireAlgorithm is called after initGameBoards
-            fireAlgorithm = new FireAlgorithmRandom(parameters.getNbRows(), parameters.getNbColumns(), alexaBoard);
+    public void initFireAlgorithm() {
+        if (playerOneBoard != null) { //TODO: Make sure that initFireAlgorithm is called after initGameBoards
+            fireAlgorithm = new FireAlgorithmRandom(parameters.getNbRows(), parameters.getNbColumns(), playerOneBoard);
         }
     }
 
-    public AttackResponse fireAtPoint(Point coordinates) {
-        return alexaBoard.fireAtPoint(coordinates);
+    public AttackResponse fireAtCoordinates(Coordinates coordinates) {
+        return alexaBoard.fireAtCoordinates(coordinates);
     }
 
-    public Point nextAlexaHit() {
-        this.lastAlexaAttackCoordinates = this.fireAlgorithm.getNextHit();
-
+    public Coordinates nextAlexaHit() {
+        lastAlexaAttackCoordinates = fireAlgorithm.getNextHit();
         return lastAlexaAttackCoordinates;
-    }
-
-    public void giveResultForAlexasTurn(boolean wasHit) {
-        this.playerOneBoard.updateTileWithAttackResult(lastAlexaAttackCoordinates, wasHit);
     }
 
     public void didAlexaHit(boolean wasHit) {

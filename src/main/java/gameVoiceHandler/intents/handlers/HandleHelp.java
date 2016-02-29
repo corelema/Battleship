@@ -17,7 +17,7 @@ public class HandleHelp implements HandlerInterface {
         StateManager stateManager = gameDataInstance.getStateManager();
 
         if (!stateManager.isGamesStarted()) {
-            String speechOutput = Speeches.HELP_SPEECH_BEGINNING;
+            String speechOutput = Speeches.HELP_SPEECH_BEGINNING + Speeches.HELP_SPEECH_BEGINNING_REPROMPT;
 
             String repromptText = Speeches.HELP_SPEECH_BEGINNING_REPROMPT;
 

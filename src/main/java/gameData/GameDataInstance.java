@@ -21,7 +21,10 @@ public class GameDataInstance {
 
     private static void initialization() {
         gameManager = (GameManager) AttributesUtil.readAttribute(AttributesUtil.GAME_MANAGER, session);
-        stateManager = (StateManager) AttributesUtil.readAttribute(AttributesUtil.GAME_MANAGER, session);
+        if (gameManager != null) {
+            gameManager.initFireAlgorithm(); //TODO: Have that done when instantiating
+        }
+        stateManager = (StateManager) AttributesUtil.readAttribute(AttributesUtil.STATE_MANAGER, session);
         if (stateManager == null) {
             stateManager = new StateManager();
         }
