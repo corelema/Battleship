@@ -6,6 +6,8 @@ import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SsmlOutputSpeech;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * Created by corentinl on 1/23/16.
  */
@@ -40,5 +42,10 @@ public class SpeechesGenerator {
         outputSpeech.setText(stringOutput);
 
         return SpeechletResponse.newTellResponse(outputSpeech);
+    }
+
+    public static String pickOne(String[] speeches) {
+        int index = ThreadLocalRandom.current().nextInt(0, speeches.length);
+        return speeches[index];
     }
 }

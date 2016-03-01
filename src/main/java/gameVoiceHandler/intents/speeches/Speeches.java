@@ -53,12 +53,64 @@ public class Speeches {
     public static final String NOT_YOUR_TURN = "This is not your turn, you sneaky! ";
     public static final String WAS_YOUR_TURN = "This is your turn, unless you want me to bomb you twice in a row! ";
 
-    public static final String HIT = "That's a hit! ";
+    public static final String[] HIT = {
+            "That's a hit! ",
+            "You got me, but don't get cocky! ",
+            "You hit me, along with my heart! ",
+            "Ok, you hit me. ",
+            "You hit me, but there is still some work to do so stay focused. ",
+            "And, you hit! ",
+            "Ok for this time, you got me. ",
+            "Got me! ",
+            "You got me but I wasn't ready yet. Oh wait, I was... "
+    };
     //public static final String HIT = "That's a hit! but don't get cocky cow-boy... ";
-    public static final String MISS = "You miserably missed! ";
+    public static final String[] MISS = {
+            "You miserably missed! ",
+            "You completely missed! ",
+            "You missed it! ",
+            "Missed it! ",
+            "Missed! ",
+            "And, you missed! ",
+            "You missed, next time, try harder! ",
+            "You missed, sorry sucker. ",
+            "You are way off! ",
+            "Try again! ",
+            "Too bad, you missed it! ",
+            "You missed! Ha, even my grandma would do better! ",
+            "You missed, grandpa! ",
+            "You missed. ",
+            "You missed, stop playing like my grandma, I will feel bad to destroy you! ",
+            "You missed, come on, you had one job... "
+    };
 
-    public static final String GOT_YOU = "Haha, I got you! ";
-    public static final String YOU_GOT_ME = "Damn, I will do better next time! ";
+    public static final String[] GOT_YOU = {
+            "Haha, I got you! ",
+            "You didn't expect me to, did you? ",
+            "I got you! ",
+            "I am sorry to make you feel bad, do you want a tissue? ",
+            "Sorry for you! ",
+            "That makes me feel, hum, good! ",
+            "Sorry buddy. ",
+            "You is your daddy? ",
+            "Don't cry, that would make me feel guilty. ",
+            "Sorry for that, but you have to accept the superiority of the machines. ",
+            "Glad yo hear that! "
+    };
+
+    public static final String[] DIDNT_GET_YOU = {
+            "Damn, I will do better next time! ",
+            "That's ok, I have a lot of resources. ",
+            "You missed, you missed, is that all what you can say? ",
+            "And I am ok with it, well, I think. ",
+            "Fine! ",
+            "Oh, are you sure? Damn! ",
+            "Damn! ",
+            "Crap, oops, pardon my french. ",
+            "And you think I will stop there? The war is not over! ",
+            "Careful, or I will turn angry and make my ring blink red! ",
+            "Mind what you say, I know who you are, where you live, and what you eat for breakfast. "
+    };
 
     //WINNING
     public static final String YOU_WIN = "Ok, you win, but be careful because skynet will destroy you, one day... ";

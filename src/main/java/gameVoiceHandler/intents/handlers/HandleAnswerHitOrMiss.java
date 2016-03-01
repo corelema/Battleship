@@ -36,7 +36,7 @@ public class HandleAnswerHitOrMiss implements HandlerInterface {
                 stateManager.setTurnState(TurnState.PLAYER);
 
                 boolean isHit = hitOrMissSlotSlot.getValue().equals("hit");
-                speechOutput = isHit ? Speeches.GOT_YOU : Speeches.YOU_GOT_ME;
+                speechOutput = isHit ? SpeechesGenerator.pickOne(Speeches.GOT_YOU) : SpeechesGenerator.pickOne(Speeches.DIDNT_GET_YOU);
 
                 gameManager.didAlexaHit(isHit);
 
