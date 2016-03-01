@@ -90,19 +90,26 @@ public class Speeches {
             "I got you! ",
             "I am sorry to make you feel bad, do you want a tissue? ",
             "Sorry for you! ",
-            "That makes me feel, hum, good!",
-            "Sorry buddy.",
+            "That makes me feel, hum, good! ",
+            "Sorry buddy. ",
             "You is your daddy? ",
             "Don't cry, that would make me feel guilty. ",
             "Sorry for that, but you have to accept the superiority of the machines. ",
-            "Glad yo hear that!"
+            "Glad yo hear that! "
     };
 
-    public static final String[] DIDNT_GOT_YOU = {
+    public static final String[] DIDNT_GET_YOU = {
             "Damn, I will do better next time! ",
             "That's ok, I have a lot of resources. ",
             "You missed, you missed, is that all what you can say? ",
-            "And I am ok with it, well, I think."
+            "And I am ok with it, well, I think. ",
+            "Fine! ",
+            "Oh, are you sure? Damn! ",
+            "Damn! ",
+            "Crap, oops, pardon my french. ",
+            "And you think I will stop there? The war is not over! ",
+            "Careful, or I will turn angry and make my ring blink red! ",
+            "Mind what you say, I know who you are, where you live, and what you eat for breakfast. "
     };
 
     //WINNING
