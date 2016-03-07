@@ -7,6 +7,7 @@ import gameData.StateManager;
 import gameVoiceHandler.intents.handlers.Utils.BadIntentUtil;
 import gameVoiceHandler.intents.HandlerInterface;
 import gameVoiceHandler.intents.handlers.Utils.GameStarterUtil;
+import gameVoiceHandler.intents.handlers.Utils.InstructionsUtil;
 import gameVoiceHandler.intents.speeches.Speeches;
 import gameVoiceHandler.intents.speeches.SpeechesGenerator;
 
@@ -21,9 +22,10 @@ public class HandleStartQuickGame implements HandlerInterface {
         }
 
         StateManager stateManager = gameDataInstance.getStateManager();
+        InstructionsUtil.defaultInstructionsRequiredToNoIfQuestionNotAnswered(stateManager);
 
         String speechOutput = GameStarterUtil.startQuickGame(gameDataInstance);
-        String repromptText = Speeches.PROMPT_LINE_COLUMN;
+        String repromptText = Speeches.YOUR_TURN + InstructionsUtil.fireInstructions(stateManager);
 
         gameDataInstance.getGameManager().setLastQuestionAsked(repromptText);
 

@@ -29,6 +29,10 @@ public class HandlerFactory {
             retval = new HandleStop();
         } else if ("AMAZON.CancelIntent".equals(intentName)) {
             retval = new HandleCancel();
+        } else if ("AMAZON.YesIntent".equals(intentName)) {
+            retval = new HandleYes();
+        } else if ("AMAZON.NoIntent".equals(intentName)) {
+            retval = new HandleNo();
         } else {
             retval = new HandleWelcome();
         }

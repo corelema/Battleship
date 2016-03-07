@@ -7,6 +7,7 @@ import gameData.StateManager;
 import gameVoiceHandler.intents.handlers.Utils.BadIntentUtil;
 import gameVoiceHandler.intents.HandlerInterface;
 import gameVoiceHandler.intents.handlers.Utils.GameStarterUtil;
+import gameVoiceHandler.intents.handlers.Utils.InstructionsUtil;
 import gameVoiceHandler.intents.speeches.Speeches;
 import gameVoiceHandler.intents.speeches.SpeechesGenerator;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -44,8 +45,9 @@ public class HandleGameParameter implements HandlerInterface {
         }
 
         if (stateManager.isGameReadyToBeStarted()) {
+            InstructionsUtil.defaultInstructionsRequiredToNoIfQuestionNotAnswered(stateManager);
             speechOutput += GameStarterUtil.startAdvancedGame(gameDataInstance);
-            repromptText = Speeches.PROMPT_LINE_COLUMN;
+            repromptText = Speeches.YOUR_TURN + InstructionsUtil.fireInstructions(stateManager);
         } else {
             speechOutput += missingParameterPrompt(stateManager);
         }
@@ -55,7 +57,7 @@ public class HandleGameParameter implements HandlerInterface {
     }
 
     private boolean isIntentExpected(GameDataInstance gameDataInstance) {
-        return gameDataInstance.getStateManager().isAdvancedGameBeingInitizlized();
+        return gameDataInstance.getStateManager().isAdvancedGameBeingInitialized();
     }
 
     private String missingParameterPrompt(StateManager stateManager) {

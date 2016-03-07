@@ -6,6 +6,7 @@ package gameVoiceHandler.intents.speeches;
 public class Speeches {
     //WELCOMING
     public static final String WELCOME = "Welcome to Battleship! ";
+    public static final String PROMPT_FOR_INSTRUCTIONS = "Would you like to hear the instructions? ";
 
     //FILTER REQUESTS
     public static final String NO_INITIALIZATION = "You cannot choose the kind of game after you already started one. "
@@ -16,6 +17,8 @@ public class Speeches {
             + "Before firing you have to choose a game mode and complete the setup";
 
     //DIDN'T UNDERSTAND
+    public static final String YES_NO_NOT_EXPECTED = "I didn't expect you to answer to a yes no question. ";
+    public static final String LAST_QUESTION_WAS = "The previous question I asked you was. ";
     public static final String IM_SORRY = "I'm sorry, ";
     public static final String NOT_RECOGNIZED = "I didn't understand what you said, could you repeat please? ";//TODO: this is generic, we should reprompt the last thing asked.
     public static final String INCORRECT_NUMBER = "I couldn't understand the given number, could you repeat please? ";
@@ -36,16 +39,18 @@ public class Speeches {
     public static final String PROMPT_NUMBER_OF_SHIPS_ONLY = "I got the grid size, could you provide a number of ships now? ";
 
     //GAME TURNS
-    public static final String MY_TURN = "It's my turn now! I am firing at line %d, and column %d. Did I hit, or did I miss? ";
+    public static final String MY_TURN = "My turn! I am firing at %c, %d. Did I hit, or did I miss? "; //TODO: Move that to be said only one time
+    public static final String ANSWER_EXAMPLE = "You can say: you hit! Or: You missed! ";
 
-    public static final String PROMPT_LINE_COLUMN = "It's your turn, please provide a line and a column where you want to hit. ";
+    public static final String YOUR_TURN = "It's your turn! ";
+    public static final String PROMPT_LINE_COLUMN_INSTRUCTIONS_0 = "please provide a line and a column where you want to hit. ";
     public static final String PROMPT_LINE_COLUMN_INSTRUCTIONS_1 = "You can say for example, fire at a, 2, or fire at line 1 and column 2. ";
     public static final String PROMPT_LINE_COLUMN_INSTRUCTIONS_2 = "you can use number between 1 and %d, and letter between a and %c. ";
     public static final String PROMPT_LINE_ONLY= "I got the column, could you provide a line now? ";
     public static final String PROMPT_COLUMN_ONLY = "I got the line, could you provide a column now? ";
 
     public static final String YOU_GAVE_ONE_COORDINATE = "You gave the coordinate %d. ";
-    public static final String YOU_FIRE = "Firing at line %d and column %d. ";
+    public static final String YOU_FIRE = "Firing at %c, %d. ";
     public static final String COORDINATES_NOT_VALID = "Hum, it seems that the coordinates you gave are not within the range. "
             + "They should be between %d and %d, and you entered lines %d and column %d";
     public static final String ALREAD_TRIED_THIS_SPOT = "You already tried those coordinates, dumbass. Try other ones! ";
@@ -65,12 +70,17 @@ public class Speeches {
     public static final String YOU_LOSE = "You loose! The machines will kill all of you! ";
 
     //HELP
-    public static final String HELP_SPEECH_BEGINNING = "I need you to choose between"
-            + " starting a quick game,"
-            + " or starting an advanced game."
-            + " Which kind of game would you like to start? ";
-    public static final String HELP_SPEECH_BEGINNING_REPROMPT = "Which kind of game do you want to start?"
-            + " If this is your first time, you can say:"
+    public static final String GENERAL_INSTRUCTIONS = "Battleship is a game when you and I, will each have a grid in which there will be boats. "
+            + "Those grids will have a size from 3 by 3, to 10 by 10. "
+            + "For now, the boats will all have a size of two. "
+            + "You have to memorize your grid, and I will memorize mine. ";
+    public static final String LETS_START = "Let's start! ";
+
+    public static final String HELP_SPEECH_BEGINNING = "I need you to choose between "
+            + "starting a quick game, "
+            + "or starting an advanced game. ";
+    public static final String HELP_SPEECH_BEGINNING_REPROMPT = "Which kind of game would you like to start? ";
+    public static final String HELP_SPEECH_BEGINNING_INSTRUCTIONS = "If this is your first time, I suggest you say: "
             + "start a quick game. ";
 
     //USER LEAVING

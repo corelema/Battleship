@@ -23,7 +23,7 @@ public class HandleOneFirePositionGiven implements HandlerInterface {
 
     @Override
     public SpeechletResponse handleIntent(Intent intent, GameDataInstance gameDataInstance) {
-        if (isIntentExpected(gameDataInstance)) {
+        if (!isIntentExpected(gameDataInstance)) {
             return BadIntentUtil.fireUnexpected();
         }
 
@@ -73,7 +73,7 @@ public class HandleOneFirePositionGiven implements HandlerInterface {
         int fireCoordinateGiven = -1;
 
         if (lineOrColumnSlot != null) {
-            String lineLetterSlotString = lineLetterSlot.getValue();
+            String lineLetterSlotString = lineOrColumnSlot.getValue();
             if (NumberUtils.isNumber(lineLetterSlotString))
                 fireCoordinateGiven = Integer.parseInt(lineLetterSlotString);
         } else if (lineLetterSlot != null) {
