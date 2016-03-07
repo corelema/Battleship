@@ -10,6 +10,7 @@ import gameData.enums.TurnState;
 import gameVoiceHandler.intents.handlers.Utils.BadIntentUtil;
 import gameVoiceHandler.intents.HandlerInterface;
 import gameVoiceHandler.intents.handlers.Utils.GameEndUtil;
+import gameVoiceHandler.intents.handlers.Utils.InstructionsUtil;
 import gameVoiceHandler.intents.speeches.Speeches;
 import gameVoiceHandler.intents.speeches.SpeechesGenerator;
 
@@ -21,7 +22,7 @@ public class HandleAnswerHitOrMiss implements HandlerInterface {
 
     @Override
     public SpeechletResponse handleIntent(Intent intent, GameDataInstance gameDataInstance) {
-        if (isIntentExpected(gameDataInstance)) {
+        if (!isIntentExpected(gameDataInstance)) {
             return BadIntentUtil.fireUnexpected();
         }
 
@@ -44,8 +45,8 @@ public class HandleAnswerHitOrMiss implements HandlerInterface {
                     speechOutput += GameEndUtil.endingString(gameManager);
                     return SpeechesGenerator.newTellResponse(speechOutput);
                 } else {
-                    speechOutput += Speeches.PROMPT_LINE_COLUMN;
-                    String repromptText = Speeches.PROMPT_LINE_COLUMN;
+                    speechOutput += Speeches.YOUR_TURN;
+                    String repromptText = Speeches.YOUR_TURN + InstructionsUtil.fireInstructions(stateManager);
                     gameManager.setLastQuestionAsked(repromptText);
 
                     stateManager.setTurnState(TurnState.PLAYER);

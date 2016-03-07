@@ -10,31 +10,40 @@ import gameData.enums.VoiceState;
  * Created by corentinl on 1/23/16.
  */
 public class StateManager {
-    public static final String INITIALIZATION = "INITIALIZATION";
-    public static final String QUICK_GAME_STARTED = "QUICK_GAME_STARTED";
-    public static final String ADVANCED_GAME_ASKED = "ADVANCED_GAME_ASKED";
-    public static final String ADVANCED_GAME_STARTED = "ADVANCED_GAME_STARTED";
-
     //TODO: Extract the GameParameters in its own instance, to avoid duplication between here and GameManager
 
     private int gridSize;
     private int numberOfShips;
-    private String voiceState;
+    private VoiceState voiceState;
     private TurnState turnState;
     private Difficulty difficulty;
 
-    public StateManager(int gridSize, int numberOfShips, String voiceState, TurnState turnState, Difficulty difficulty) {
+    private boolean instructionsRequested = true;
+    private boolean answerInstructionsRequested = true;
+    private boolean fireInstructionsRequested = true;
+
+    public StateManager(int gridSize,
+                        int numberOfShips,
+                        VoiceState voiceState,
+                        TurnState turnState,
+                        Difficulty difficulty,
+                        boolean instructionsRequested,
+                        boolean answerInstructionsRequested,
+                        boolean fireInstructionsRequested) {
         this.gridSize = gridSize;
         this.numberOfShips = numberOfShips;
         this.voiceState = voiceState;
         this.turnState = turnState;
         this.difficulty = difficulty;
+        this.instructionsRequested = instructionsRequested;
+        this.answerInstructionsRequested = answerInstructionsRequested;
+        this.fireInstructionsRequested = fireInstructionsRequested;
     }
 
     public StateManager() {
         gridSize = -1;
         numberOfShips = -1;
-        voiceState = INITIALIZATION;
+        voiceState = VoiceState.PROMPT_FOR_INSTRUCTIONS;
         turnState = TurnState.PLAYER;
         difficulty = Difficulty.EASY;
     }
@@ -47,16 +56,16 @@ public class StateManager {
     public void startQuickGame() {
         this.gridSize = 3;
         this.numberOfShips = 1;
-        voiceState = QUICK_GAME_STARTED;
+        voiceState = VoiceState.QUICK_GAME_STARTED;
         turnState = TurnState.PLAYER;
     }
 
     public void advancedGameAsked() {
-        voiceState = ADVANCED_GAME_ASKED;
+        voiceState = VoiceState.ADVANCED_GAME_ASKED;
     }
 
     public void startAdvancedGame() {
-        voiceState = ADVANCED_GAME_STARTED;
+        voiceState = VoiceState.ADVANCED_GAME_STARTED;
         turnState = TurnState.PLAYER;
     }
 
@@ -68,17 +77,17 @@ public class StateManager {
 
     @JsonIgnore
     public boolean isGamesStarted(){
-        return (voiceState.equals(QUICK_GAME_STARTED) || voiceState.equals(VoiceState.ADVANCED_GAME_STARTED));
+        return (voiceState.equals(VoiceState.QUICK_GAME_STARTED) || voiceState.equals(VoiceState.ADVANCED_GAME_STARTED));
     }
 
     @JsonIgnore
     public boolean isGamesBeingInitialized(){
-        return (voiceState.equals(INITIALIZATION));
+        return (voiceState.equals(VoiceState.INITIALIZATION) || voiceState.equals(VoiceState.PROMPT_FOR_INSTRUCTIONS));
     }
 
     @JsonIgnore
-    public boolean isAdvancedGameBeingInitizlized(){
-        return (voiceState.equals(ADVANCED_GAME_ASKED));
+    public boolean isAdvancedGameBeingInitialized(){
+        return (voiceState.equals(VoiceState.ADVANCED_GAME_ASKED));
     }
 
     public String missingParametersSentence() {
@@ -113,6 +122,8 @@ public class StateManager {
         return (numberOfShips > 0);
     }
 
+    /**GETTERS AND SETTERS**/
+
     public int getGridSize() {
         return gridSize;
     }
@@ -131,8 +142,12 @@ public class StateManager {
         this.numberOfShips = numberOfShips;
     }
 
+    public VoiceState getVoiceState() {
+        return voiceState;
+    }
+
     @JsonProperty("voiceState")
-    public void setVoiceState(String voiceState) {
+    public void setVoiceState(VoiceState voiceState) {
         this.voiceState = voiceState;
     }
 
@@ -143,5 +158,29 @@ public class StateManager {
     @JsonProperty("turnState")
     public void setTurnState(TurnState turnState) {
         this.turnState = turnState;
+    }
+
+    public boolean isInstructionsRequested() {
+        return instructionsRequested;
+    }
+
+    public void setInstructionsRequested(boolean instructionsRequested) {
+        this.instructionsRequested = instructionsRequested;
+    }
+
+    public boolean isAnswerInstructionsRequested() {
+        return answerInstructionsRequested;
+    }
+
+    public void setAnswerInstructionsRequested(boolean answerInstructionsRequested) {
+        this.answerInstructionsRequested = answerInstructionsRequested;
+    }
+
+    public boolean isFireInstructionsRequested() {
+        return fireInstructionsRequested;
+    }
+
+    public void setFireInstructionsRequested(boolean fireInstructionsRequested) {
+        this.fireInstructionsRequested = fireInstructionsRequested;
     }
 }

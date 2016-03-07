@@ -21,7 +21,7 @@ public class GameFireUtil {
 
         if (canFire(indexX, indexY, gameManager)) {
 
-            String speechOutput = String.format(Speeches.YOU_FIRE, indexX + 1, indexY + 1);
+            String speechOutput = String.format(Speeches.YOU_FIRE, (char)(indexX + 'a'), indexY + 1);
             String repromptText = "";
 
             AttackResponse attackResponse = gameManager.fireAtCoordinates(new Coordinates(indexX, indexY));
@@ -36,7 +36,9 @@ public class GameFireUtil {
                 } else {
                     Coordinates alexaFire = gameManager.nextAlexaHit();
 
-                    repromptText = String.format(Speeches.MY_TURN, alexaFire.x + 1, alexaFire.y + 1);
+                    repromptText = String.format(Speeches.MY_TURN, (char)(alexaFire.x + 'a'), alexaFire.y + 1);
+                    String instructions = InstructionsUtil.answerInstructionsIfRequired(stateManager);
+                    repromptText = instructions == null ? repromptText : repromptText + instructions;
 
                     gameManager.setLastQuestionAsked(repromptText);
                     speechOutput += repromptText;

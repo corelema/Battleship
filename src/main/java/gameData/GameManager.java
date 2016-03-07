@@ -31,9 +31,7 @@ public class GameManager {
     @JsonProperty
     private int lastPlayerAttackYCoordinate;
     @JsonProperty
-    private static String lastQuestionAsked;
-    @JsonProperty
-    private static boolean answerInstructionsGiven;
+    private static String lastQuestionAsked = ""; //TODO: Move to StateManager
 
     public GameManager() {
     }

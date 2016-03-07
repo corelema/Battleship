@@ -28,7 +28,7 @@ public class HandleTwoFirePositionsGiven implements HandlerInterface {
 
     @Override
     public SpeechletResponse handleIntent(Intent intent, GameDataInstance gameDataInstance) {
-        if (isIntentExpected(gameDataInstance)) {
+        if (!isIntentExpected(gameDataInstance)) {
             return BadIntentUtil.fireUnexpected();
         }
 

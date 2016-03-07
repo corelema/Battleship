@@ -40,11 +40,9 @@ public class GameStarterUtil {
 
     private static String startGameSpeech(StateManager stateManager) {
         String gameLaunchSpeech = String.format(Speeches.GAME_LAUNCH, stateManager.getGridSize(), stateManager.getNumberOfShips());
-        String speechOutput = gameLaunchSpeech + Speeches.PROMPT_LINE_COLUMN;
-        speechOutput += Speeches.PROMPT_LINE_COLUMN_INSTRUCTIONS_1;
-        int gridSize = stateManager.getGridSize();
-        char gridSizeChar = (char)(gridSize + 'a');
-        speechOutput += String.format(Speeches.PROMPT_LINE_COLUMN_INSTRUCTIONS_2, gridSize, gridSizeChar);
+        String speechOutput = gameLaunchSpeech + Speeches.YOUR_TURN;
+        String instructions = InstructionsUtil.fireInstructionsIfRequired(stateManager);
+        speechOutput = instructions == null ? speechOutput : speechOutput + instructions;
 
         return speechOutput;
     }

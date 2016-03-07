@@ -2,7 +2,6 @@ startQuickGameIntent start a quick game
 startQuickGameIntent start quick game
 startQuickGameIntent quick game
 startQuickGameIntent game quick
-startQuickGameIntent game
 startQuickGameIntent launch a quick game
 startQuickGameIntent launch quick game
 
@@ -47,6 +46,10 @@ parameterNumberOfShipsIntent use {numberOfShips} ships
 answerHitOrMissIntent you {hitOrMiss}
 answerHitOrMissIntent {hitOrMiss}
 answerHitOrMissIntent I think you {hitOrMiss}
+answerHitOrMissIntent It seems that you {hitOrMiss}
+answerHitOrMissIntent You definitely  {hitOrMiss}
+answerHitOrMissIntent Completely {hitOrMiss}
+answerHitOrMissIntent You Completely {hitOrMiss}
 
 fireAtXAndYIntent fire at {line} {column}
 fireAtXAndYIntent {line} {column}
