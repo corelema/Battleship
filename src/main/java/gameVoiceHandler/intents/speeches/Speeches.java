@@ -26,19 +26,25 @@ public class Speeches {
     public static final String REPEAT = ", could you repeat please? ";
 
     //QUICK GAME
-    public static final String GAME_LAUNCH = "I am ready, let's start the game with a grid size of %d and %d ship of size 2. ";
-    public static final String GAME_ALREADY_STARTED = "The game has already began, "
-            + "if you wish to start a new game, you may end this one first by saying stop. ";
+    public static final String QUICK_GAME_LAUNCH = "Quick game. ";
 
     //ADVANCED GAME
-    public static final String ADVANCED_GAME_LAUNCH = "You asked for an advanced game. ";
+    public static final String ADVANCED_GAME_LAUNCH = "Advanced game. ";
     public static final String ADVANCED_GAME_PARAMETERS_PROMPT = "Please provide a grid size and a number of ships. ";
+    public static final String ADVANCED_GAME_PARAMETERS_INSTRUCTIONS = "You can say for example: "
+            + "grid size of 5, and 3 ships. ";
     public static final String GRID_SIZE_GIVEN = "You gave me a grid size of ";
     public static final String NUMBER_OF_SHIPS_GIVEN = "You gave me a number of ships of ";
     public static final String PROMPT_GRID_SIZE_ONLY= "I got the number of ships, could you provide a grid size now? ";
     public static final String PROMPT_NUMBER_OF_SHIPS_ONLY = "I got the grid size, could you provide a number of ships now? ";
+    public static final String INCORRECT_PARAMETERS = "Hum, the parameters that you gave me don't seem to be correct. "
+            + "You gave me a grid size of %d and %d ships, but I was expecting a grid size between 3 and 10, " +
+            "and a number of ships inferior or equal to the grid size. " +
+            "Please give me new parameters. ";
 
     //GAME TURNS
+    public static final String GAME_LAUNCH = "I am ready, let's start the game with a grid of %d by %d, and %d ship of size 2. ";
+
     public static final String MY_TURN = "My turn! I am firing at %c, %d. Did I hit, or did I miss? "; //TODO: Move that to be said only one time
     public static final String ANSWER_EXAMPLE = "You can say: you hit! Or: You missed! ";
 
@@ -122,9 +128,9 @@ public class Speeches {
     public static final String YOU_LOSE = "You loose! The machines will kill all of you! ";
 
     //HELP
-    public static final String GENERAL_INSTRUCTIONS = "Battleship is a game when you and I, will each have a grid in which there will be boats. "
+    public static final String GENERAL_INSTRUCTIONS = "Battleship is a game when you and I, will each have a grid in which there will be ships. "
             + "Those grids will have a size from 3 by 3, to 10 by 10. "
-            + "For now, the boats will all have a size of two. "
+            + "For now, the ships will all have a size of two. "
             + "You have to memorize your grid, and I will memorize mine. ";
     public static final String LETS_START = "Let's start! ";
 

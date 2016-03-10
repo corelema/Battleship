@@ -20,7 +20,7 @@ public class YesNoUtil {
         if (voiceState == VoiceState.PROMPT_FOR_INSTRUCTIONS) {
             return answerToPromptForInstructions(stateManager, answer);
         } else {
-            return yesNoNotExpected(gameManager.getLastQuestionAsked());
+            return yesNoNotExpected(stateManager.getLastQuestionAsked());
         }
 
     }
@@ -36,8 +36,6 @@ public class YesNoUtil {
 
     private static SpeechletResponse answerToPromptForInstructions(StateManager stateManager, boolean answer) {
         stateManager.setInstructionsRequested(answer);
-        stateManager.setAnswerInstructionsRequested(answer);
-        stateManager.setFireInstructionsRequested(answer);
         stateManager.setVoiceState(VoiceState.INITIALIZATION);
 
         return InstructionsUtil.startInstructions(stateManager);

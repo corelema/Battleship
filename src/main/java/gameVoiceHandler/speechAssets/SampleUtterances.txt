@@ -17,6 +17,11 @@ startAdvancedGameWithParametersIntent grid {gridSize} and {numberOfShips} ships
 startAdvancedGameWithParametersIntent grid {gridSize} ships {numberOfShips}
 startAdvancedGameWithParametersIntent give me a grid of {gridSize} and {numberOfShips} ships
 startAdvancedGameWithParametersIntent give me grid of {gridSize} and {numberOfShips} ships
+startAdvancedGameWithParametersIntent grid size of {gridSize} and {numberOfShips} boats
+startAdvancedGameWithParametersIntent grid {gridSize} and {numberOfShips} boats
+startAdvancedGameWithParametersIntent grid {gridSize} boats {numberOfShips}
+startAdvancedGameWithParametersIntent give me a grid of {gridSize} and {numberOfShips} boats
+startAdvancedGameWithParametersIntent give me grid of {gridSize} and {numberOfShips} boats
 
 parameterSizeOfGridIntent grid size {gridSize}
 parameterSizeOfGridIntent grid of size {gridSize}
@@ -42,6 +47,20 @@ parameterNumberOfShipsIntent create number of ships {numberOfShips}
 parameterNumberOfShipsIntent create ships {numberOfShips}
 parameterNumberOfShipsIntent create ships {numberOfShips}
 parameterNumberOfShipsIntent use {numberOfShips} ships
+parameterNumberOfShipsIntent {numberOfShips} boats
+parameterNumberOfShipsIntent boats {numberOfShips}
+parameterNumberOfShipsIntent boats number {numberOfShips}
+parameterNumberOfShipsIntent number of boats of {numberOfShips}
+parameterNumberOfShipsIntent number of boats {numberOfShips}
+parameterNumberOfShipsIntent {numberOfShips} boats
+parameterNumberOfShipsIntent create {numberOfShips} boats
+parameterNumberOfShipsIntent create a number of boats of {numberOfShips}
+parameterNumberOfShipsIntent create number of boats of {numberOfShips}
+parameterNumberOfShipsIntent create a number of boats {numberOfShips}
+parameterNumberOfShipsIntent create number of boats {numberOfShips}
+parameterNumberOfShipsIntent create boats {numberOfShips}
+parameterNumberOfShipsIntent create boats {numberOfShips}
+parameterNumberOfShipsIntent use {numberOfShips} boats
 
 answerHitOrMissIntent you {hitOrMiss}
 answerHitOrMissIntent {hitOrMiss}

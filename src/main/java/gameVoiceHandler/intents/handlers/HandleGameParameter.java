@@ -8,6 +8,7 @@ import gameVoiceHandler.intents.handlers.Utils.BadIntentUtil;
 import gameVoiceHandler.intents.HandlerInterface;
 import gameVoiceHandler.intents.handlers.Utils.GameStarterUtil;
 import gameVoiceHandler.intents.handlers.Utils.InstructionsUtil;
+import gameVoiceHandler.intents.handlers.Utils.ParametersUtil;
 import gameVoiceHandler.intents.speeches.Speeches;
 import gameVoiceHandler.intents.speeches.SpeechesGenerator;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -46,21 +47,18 @@ public class HandleGameParameter implements HandlerInterface {
 
         if (stateManager.isGameReadyToBeStarted()) {
             InstructionsUtil.defaultInstructionsRequiredToNoIfQuestionNotAnswered(stateManager);
-            speechOutput += GameStarterUtil.startAdvancedGame(gameDataInstance);
+            GameStarterUtil.startAdvancedGame(gameDataInstance);
+            speechOutput += GameStarterUtil.startGameSpeech(stateManager);
             repromptText = Speeches.YOUR_TURN + InstructionsUtil.fireInstructions(stateManager);
         } else {
-            speechOutput += missingParameterPrompt(stateManager);
+            speechOutput += ParametersUtil.issueWithParametersSpeech(stateManager);
         }
-        gameDataInstance.getGameManager().setLastQuestionAsked(repromptText);
+        stateManager.setLastQuestionAsked(repromptText);
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
     }
 
     private boolean isIntentExpected(GameDataInstance gameDataInstance) {
-        return gameDataInstance.getStateManager().isAdvancedGameBeingInitialized();
-    }
-
-    private String missingParameterPrompt(StateManager stateManager) {
-        return stateManager.isGridSizeCorrect() ? Speeches.PROMPT_NUMBER_OF_SHIPS_ONLY : Speeches.PROMPT_GRID_SIZE_ONLY;
+        return gameDataInstance.getStateManager().isGamesBeingInitialized();
     }
 }

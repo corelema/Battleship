@@ -6,6 +6,8 @@ import gameData.enums.VoiceState;
 import gameVoiceHandler.intents.speeches.Speeches;
 import gameVoiceHandler.intents.speeches.SpeechesGenerator;
 
+//TODO: In this whole class, see if I can take 2 strings and append the instructions to them. Then return void.
+
 /**
  * Created by corentinl on 3/2/16.
  */
@@ -50,7 +52,7 @@ public class InstructionsUtil {
 
     public static String fireInstructions(StateManager stateManager) {
         int gridSize = stateManager.getGridSize();
-        char gridSizeChar = (char)(gridSize + 'a');
+        char gridSizeChar = (char)(gridSize + 'a' - 1);
         String instructions2 = String.format(Speeches.PROMPT_LINE_COLUMN_INSTRUCTIONS_2, gridSize, gridSizeChar);
 
         return Speeches.PROMPT_LINE_COLUMN_INSTRUCTIONS_0
@@ -70,6 +72,16 @@ public class InstructionsUtil {
 
     public static String answerInstructions(StateManager stateManager) {
         return Speeches.ANSWER_EXAMPLE;
+    }
+
+    public static String advancedGameParametersInstructionsIfRequired(StateManager stateManager) {
+        boolean instructionsRequired = stateManager.isInstructionsRequested() && stateManager.isAdvancedGameParametersInstructionsRequested();
+        if (instructionsRequired) {
+            stateManager.setAdvancedGameParametersInstructionsRequested(false);
+            return Speeches.ADVANCED_GAME_PARAMETERS_INSTRUCTIONS;
+        } else {
+            return null;
+        }
     }
 
     public static void defaultInstructionsRequiredToNoIfQuestionNotAnswered(StateManager stateManager) {

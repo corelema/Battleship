@@ -21,6 +21,9 @@ public class StateManager {
     private boolean instructionsRequested = true;
     private boolean answerInstructionsRequested = true;
     private boolean fireInstructionsRequested = true;
+    private boolean advancedGameParametersInstructionsRequested = true;
+
+    private static String lastQuestionAsked = "";
 
     public StateManager(int gridSize,
                         int numberOfShips,
@@ -50,7 +53,14 @@ public class StateManager {
 
     @JsonIgnore
     public boolean isGameReadyToBeStarted() {
-        return (gridSize > 0 && numberOfShips > 0);
+        return (gridSize >= 3
+                && gridSize <= 10
+                && numberOfShips > 0
+                && numberOfShips <= gridSize);
+    }
+
+    public boolean areParametersEntered() {
+        return gridSize >= 0 && numberOfShips >= 0;
     }
 
     public void startQuickGame() {
@@ -61,7 +71,7 @@ public class StateManager {
     }
 
     public void advancedGameAsked() {
-        voiceState = VoiceState.ADVANCED_GAME_ASKED;
+        voiceState = VoiceState.INITIALIZATION;
     }
 
     public void startAdvancedGame() {
@@ -83,11 +93,6 @@ public class StateManager {
     @JsonIgnore
     public boolean isGamesBeingInitialized(){
         return (voiceState.equals(VoiceState.INITIALIZATION) || voiceState.equals(VoiceState.PROMPT_FOR_INSTRUCTIONS));
-    }
-
-    @JsonIgnore
-    public boolean isAdvancedGameBeingInitialized(){
-        return (voiceState.equals(VoiceState.ADVANCED_GAME_ASKED));
     }
 
     public String missingParametersSentence() {
@@ -120,6 +125,11 @@ public class StateManager {
     @JsonIgnore
     public boolean isNumberOfShipsCorrect() {
         return (numberOfShips > 0);
+    }
+
+    public void resetParameters() {
+        this.gridSize = -1;
+        this.numberOfShips = -1;
     }
 
     /**GETTERS AND SETTERS**/
@@ -182,5 +192,21 @@ public class StateManager {
 
     public void setFireInstructionsRequested(boolean fireInstructionsRequested) {
         this.fireInstructionsRequested = fireInstructionsRequested;
+    }
+
+    public boolean isAdvancedGameParametersInstructionsRequested() {
+        return advancedGameParametersInstructionsRequested;
+    }
+
+    public void setAdvancedGameParametersInstructionsRequested(boolean advancedGameParametersInstructionsRequested) {
+        this.advancedGameParametersInstructionsRequested = advancedGameParametersInstructionsRequested;
+    }
+
+    public String getLastQuestionAsked() {
+        return lastQuestionAsked;
+    }
+
+    public void setLastQuestionAsked(String lastQuestionAsked) {
+        this.lastQuestionAsked = lastQuestionAsked;
     }
 }

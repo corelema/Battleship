@@ -23,11 +23,12 @@ public class HandleStartQuickGame implements HandlerInterface {
 
         StateManager stateManager = gameDataInstance.getStateManager();
         InstructionsUtil.defaultInstructionsRequiredToNoIfQuestionNotAnswered(stateManager);
+        GameStarterUtil.startQuickGame(gameDataInstance);
 
-        String speechOutput = GameStarterUtil.startQuickGame(gameDataInstance);
+        String speechOutput = Speeches.QUICK_GAME_LAUNCH + GameStarterUtil.startGameSpeech(stateManager);
         String repromptText = Speeches.YOUR_TURN + InstructionsUtil.fireInstructions(stateManager);
 
-        gameDataInstance.getGameManager().setLastQuestionAsked(repromptText);
+        stateManager.setLastQuestionAsked(repromptText);
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
     }
