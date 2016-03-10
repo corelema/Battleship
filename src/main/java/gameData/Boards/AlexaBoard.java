@@ -2,11 +2,9 @@ package gameData.Boards;
 
 import gameData.AttackResponse;
 import gameData.Battleships.Battleship;
-import gameData.enums.TileState;
 import gameData.Utils.CoordinatesUtil;
 import gameData.enums.Orientation;
-
-import java.awt.*;
+import gameData.enums.TileState;
 
 /**
  * Created by corentinl on 2/2/16.

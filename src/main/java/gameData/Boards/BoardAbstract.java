@@ -3,12 +3,10 @@ package gameData.Boards;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gameData.Battleships.Battleship;
-import gameData.enums.TileState;
 import gameData.Utils.CoordinatesUtil;
 import gameData.enums.Orientation;
 import gameData.GameCommon;
-
-import java.awt.*;
+import gameData.enums.TileState;
 
 /**
  * Created by paul.moon on 1/28/16.
