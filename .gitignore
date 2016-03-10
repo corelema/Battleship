@@ -1,0 +1,33 @@
+.idea/libraries/Maven__com_amazon_alexa_alexa_skills_kit_1_1_1.xml
+.idea/libraries/Maven__com_amazonaws_aws_java_sdk_core_1_9_40.xml
+.idea/libraries/Maven__com_amazonaws_aws_java_sdk_dynamodb_1_9_40.xml
+.idea/libraries/Maven__com_amazonaws_aws_java_sdk_kms_1_9_40.xml
+.idea/libraries/Maven__com_amazonaws_aws_java_sdk_s3_1_9_40.xml
+.idea/libraries/Maven__com_amazonaws_aws_lambda_java_core_1_0_0.xml
+.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_3_0.xml
+.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_3_2.xml
+.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_3_2.xml
+.idea/libraries/Maven__commons_codec_commons_codec_1_6.xml
+.idea/libraries/Maven__commons_io_commons_io_2_4.xml
+.idea/libraries/Maven__commons_logging_commons_logging_1_1_3.xml
+.idea/libraries/Maven__joda_time_joda_time_2_9_2.xml
+.idea/libraries/Maven__log4j_log4j_1_2_17.xml
+.idea/libraries/Maven__org_apache_commons_commons_lang3_3_3_2.xml
+.idea/libraries/Maven__org_apache_directory_studio_org_apache_commons_io_2_4.xml
+.idea/libraries/Maven__org_apache_httpcomponents_httpclient_4_3_4.xml
+.idea/libraries/Maven__org_apache_httpcomponents_httpcore_4_3_2.xml
+.idea/libraries/Maven__org_eclipse_jetty_jetty_http_9_0_6_v20130930.xml
+.idea/libraries/Maven__org_eclipse_jetty_jetty_io_9_0_6_v20130930.xml
+.idea/libraries/Maven__org_eclipse_jetty_jetty_security_9_0_6_v20130930.xml
+.idea/libraries/Maven__org_eclipse_jetty_jetty_server_9_0_6_v20130930.xml
+.idea/libraries/Maven__org_eclipse_jetty_jetty_servlet_9_0_6_v20130930.xml
+.idea/libraries/Maven__org_eclipse_jetty_jetty_util_9_0_6_v20130930.xml
+.idea/libraries/Maven__org_eclipse_jetty_orbit_javax_servlet_3_0_0_v201112011016.xml
+.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_10.xml
+.idea/workspace.xml
+Saved - can win if 1 hit/
+Saved - game manager not so random, can win if 2 hits/
+Saved - random game manager, no crash/
+out/
+src/main/java/Tests/
+target/
