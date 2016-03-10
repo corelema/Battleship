@@ -54,8 +54,8 @@ public class HandleTwoFirePositionsGiven implements HandlerInterface {
                 return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);//TODO: Check the reprompt
             }
         } else {
-            String speechOutput = Speeches.NOT_YOUR_TURN + gameDataInstance.getGameManager().getLastQuestionAsked();
-            return SpeechesGenerator.newAskResponse(speechOutput, false, gameDataInstance.getGameManager().getLastQuestionAsked(), false);
+            String speechOutput = Speeches.NOT_YOUR_TURN + stateManager.getLastQuestionAsked();
+            return SpeechesGenerator.newAskResponse(speechOutput, false, stateManager.getLastQuestionAsked(), false);
         }
     }
 

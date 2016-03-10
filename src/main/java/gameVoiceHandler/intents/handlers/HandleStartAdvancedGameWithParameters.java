@@ -9,6 +9,7 @@ import gameVoiceHandler.intents.handlers.Utils.BadIntentUtil;
 import gameVoiceHandler.intents.HandlerInterface;
 import gameVoiceHandler.intents.handlers.Utils.GameStarterUtil;
 import gameVoiceHandler.intents.handlers.Utils.InstructionsUtil;
+import gameVoiceHandler.intents.handlers.Utils.ParametersUtil;
 import gameVoiceHandler.intents.speeches.Speeches;
 import gameVoiceHandler.intents.speeches.SpeechesGenerator;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -47,13 +48,16 @@ public class HandleStartAdvancedGameWithParameters implements HandlerInterface {
 
                 if (stateManager.isGameReadyToBeStarted()) {
                     InstructionsUtil.defaultInstructionsRequiredToNoIfQuestionNotAnswered(stateManager);
-                    speechOutput = GameStarterUtil.startAdvancedGame(gameDataInstance);
+                    GameStarterUtil.startAdvancedGame(gameDataInstance);
+                    speechOutput = GameStarterUtil.startGameSpeech(stateManager);
                     repromptText = Speeches.YOUR_TURN + InstructionsUtil.fireInstructions(stateManager);
+                } else {
+                    ParametersUtil.issueWithParametersSpeech(stateManager);
                 }
             }
         }
 
-        gameDataInstance.getGameManager().setLastQuestionAsked(repromptText);
+        stateManager.setLastQuestionAsked(repromptText);
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
     }

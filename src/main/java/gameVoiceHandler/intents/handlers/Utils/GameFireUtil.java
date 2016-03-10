@@ -40,7 +40,7 @@ public class GameFireUtil {
                     String instructions = InstructionsUtil.answerInstructionsIfRequired(stateManager);
                     repromptText = instructions == null ? repromptText : repromptText + instructions;
 
-                    gameManager.setLastQuestionAsked(repromptText);
+                    stateManager.setLastQuestionAsked(repromptText);
                     speechOutput += repromptText;
                 }
 

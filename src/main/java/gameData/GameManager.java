@@ -30,8 +30,6 @@ public class GameManager {
     private int lastPlayerAttackXCoordinate;
     @JsonProperty
     private int lastPlayerAttackYCoordinate;
-    @JsonProperty
-    private static String lastQuestionAsked = ""; //TODO: Move to StateManager
 
     public GameManager() {
     }
@@ -89,14 +87,6 @@ public class GameManager {
 
     public GameParameters getParameters() {
         return parameters;
-    }
-
-    public String getLastQuestionAsked() {
-        return lastQuestionAsked;
-    }
-
-    public void setLastQuestionAsked(String lastQuestionAsked) {
-        this.lastQuestionAsked = lastQuestionAsked;
     }
 
     public int getLastPlayerAttackYCoordinate() {

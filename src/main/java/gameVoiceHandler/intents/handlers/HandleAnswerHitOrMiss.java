@@ -47,19 +47,19 @@ public class HandleAnswerHitOrMiss implements HandlerInterface {
                 } else {
                     speechOutput += Speeches.YOUR_TURN;
                     String repromptText = Speeches.YOUR_TURN + InstructionsUtil.fireInstructions(stateManager);
-                    gameManager.setLastQuestionAsked(repromptText);
+                    stateManager.setLastQuestionAsked(repromptText);
 
                     stateManager.setTurnState(TurnState.PLAYER);
 
                     return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
                 }
             } else {
-                speechOutput = gameManager.getLastQuestionAsked();
+                speechOutput = stateManager.getLastQuestionAsked();
                 return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
             }
         } else {
-            String speechOutput = Speeches.WAS_YOUR_TURN + gameManager.getLastQuestionAsked();
-            return SpeechesGenerator.newAskResponse(speechOutput, false, gameManager.getLastQuestionAsked(), false);
+            String speechOutput = Speeches.WAS_YOUR_TURN + stateManager.getLastQuestionAsked();
+            return SpeechesGenerator.newAskResponse(speechOutput, false, stateManager.getLastQuestionAsked(), false);
         }
     }
 
