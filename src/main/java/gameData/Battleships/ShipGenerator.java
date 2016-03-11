@@ -19,7 +19,11 @@ public class ShipGenerator {
     }
 
     public static List<Battleship> generateRandomShips(int nbRows, int nbColumns, int numberOfShips) {
-        List<Integer> shipSizes = randomSizes(nbRows, nbColumns, numberOfShips);
+        //List<Integer> shipSizes = randomSizes(nbRows, nbColumns, numberOfShips);
+        List<Integer> shipSizes = new ArrayList<>();
+        for (int i = 0 ; i < numberOfShips ; i++) {
+            shipSizes.add(2);
+        }
 
         if (!placementIsPossible(nbRows, nbColumns, shipSizes)) {
             return null;

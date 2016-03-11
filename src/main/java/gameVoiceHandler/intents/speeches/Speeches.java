@@ -20,10 +20,10 @@ public class Speeches {
     public static final String YES_NO_NOT_EXPECTED = "I didn't expect you to answer to a yes no question. ";
     public static final String LAST_QUESTION_WAS = "The previous question I asked you was. ";
     public static final String IM_SORRY = "I'm sorry, ";
-    public static final String NOT_RECOGNIZED = "I didn't understand what you said, could you repeat please? ";//TODO: this is generic, we should reprompt the last thing asked.
-    public static final String INCORRECT_NUMBER = "I couldn't understand the given number, could you repeat please? ";
-    public static final String INCORRECT_HIT_MISS = "I couldn't understand whether I hit or missed";
-    public static final String REPEAT = ", could you repeat please? ";
+    public static final String NOT_RECOGNIZED = "I didn't understand what you said. ";//TODO: this is generic, we should reprompt the last thing asked.
+    public static final String INCORRECT_NUMBER = "I couldn't understand the given number. ";
+    public static final String INCORRECT_HIT_MISS = "I couldn't understand whether I hit or missed? ";
+    public static final String REPEAT = "Could you repeat please? ";
 
     //QUICK GAME
     public static final String QUICK_GAME_LAUNCH = "Quick game. ";
@@ -45,7 +45,8 @@ public class Speeches {
     //GAME TURNS
     public static final String GAME_LAUNCH = "I am ready, let's start the game with a grid of %d by %d, and %d ship of size 2. ";
 
-    public static final String MY_TURN = "My turn! I am firing at %c, %d. Did I hit, or did I miss? "; //TODO: Move that to be said only one time
+    public static final String MY_TURN = "My turn! I am firing at %c, %d. ";
+    public static final String HIT_OR_MISSED = "Did I hit, or did I miss? ";
     public static final String ANSWER_EXAMPLE = "You can say: you hit! Or: You missed! ";
 
     public static final String YOUR_TURN = "It's your turn! ";

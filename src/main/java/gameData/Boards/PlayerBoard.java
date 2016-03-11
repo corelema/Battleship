@@ -2,8 +2,6 @@ package gameData.Boards;
 
 import gameData.enums.TileState;
 
-import java.awt.*;
-
 /**
  * Created by corentinl on 2/2/16.
  */

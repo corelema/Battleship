@@ -78,10 +78,7 @@ public class HandleOneFirePositionGiven implements HandlerInterface {
                 fireCoordinateGiven = Integer.parseInt(lineLetterSlotString);
         } else if (lineLetterSlot != null) {
             String givenChar = lineLetterSlot.getValue();
-            fireCoordinateGiven = givenChar.toCharArray()[0] - 'a' + 1;
-            if (fireCoordinateGiven < 0) {
-                fireCoordinateGiven = givenChar.toCharArray()[0] - 'A' + 1;
-            }
+            fireCoordinateGiven = givenChar.toLowerCase().toCharArray()[0] - 'a' + 1;
         }
         //TODO: Improve the tests above, Add unit tests
         return fireCoordinateGiven;

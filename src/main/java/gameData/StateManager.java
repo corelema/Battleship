@@ -23,6 +23,8 @@ public class StateManager {
     private boolean fireInstructionsRequested = true;
     private boolean advancedGameParametersInstructionsRequested = true;
 
+    private boolean hitOrMissedQuestionAsked = false;
+
     private static String lastQuestionAsked = "";
 
     public StateManager(int gridSize,
@@ -208,5 +210,13 @@ public class StateManager {
 
     public void setLastQuestionAsked(String lastQuestionAsked) {
         this.lastQuestionAsked = lastQuestionAsked;
+    }
+
+    public boolean isHitOrMissedQuestionAsked() {
+        return hitOrMissedQuestionAsked;
+    }
+
+    public void setHitOrMissedQuestionAsked(boolean hitOrMissedQuestionAsked) {
+        this.hitOrMissedQuestionAsked = hitOrMissedQuestionAsked;
     }
 }

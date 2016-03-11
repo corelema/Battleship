@@ -83,10 +83,7 @@ public class HandleTwoFirePositionsGiven implements HandlerInterface {
             String lineLetterSlotValue = lineLetterSlot.getValue();
             String columnNumberSlotValue = columnNumberSlot.getValue();
 
-            x = lineLetterSlotValue.toCharArray()[0] - 'a' + 1;
-            if (x < 0) {
-                x = lineLetterSlotValue.toCharArray()[0] - 'A' + 1;
-            }
+            x = lineLetterSlotValue.toLowerCase().toCharArray()[0] - 'a' + 1;
 
             if (NumberUtils.isNumber(columnNumberSlotValue))
             y = Integer.parseInt(columnNumberSlotValue);

@@ -61,12 +61,15 @@ public class InstructionsUtil {
     }
 
     public static String answerInstructionsIfRequired(StateManager stateManager) {
+        boolean promptHitMissRequired = stateManager.isHitOrMissedQuestionAsked();
+        String instructions = promptHitMissRequired ? Speeches.HIT_OR_MISSED : "";
+
         boolean instructionsRequired = stateManager.isInstructionsRequested() && stateManager.isAnswerInstructionsRequested();
         if (instructionsRequired) {
             stateManager.setAnswerInstructionsRequested(false);
-            return answerInstructions(stateManager);
+            return instructions + answerInstructions(stateManager);
         } else {
-            return null;
+            return instructions;
         }
     }
 
