@@ -51,7 +51,8 @@ public class GameManager {
     }
 
     private void initBattleShips() {
-        List<Battleship> randomBattleships = new ShipGenerator().generateDefaultShips();
+        //List<Battleship> randomBattleships = new ShipGenerator().generateDefaultShips();
+        List<Battleship> randomBattleships = new ShipGenerator().generateRandomShips(parameters.getNbRows(), parameters.getNbColumns(), parameters.getNumberOfBattleShips());
         alexaBoard.addBattleShips(randomBattleships);
         playerOneBoard.setNumberOfHitsNecessary(alexaBoard.getNumberOfHitsNecessary());
     }
