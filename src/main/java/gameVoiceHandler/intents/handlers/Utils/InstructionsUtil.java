@@ -65,13 +65,13 @@ public class InstructionsUtil {
         boolean instructionsRequired = stateManager.isInstructionsRequested() && stateManager.isAnswerInstructionsRequested();
         if (instructionsRequired) {
             stateManager.setAnswerInstructionsRequested(false);
-            return instructions + answerInstructions(stateManager);
+            return instructions + answerInstructions();
         } else {
             return instructions;
         }
     }
 
-    public static String answerInstructions(StateManager stateManager) {
+    public static String answerInstructions() {
         return Speeches.ANSWER_EXAMPLE;
     }
 

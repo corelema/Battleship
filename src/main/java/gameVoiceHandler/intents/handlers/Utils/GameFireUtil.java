@@ -38,7 +38,7 @@ public class GameFireUtil {
 
                     String myTurnSpeech = String.format(Speeches.MY_TURN, (char) (alexaFire.x + 'a'), alexaFire.y + 1);
                     String instructionsIfRequired = InstructionsUtil.answerInstructionsIfRequired(stateManager);
-                    String instructions = InstructionsUtil.answerInstructions(stateManager);
+                    String instructions = InstructionsUtil.answerInstructions();
                     repromptText = myTurnSpeech + instructions;
                     speechOutput += myTurnSpeech;
 

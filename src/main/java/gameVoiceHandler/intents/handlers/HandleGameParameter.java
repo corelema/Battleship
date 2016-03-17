@@ -56,7 +56,7 @@ public class HandleGameParameter implements HandlerInterface {
             repromptText = missingOrIncorrectParameterSpeech;
         }
 
-        stateManager.setLastQuestionAsked(speechOutput);
+        stateManager.setLastQuestionAsked(speechOutput); //TODO: The instructions are not always put in there, because of the multi use of startGameSpeech
         stateManager.setLastReprompt(repromptText);
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
