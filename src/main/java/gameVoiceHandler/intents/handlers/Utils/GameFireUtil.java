@@ -36,12 +36,16 @@ public class GameFireUtil {
                 } else {
                     Coordinates alexaFire = gameManager.nextAlexaHit();
 
-                    repromptText = String.format(Speeches.MY_TURN, (char)(alexaFire.x + 'a'), alexaFire.y + 1);
-                    String instructions = InstructionsUtil.answerInstructionsIfRequired(stateManager);
-                    repromptText = instructions == null ? repromptText : repromptText + instructions;
+                    String myTurnSpeech = String.format(Speeches.MY_TURN, (char) (alexaFire.x + 'a'), alexaFire.y + 1);
+                    String instructionsIfRequired = InstructionsUtil.answerInstructionsIfRequired(stateManager);
+                    String instructions = InstructionsUtil.answerInstructions(stateManager);
+                    repromptText = myTurnSpeech + instructions;
+                    speechOutput += myTurnSpeech;
 
-                    stateManager.setLastQuestionAsked(repromptText);
-                    speechOutput += repromptText;
+                    stateManager.setLastQuestionAsked(speechOutput + instructions);
+                    stateManager.setLastReprompt(repromptText);
+
+                    speechOutput += instructionsIfRequired;
                 }
 
                 stateManager.setTurnState(TurnState.ALEXA);

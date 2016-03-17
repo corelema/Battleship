@@ -29,7 +29,7 @@ public class HandleGameParameter implements HandlerInterface {
         StateManager stateManager = gameDataInstance.getStateManager();
 
         String speechOutput = GameStarterUtil.incorrectParametersSpeech();
-        String repromptText = speechOutput;
+        String repromptText;
 
         if (intent.getSlot(GRID_SIZE_SLOT) != null) {
             String gridSizeParameter = intent.getSlot(GRID_SIZE_SLOT).getValue();
@@ -51,11 +51,15 @@ public class HandleGameParameter implements HandlerInterface {
             speechOutput += GameStarterUtil.startGameSpeech(stateManager);
             repromptText = Speeches.YOUR_TURN + InstructionsUtil.fireInstructions(stateManager);
         } else {
-            speechOutput += ParametersUtil.issueWithParametersSpeech(stateManager);
+            String missingOrIncorrectParameterSpeech = ParametersUtil.missingOrIncorrectParameterSpeech(stateManager);
+            speechOutput += missingOrIncorrectParameterSpeech;
+            repromptText = missingOrIncorrectParameterSpeech;
         }
-        stateManager.setLastQuestionAsked(repromptText);
 
-        return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
+        stateManager.setLastQuestionAsked(speechOutput);
+        stateManager.setLastReprompt(repromptText);
+
+        return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
     }
 
     private boolean isIntentExpected(GameDataInstance gameDataInstance) {

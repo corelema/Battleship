@@ -28,7 +28,8 @@ public class HandleStartQuickGame implements HandlerInterface {
         String speechOutput = Speeches.QUICK_GAME_LAUNCH + GameStarterUtil.startGameSpeech(stateManager);
         String repromptText = Speeches.YOUR_TURN + InstructionsUtil.fireInstructions(stateManager);
 
-        stateManager.setLastQuestionAsked(repromptText);
+        //NOTE: The last question asked is setup in GameStartedUtil
+        stateManager.setLastReprompt(repromptText);
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
     }

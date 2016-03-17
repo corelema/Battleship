@@ -29,7 +29,8 @@ public class HandleStartAdvancedGame implements HandlerInterface {
 
         String repromptText = Speeches.ADVANCED_GAME_PARAMETERS_PROMPT;
 
-        stateManager.setLastQuestionAsked(repromptText);
+        stateManager.setLastQuestionAsked(speechOutput);
+        stateManager.setLastReprompt(repromptText);
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
     }

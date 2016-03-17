@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import gameData.enums.Difficulty;
 import gameData.enums.TurnState;
 import gameData.enums.VoiceState;
+import gameVoiceHandler.intents.speeches.Speeches;
 
 /**
  * Created by corentinl on 1/23/16.
@@ -25,7 +26,8 @@ public class StateManager {
 
     private boolean hitOrMissedQuestionAsked = false;
 
-    private static String lastQuestionAsked = "";
+    private static String lastQuestionAsked = Speeches.WELCOME + Speeches.PROMPT_FOR_INSTRUCTIONS;
+    private static String lastReprompt = Speeches.PROMPT_FOR_INSTRUCTIONS;
 
     public StateManager(int gridSize,
                         int numberOfShips,
@@ -210,6 +212,14 @@ public class StateManager {
 
     public void setLastQuestionAsked(String lastQuestionAsked) {
         this.lastQuestionAsked = lastQuestionAsked;
+    }
+
+    public String getLastReprompt() {
+        return lastReprompt;
+    }
+
+    public void setLastReprompt(String lastReprompt) {
+        StateManager.lastReprompt = lastReprompt;
     }
 
     public boolean isHitOrMissedQuestionAsked() {

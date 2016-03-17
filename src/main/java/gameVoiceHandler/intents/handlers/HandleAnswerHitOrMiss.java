@@ -48,26 +48,23 @@ public class HandleAnswerHitOrMiss implements HandlerInterface {
                     speechOutput += Speeches.YOUR_TURN;
                     String repromptText = Speeches.YOUR_TURN + InstructionsUtil.fireInstructions(stateManager);
                     stateManager.setLastQuestionAsked(repromptText);
+                    stateManager.setLastReprompt(repromptText);
 
                     stateManager.setTurnState(TurnState.PLAYER);
 
                     return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
                 }
             } else {
-                speechOutput = stateManager.getLastQuestionAsked();
-                return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
+                speechOutput = Speeches.INCORRECT_HIT_MISS + stateManager.getLastReprompt();
+                return SpeechesGenerator.newAskResponse(speechOutput, false, stateManager.getLastReprompt(), false);
             }
         } else {
-            String speechOutput = Speeches.WAS_YOUR_TURN + stateManager.getLastQuestionAsked();
-            return SpeechesGenerator.newAskResponse(speechOutput, false, stateManager.getLastQuestionAsked(), false);
+            String speechOutput = Speeches.WAS_YOUR_TURN + stateManager.getLastReprompt();
+            return SpeechesGenerator.newAskResponse(speechOutput, false, stateManager.getLastReprompt(), false);
         }
     }
 
     private boolean isIntentExpected(GameDataInstance gameDataInstance) {
         return gameDataInstance.getStateManager().isGamesStarted();
-    }
-
-    private static SpeechletResponse handleHelpAsked() {
-        return null;
     }
 }

@@ -7,7 +7,7 @@ import gameVoiceHandler.intents.speeches.Speeches;
  * Created by corentinl on 3/8/16.
  */
 public class ParametersUtil {
-    public static String issueWithParametersSpeech(StateManager stateManager) {
+    public static String missingOrIncorrectParameterSpeech(StateManager stateManager) {
         if (stateManager.areParametersEntered()) {
             return ParametersUtil.parametersIncorrectSpeech(stateManager);
         } else {

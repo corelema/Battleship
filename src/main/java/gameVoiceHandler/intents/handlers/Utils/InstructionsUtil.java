@@ -15,26 +15,24 @@ public class InstructionsUtil {
     public static SpeechletResponse startInstructions(StateManager stateManager) {
         boolean instructionsRequested = stateManager.isInstructionsRequested();
 
-        String speechOutput;
-        String reprompt;
+        String speechOutput = Speeches.GENERAL_INSTRUCTIONS
+                + Speeches.LETS_START
+                + Speeches.HELP_SPEECH_BEGINNING
+                + Speeches.HELP_SPEECH_BEGINNING_REPROMPT
+                + Speeches.HELP_SPEECH_BEGINNING_INSTRUCTIONS;
+        String reprompt = Speeches.HELP_SPEECH_BEGINNING_REPROMPT
+                + Speeches.HELP_SPEECH_BEGINNING_INSTRUCTIONS;
 
-        if (instructionsRequested) {
-            speechOutput = Speeches.GENERAL_INSTRUCTIONS
-                    + Speeches.LETS_START
-                    + Speeches.HELP_SPEECH_BEGINNING
-                    + Speeches.HELP_SPEECH_BEGINNING_REPROMPT
-                    + Speeches.HELP_SPEECH_BEGINNING_INSTRUCTIONS;
+        stateManager.setLastQuestionAsked(speechOutput);
+        stateManager.setLastReprompt(reprompt);
+
+        if (!instructionsRequested) {
+            speechOutput = Speeches.HELP_SPEECH_BEGINNING
+                    + Speeches.HELP_SPEECH_BEGINNING_REPROMPT;
             reprompt = Speeches.HELP_SPEECH_BEGINNING_REPROMPT
                     + Speeches.HELP_SPEECH_BEGINNING_INSTRUCTIONS;
-        } else {
-            speechOutput = Speeches.HELP_SPEECH_BEGINNING + Speeches.HELP_SPEECH_BEGINNING_REPROMPT;
-            reprompt = Speeches.HELP_SPEECH_BEGINNING_REPROMPT + Speeches.HELP_SPEECH_BEGINNING_INSTRUCTIONS;
         }
 
-
-
-
-        //stateManager.setLastQuestionAsked(reprompt); //TODO: Move the lasQuestionAsked to StateManager
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, reprompt, false);
     }
