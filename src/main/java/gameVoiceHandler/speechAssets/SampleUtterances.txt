@@ -4,6 +4,10 @@ startQuickGameIntent quick game
 startQuickGameIntent game quick
 startQuickGameIntent launch a quick game
 startQuickGameIntent launch quick game
+startQuickGameIntent launch boat war and quick game
+startQuickGameIntent launch boat war quick game
+startQuickGameIntent boat war and quick game
+startQuickGameIntent boat war quick game
 
 startAdvancedGameIntent start an advanced game
 startAdvancedGameIntent start advanced game
@@ -11,6 +15,10 @@ startAdvancedGameIntent advanced game
 startAdvancedGameIntent game advanced
 startAdvancedGameIntent launch an advanced game
 startAdvancedGameIntent launch advanced game
+startAdvancedGameIntent launch boat war and advanced game
+startAdvancedGameIntent launch boat war advanced game
+startAdvancedGameIntent boat war and advanced game
+startAdvancedGameIntent boat war advanced game
 
 startAdvancedGameWithParametersIntent grid size of {gridSize} and {numberOfShips} ships
 startAdvancedGameWithParametersIntent grid {gridSize} and {numberOfShips} ships
@@ -87,5 +95,3 @@ fireAtLetterAndNumberIntent fire at line {lineLetter} column {columnNumber}
 fireAtLetterAndNumberIntent line {lineLetter} column {columnNumber}
 fireAtLetterAndNumberIntent fire at line {lineLetter} and column {columnNumber}
 fireAtLetterAndNumberIntent line {lineLetter} and column {columnNumber}
-
-oneFirePosition fire at {lineOrColumn}

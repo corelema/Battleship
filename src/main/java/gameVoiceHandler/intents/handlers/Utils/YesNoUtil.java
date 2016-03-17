@@ -14,7 +14,6 @@ import gameVoiceHandler.intents.speeches.SpeechesGenerator;
 public class YesNoUtil {
     public static SpeechletResponse handleYesNo(GameDataInstance gameDataInstance, boolean answer) {
         StateManager stateManager = gameDataInstance.getStateManager();
-        GameManager gameManager = gameDataInstance.getGameManager();
         VoiceState voiceState = stateManager.getVoiceState();
 
         if (voiceState == VoiceState.PROMPT_FOR_INSTRUCTIONS) {

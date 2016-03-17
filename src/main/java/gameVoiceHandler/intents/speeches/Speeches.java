@@ -4,8 +4,11 @@ package gameVoiceHandler.intents.speeches;
  * Created by corentinl on 1/23/16.
  */
 public class Speeches {
+    //APPLICATION NAME
+    public static final String APP_NAME = "Boat War";
+
     //WELCOMING
-    public static final String WELCOME = "Welcome to Battleship! ";
+    public static final String WELCOME = "Welcome to " + APP_NAME + "! ";
     public static final String PROMPT_FOR_INSTRUCTIONS = "Would you like to hear the instructions? ";
 
     //FILTER REQUESTS
@@ -129,7 +132,7 @@ public class Speeches {
     public static final String YOU_LOSE = "You loose! The machines will kill all of you! ";
 
     //HELP
-    public static final String GENERAL_INSTRUCTIONS = "Battleship is a game when you and I, will each have a grid in which there will be ships. "
+    public static final String GENERAL_INSTRUCTIONS = APP_NAME + " is a game when you and I, will each have a grid in which there will be ships. "
             + "Those grids will have a size from 3 by 3, to 10 by 10. "
             + "For now, the ships will all have a size of two. "
             + "You have to memorize your grid, and I will memorize mine. ";

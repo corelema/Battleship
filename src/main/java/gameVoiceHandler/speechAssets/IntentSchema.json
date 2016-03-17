@@ -73,24 +73,6 @@
       ]
     },
     {
-      "intent": "oneFirePosition",
-      "slots": [
-        {
-          "name": "lineOrColumn",
-          "type": "AMAZON.NUMBER"
-        }
-        ]
-    },
-    {
-      "intent": "oneFirePositionLetter",
-      "slots": [
-        {
-          "name": "lineLetter",
-          "type": "LETTERS"
-        }
-      ]
-    },
-    {
       "intent": "AMAZON.YesIntent"
     },
     {
@@ -103,7 +85,7 @@
       "intent": "AMAZON.StopIntent"
     },
     {
-      "intent": "WhatsMyColorIntent"
+      "intent": "AMAZON.CancelIntent"
     }
   ]
 }

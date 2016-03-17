@@ -52,12 +52,13 @@ public class HandleStartAdvancedGameWithParameters implements HandlerInterface {
                     speechOutput = GameStarterUtil.startGameSpeech(stateManager);
                     repromptText = Speeches.YOUR_TURN + InstructionsUtil.fireInstructions(stateManager);
                 } else {
-                    ParametersUtil.issueWithParametersSpeech(stateManager);
+                    speechOutput = ParametersUtil.missingOrIncorrectParameterSpeech(stateManager);
                 }
             }
         }
 
-        stateManager.setLastQuestionAsked(repromptText);
+        stateManager.setLastQuestionAsked(speechOutput);
+        stateManager.setLastReprompt(repromptText);
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, speechOutput, false);
     }

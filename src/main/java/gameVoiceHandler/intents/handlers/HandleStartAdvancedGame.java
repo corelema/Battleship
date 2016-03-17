@@ -29,7 +29,8 @@ public class HandleStartAdvancedGame implements HandlerInterface {
 
         String repromptText = Speeches.ADVANCED_GAME_PARAMETERS_PROMPT;
 
-        stateManager.setLastQuestionAsked(repromptText);
+        stateManager.setLastQuestionAsked(speechOutput); //TODO: Check why this always contains the instructions even if we answered no
+        stateManager.setLastReprompt(repromptText);
 
         return SpeechesGenerator.newAskResponse(speechOutput, false, repromptText, false);
     }
